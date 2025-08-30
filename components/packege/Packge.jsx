@@ -241,8 +241,8 @@ export const Packge = ({ setactive }) => {
                                                         PkgId: pkg._id || pkg.id
                                                     }
                                                 }), setactive('Add New Packge')
-                                            }} alt="" srcSet="/edit.png" className='min-w-4 cursor-pointer' />
-                                            < img onClick={() => { setModal(true), setPackageId(pkg?._id) }} alt="" srcSet="/Delete.png" className='min-w-5 cursor-pointer' />
+                                            }} alt="" srcSet="/edit.png" className='max-w-4 cursor-pointer' />
+                                            < img onClick={() => { setModal(true), setPackageId(pkg?._id) }} alt="" srcSet="/Delete.png" className='max-w-5 cursor-pointer' />
                                         </td>
                                     </tr>
                                 );
