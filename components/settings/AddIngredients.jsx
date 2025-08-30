@@ -95,7 +95,7 @@ const AddIngredients = ({ setactive }) => {
     try {
       setLoading(true);
       const res = await axios.get(
-        `${BaseURL}/allergensIngredients/ingredients/${ingredientId}`,
+        `${BaseURL}/allergensIngredients/ingredient/${ingredientId}`,
         {
           headers: {
             Authorization: `Bearer ${localStorage.getItem("token")}`,
