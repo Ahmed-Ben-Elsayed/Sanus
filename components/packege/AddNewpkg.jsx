@@ -1,0 +1,335 @@
+import React, { useEffect, useState } from 'react';
+import { IoIosArrowBack } from 'react-icons/io';
+import ReusableInput from '../../ui/ReuseInput';
+import axios from 'axios';
+import { toast } from 'react-toastify';
+import ReusableSelector from '../../ui/ReusableSelector';
+import Loaderstart from '../../ui/loading/Loaderstart';
+import { useLocation, useNavigate } from 'react-router-dom';
+
+export const AddNewpkg = ({ setactive }) => {
+  const location = useLocation();
+  const pkgId = location.state?.PkgId;
+  const [form, setForm] = useState({
+    name: '',
+    type: '',
+    price: '',
+    numberOfDays: '',
+    templateId: '',
+    includeBreakfast: false,
+    includeLunch: false,
+    includeDinner: false,
+    planId: '',
+    description: '',
+    image: null,
+    includeSnacksAM: false,
+    includeSnacksPM: false
+  });
+
+  const [plane, setPlane] = useState([]);
+  const [Templete, setTemplete] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const BaseUrl = import.meta.env.VITE_API_BASE_URL;
+  const navigate = useNavigate()
+  const getPackage = async () => {
+    if (!pkgId) return;
+    try {
+      setLoading(true);
+      const res = await axios.get(`${BaseUrl}/package/${pkgId}`, {
+        headers: { Authorization: `Bearer ${localStorage.getItem('token')}`  },
+      });
+      const data = res.data.data.package;
+      setForm({
+        name: data.name || '',
+        type: data.type || '',
+        price: data.price || '',
+        numberOfDays: data.numberOfDays || '',
+        templateId: data.template._id || '',
+        includeBreakfast: data.includeBreakfast ?? false,
+        includeLunch: data.includeLunch ?? false,
+        includeDinner: data.includeDinner ?? false,
+        planId: data?.plan?._id || '',
+        description: data.description || '',
+        image: data.image,
+        includeSnacksAM: data.includeSnacksAM ?? false,
+        includeSnacksPM: data.includeSnacksPM ?? false,
+      });
+
+      console.log(data);
+
+    } catch (err) {
+      console.error(err);
+      toast.error('Error fetching package data');
+    } finally {
+      setLoading(false);
+    }
+  };
+  // console.log(form);
+
+  useEffect(() => {
+    getPlanes();
+    getTempletes();
+    if (pkgId) getPackage();
+  }, [pkgId]);
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setForm((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const handleFileChange = (e) => {
+    setForm((prev) => ({ ...prev, image: e.target.files[0] }));
+  };
+  const handleCheckboxChange = (e) => {
+    const { name, checked } = e.target;
+    setForm((prev) => ({ ...prev, [name]: checked }));
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+
+    if (!form.name || !form.price || !form.numberOfDays) {
+      toast.warning('Please fill all required fields');
+      return;
+    }
+
+    try {
+      setLoading(true);
+      const formData = new FormData();
+      Object.keys(form).forEach((key) => {
+        if (key === 'numberOfDays') {
+          if (pkgId) return;
+        }
+        if (['includeBreakfast', 'includeLunch', 'includeDinner', 'includeSnacksAM', 'includeSnacksPM'].includes(key)) {
+          if (pkgId) return;
+        }
+        if (form[key] !== null && form[key] !== undefined) {
+          if (key === 'price') {
+            formData.append(key, Number(form[key]));
+          } else if (typeof form[key] === 'boolean') {
+            formData.append(key, form[key]);
+          } else {
+            formData.append(key, form[key]);
+          }
+        }
+      });
+
+
+      if (pkgId) {
+        await axios.patch(`${BaseUrl}/package/${pkgId}`, formData, {
+          headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
+        });
+        console.log(formData);
+        toast.success('Package updated successfully');
+      } else {
+        await axios.post(`${BaseUrl}/package`, formData, {
+          headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
+        });
+        toast.success('Package saved successfully');
+      }
+      setactive('Packges');
+      navigate('/Admin', {
+        state: {}
+      })
+    } catch (err) {
+      console.error(err);
+      toast.error(err.response?.data?.message || 'Error saving package');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const getPlanes = async () => {
+    try {
+      setLoading(true);
+      const planes = await axios.get(`${BaseUrl}/plans`, {
+        headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
+      });
+      if (planes.status === 200) setPlane(planes.data.data.plans);
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const getTempletes = async () => {
+    try {
+      setLoading(true);
+      const temps = await axios.get(`${BaseUrl}/template`, {
+        headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
+      });
+      if (temps.status === 200) setTemplete(temps.data.data.templates);
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setLoading(false);
+    }
+  };
+    console.log(form);
+    
+  return (
+    <>
+      {loading && <Loaderstart />}
+      <div className="shadow-sm rounded-xl overflow-auto w-full bg-white h-[calc(100vh-77px)] p-4 flex flex-col">
+        <div className="flex items-center gap-2 mb-3">
+          <IoIosArrowBack
+            className="cursor-pointer text-gray-400 text-xl"
+            onClick={() => {
+              setactive('Packges'), navigate('/Admin', {
+                state: {}
+              })
+            }}
+          />
+          <h2 className="text-lg md:text-xl font-semibold text-[#7A83A3]">Add New Package</h2>
+        </div>
+
+        <hr className="border-gray-300 my-3" />
+
+        <form className="flex flex-col gap-4" onSubmit={handleSubmit}>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <ReusableInput
+              name="name"
+              label="Package Name"
+              placeholder="Enter Name"
+              value={form.name}
+              onChange={handleChange}
+            />
+            <div className='w-full mt-[3px]'>
+              <ReusableSelector
+                name="Type"
+                label="Type of Packege"
+                options={[
+                  { label: 'Weight Loss', value: 'weight_loss' },
+                  { label: 'Muscle Gain', value: 'muscle_gain' },
+                  { label: 'Maintenance', value: 'maintenance' },
+                  { label: 'Health Improvement', value: 'health_improvement' }
+                ]} placeholder="ex.Weight Loss"
+                value={form.type}
+                onChange={(e) => setForm({ ...form, type: e.target.value })}
+                custclassName='!min-w-full bg-white !text-[#3B505C] !w-full' custclassNameArrow='!text-[#3B505C]' className='min-w-full'
+              />
+            </div>
+            <ReusableInput
+              name="numberOfDays"
+              label="Num of Box"
+              type="number"
+              maxLength='2'
+              max={24}
+              disabled={pkgId ? true : false}
+              placeholder="e.g. 16"
+              value={form.numberOfDays}
+              onChange={handleChange}
+            />
+
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <ReusableInput
+              name="price"
+              label="Price"
+              placeholder="e.g. 1500$"
+              value={form.price}
+              onChange={handleChange}
+            />
+
+            <ReusableSelector
+              label="Plane Name"
+              options={plane.map((p) => ({
+                label: p?.name,
+                value: p._id,
+              }))}
+              value={form.planId}
+              onChange={(v) => setForm((prev) => ({ ...prev, planId: v.target.value }))}
+              className="!max-w-[100%]"
+              custclassNameItems="!w-[100%] start-[0px!important]"
+              custclassNameArrow='!text-[#476171]'
+              custclassName="bg-white text-gray-700 text-xs !py-[0px] mt-[3px] !w-[100%]"
+            />
+            <ReusableSelector
+              label="Templete Name"
+              options={Templete.map((p) => ({
+                label: p?.name,
+                value: p._id,
+              }))}
+              value={form.templateId}
+              disabled={pkgId ? true : false}
+              onChange={(v) => setForm((prev) => ({ ...prev, templateId: v.target.value }))}
+              className="!max-w-[100%]"
+              custclassNameArrow='!text-[#476171]'
+              custclassNameItems="!w-[100%] start-[0px!important]"
+              custclassName="bg-white text-gray-700 text-xs !py-[0px] mt-[3px] !w-[100%]"
+            />
+          </div>
+
+          <div className="flex flex-wrap gap-4 mt-2">
+            {['Breakfast', 'Lunch', 'Dinner', 'SnacksAM', 'SnacksPM'].map((item) => (
+              <label key={item} className="flex items-center gap-2">
+                <input
+                  type="checkbox"
+                  name={`include${item}`}
+                  checked={form[`include${item}`]}
+                  onChange={handleCheckboxChange}
+                  className='cursor-pointer'
+                  disabled={pkgId ? true : false}
+                />
+                <span className="text-[#476171] font-medium">Include {item}</span>
+              </label>
+            ))}
+          </div>
+
+
+          <div className="flex flex-col">
+            <label className="text-sm text-[#476171] font-bold mb-1">Description of Meals</label>
+            <textarea
+              name="description"
+              rows={3}
+              className="border border-gray-300 rounded px-3 py-2"
+              placeholder="Write description..."
+              value={form.description}
+              onChange={handleChange}
+            />
+          </div>
+
+          <h1 className='!mb-[-13px] !text-[#476171] font-semibold ' >Photo</h1>
+          <div className="relative w-full">
+            {
+              form.image &&
+              <img alt="pkg image" className='w-5 end-25 absolute top-2' src={form?.image} />
+            }
+            <input
+              type="file"
+              id="photoUpload"
+              // value={form?.image?.name}
+              name="image"
+              onChange={handleFileChange}
+              className="hidden"
+            />
+            <label
+              htmlFor="photoUpload"
+              className="absolute top-0 end-0 cursor-pointer border-[#91AEC0] h-full flex items-center px-4 py-1 text-sm text-[#344767] font-semibold border rounded-e-md"
+            >
+              Browse
+            </label>
+            <input
+              type="text"
+              readOnly
+              value={form?.image?.name}
+              className="w-full border cursor-auto border-[#91AEC0] rounded-md px-3 py-2 focus:outline-none"
+            />
+          </div>
+
+          <div>
+            <button
+              type="submit"
+              className="bg-[#476171] cursor-pointer text-white px-5 py-2 rounded hover:bg-[#3b505c]"
+            >
+              Save Package
+            </button>
+          </div>
+        </form>
+      </div>
+    </>
+  );
+};
