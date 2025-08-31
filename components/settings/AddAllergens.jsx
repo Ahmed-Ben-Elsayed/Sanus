@@ -80,6 +80,7 @@ const AddAllergens = ({ setactive }) => {
       setAllergenNameAr("");
       toast.success("Allergen Updated Successfully");
       navigate("/Admin", { state: {} });
+              setactive("Settings/Allergens");
     } catch (err) {
       console.log(err);
       toast.error(

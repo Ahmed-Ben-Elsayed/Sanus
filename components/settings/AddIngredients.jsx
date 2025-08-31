@@ -68,7 +68,7 @@ const AddIngredients = ({ setactive }) => {
     try {
       setLoading(true);
       await axios.put(
-        `${BaseURL}/allergensIngredients/ingredient/${ingredientId}`,
+        `${BaseURL}/allergensIngredients/ingredients/${ingredientId}`,
         { name: ingredientName, nameAr: ingredientNameAr },
         {
           headers: {
