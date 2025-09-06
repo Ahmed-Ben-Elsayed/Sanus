@@ -189,7 +189,7 @@ export const Packge = ({ setactive }) => {
                         <button
                             onClick={() => {
                                 navigate('/Admin', {
-                                    state: { }
+                                    state: {}
                                 });
                                 setactive('Add New Packge')
                             }} className="bg-[#476171] cursor-pointer text-white hover:bg-[#476171] flex items-center justify-center gap-2 py-[7px] px-5 rounded-lg w-full h-max"
@@ -229,22 +229,78 @@ export const Packge = ({ setactive }) => {
                                         <td className="p-3">{pkg?.template?.name}</td>
                                         <td className="p-3">{new Date(pkg?.createdAt).toLocaleDateString()}</td>
                                         <td className="p-3">{pkg?.numberOfDays}</td>
-                                        <td className="p-3 text-center justify-center">{pkg?.includeBreakfast ? <FaCheckCircle className='text-center  text-green-400' /> : <IoIosCloseCircle className='text-center text-red-400 text-[16px] ' />}</td>
-                                        <td className="p-3 text-center  justify-center">{pkg?.includeLunch ? <FaCheckCircle className='text-center     text-green-400' /> : <IoIosCloseCircle className='text-center text-red-400 text-[16px] ' />}</td>
-                                        <td className="p-3 text-center  justify-center">{pkg?.includeDinner ? <FaCheckCircle className='text-center    text-green-400' /> : <IoIosCloseCircle className='text-center text-red-400 text-[16px] ' />}</td>
-                                        <td className="p-3 text-center  justify-center">{pkg?.includeSnacksAM ? <FaCheckCircle className='text-center  text-green-400' /> : <IoIosCloseCircle className='text-center text-red-400 text-[16px] ' />}</td>
-                                        <td className="p-3 text-center  justify-center">{pkg?.includeSnacksPM ? <FaCheckCircle className='text-center  text-green-400' /> : <IoIosCloseCircle className='text-center text-red-400 text-[16px] ' />}</td>
-                                        <td className="p-3 flex items-center justify-center gap-2 ">
-                                            <img onClick={() => {
-                                                navigate(`/Admin`, {
-                                                    state: {
-                                                        PkgId: pkg._id || pkg.id
-                                                    }
-                                                }), setactive('Add New Packge')
-                                            }} alt="" srcSet="/edit.png" className='max-w-4 cursor-pointer' />
-                                            < img onClick={() => { setModal(true), setPackageId(pkg?._id) }} alt="" srcSet="/Delete.png" className='max-w-5 cursor-pointer' />
+
+                                        {/* ✅ Breakfast */}
+                                        <td className="p-3 text-center">
+                                            {pkg?.includeBreakfast ? (
+                                                <FaCheckCircle className="mx-auto text-green-400" />
+                                            ) : (
+                                                <IoIosCloseCircle className="mx-auto text-red-400 text-[16px]" />
+                                            )}
+                                        </td>
+
+                                        {/* ✅ Lunch */}
+                                        <td className="p-3 text-center">
+                                            {pkg?.includeLunch ? (
+                                                <FaCheckCircle className="mx-auto text-green-400" />
+                                            ) : (
+                                                <IoIosCloseCircle className="mx-auto text-red-400 text-[16px]" />
+                                            )}
+                                        </td>
+
+                                        {/* ✅ Dinner */}
+                                        <td className="p-3 text-center">
+                                            {pkg?.includeDinner ? (
+                                                <FaCheckCircle className="mx-auto text-green-400" />
+                                            ) : (
+                                                <IoIosCloseCircle className="mx-auto text-red-400 text-[16px]" />
+                                            )}
+                                        </td>
+
+                                        {/* ✅ Snacks AM */}
+                                        <td className="p-3 text-center">
+                                            {pkg?.includeSnacksAM ? (
+                                                <FaCheckCircle className="mx-auto text-green-400" />
+                                            ) : (
+                                                <IoIosCloseCircle className="mx-auto text-red-400 text-[16px]" />
+                                            )}
+                                        </td>
+
+                                        {/* ✅ Snacks PM */}
+                                        <td className="p-3 text-center">
+                                            {pkg?.includeSnacksPM ? (
+                                                <FaCheckCircle className="mx-auto text-green-400" />
+                                            ) : (
+                                                <IoIosCloseCircle className="mx-auto text-red-400 text-[16px]" />
+                                            )}
+                                        </td>
+
+                                        {/* ✅ Actions */}
+                                        <td className="p-3 flex items-center justify-center gap-2">
+                                            <img
+                                                onClick={() => {
+                                                    navigate(`/Admin`, {
+                                                        state: {
+                                                            PkgId: pkg._id || pkg.id,
+                                                        },
+                                                    });
+                                                    setactive("Add New Packge");
+                                                }}
+                                                alt=""
+                                                srcSet="/edit.png"
+                                                className="max-w-4 cursor-pointer"
+                                            />
+                                            <img
+                                                onClick={() => {
+                                                    setModal(true), setPackageId(pkg?._id);
+                                                }}
+                                                alt=""
+                                                srcSet="/Delete.png"
+                                                className="max-w-5 cursor-pointer"
+                                            />
                                         </td>
                                     </tr>
+
                                 );
                             })}
                         </tbody>

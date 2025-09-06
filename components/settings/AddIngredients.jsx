@@ -184,5 +184,4 @@ const AddIngredients = ({ setactive }) => {
     </>
   );
 };
-
 export default AddIngredients;

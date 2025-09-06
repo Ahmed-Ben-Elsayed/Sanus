@@ -206,7 +206,7 @@ const Templete = ({ active, setactive }) => {
                     <td className="p-2 lg:p-3 hidden lg:table-cell">{tpl?.snacksAMOptionsCount}</td>
                     <td className="p-2 lg:p-3 hidden lg:table-cell">{tpl?.snacksPMOptionsCount}</td>
                     <td className="p-2 lg:p-3">
-                      <div className="flex items-center justify-start gap-3">
+                      <div className="flex items-center justify-start gap-1">
                         <button 
                           onClick={() => {
                             navigate('/Admin', {
@@ -217,7 +217,7 @@ const Templete = ({ active, setactive }) => {
                           className="p-1 rounded cursor-pointer hover:bg-gray-100 transition-colors"
                           aria-label="Edit template"
                         >
-                          <img alt="Edit" srcSet="/edit.png" className='w-4 h-4 md:w-5 md:h-5' />
+                          <img alt="Edit" srcSet="/edit.png" className='w-4 h-4 md:w-4 md:h-4' />
                         </button>
                         <button
                           onClick={() => { setModal(true); setTempletesId(tpl?._id) }}

@@ -102,136 +102,142 @@ const EditPage = ({ setCurrentSection }) => {
       navigate("/Admin");
     } catch (error) {
       console.log(error);
-      
+
       toast.error(error?.response?.data?.message || "Failed to update page.");
-    
-  } finally {
-    setLoading(false);
-  }
-};
-console.log("Form Data:", formData);
-console.log("Image Preview:", imagePreview);
 
-return (
-  <div className="w-full min-h-[100%] mx-auto p-6 bg-white rounded-lg shadow">
-    {!loading && formData.pageid ? (
-      <>
-        <h2 className="text-xl font-semibold flex items-center gap-1 text-[#7A83A3] mb-6">
-          <IoIosArrowBack className="cursor-pointer" onClick={() => setCurrentSection("On Boarding")} />
-          Edit Page {formData.pageTitle}
-        </h2>
-        <form onSubmit={handleSubmit} className="space-y-5">
-          {/* Page Title */}
-          <div>
-            <label className="block text-sm font-medium text-[#6b7280] mb-1">
-              Page Title
-            </label>
-            <input
-              type="text"
-              name="pageTitle"
-              value={formData.pageTitle}
-              onChange={handleChange}
-              className="w-full border border-[#91AEC0] rounded-md px-3 py-2 focus:outline-none focus:ring-[#344767]"
-            />
-          </div>
+    } finally {
+      setLoading(false);
+    }
+  };
+  console.log("Form Data:", formData);
+  console.log("Image Preview:", imagePreview);
 
-          {/* Step Number */}
-          <div>
-            <label className="block text-sm font-medium text-[#6b7280] mb-1">
-              Step Number
-            </label>
-            <input
-              type="text"
-              name="stepNumber"
-              value={formData.stepNumber}
-              onChange={handleChange}
-              className="w-full border border-[#91AEC0] rounded-md px-3 py-2 focus:outline-none focus:ring-[#344767]"
-            />
-          </div>
-
-          {/* Title */}
-          <div>
-            <label className="block text-sm font-medium text-[#6b7280] mb-1">
-              Title
-            </label>
-            <input
-              type="text"
-              name="title"
-              value={formData.title}
-              onChange={handleChange}
-              className="w-full border border-[#91AEC0] rounded-md px-3 py-2 focus:outline-none focus:ring-[#344767]"
-            />
-          </div>
-
-          {/* Sentence */}
-          <div>
-            <label className="block text-sm font-medium text-[#6b7280] mb-1">
-              Sentence
-            </label>
-            <input
-              type="text"
-              name="sentence"
-              value={formData.sentence}
-              onChange={handleChange}
-              className="w-full border border-[#91AEC0] rounded-md px-3 py-2 focus:outline-none focus:ring-[#344767]"
-            />
-          </div>
-
-          {/* Photo Upload */}
-          <div>
-            <label className="block text-sm font-medium text-[#6b7280] mb-1">
-              Photo
-            </label>
-            <div className="relative w-full">
-              <input
-                type="file"
-                id="photoUpload"
-                name="stepImage"
-                onChange={handleChange}
-                className="hidden"
-              />
-              <label
-                htmlFor="photoUpload"
-                className="absolute top-0 end-0 cursor-pointer border-[#91AEC0] h-full flex items-center px-4 py-1 text-sm text-[#344767] font-semibold border rounded-e-md"
-              >
-                Browse
+  return (
+    <div className="w-full min-h-[100%] mx-auto p-6 bg-white rounded-lg shadow">
+      {!loading && formData.pageid ? (
+        <>
+          <h2 className="text-xl font-semibold flex items-center gap-1 text-[#7A83A3] mb-6">
+            <IoIosArrowBack className="cursor-pointer" onClick={() => setCurrentSection("On Boarding")} />
+            Edit Page {formData.pageTitle}
+          </h2>
+          <form onSubmit={handleSubmit} className="space-y-5">
+            {/* Page Title */}
+            <div>
+              <label className="block text-sm font-medium text-[#6b7280] mb-1">
+                Page Title
               </label>
               <input
                 type="text"
-                readOnly
-                value={
-                  formData.stepImage instanceof File
-                    ? formData.stepImage.name
-                    : ""
-                }
-                className="w-full  border cursor-auto border-[#91AEC0] rounded-md px-3 py-2 focus:outline-none"
+                name="pageTitle"
+                value={formData.pageTitle}
+                onChange={handleChange}
+                className="w-full border border-[#91AEC0] rounded-md px-3 py-2 focus:outline-none focus:ring-[#344767]"
               />
-              {/* Preview */}
-              {imagePreview && (
-                <img
-                  srcSet={imagePreview || formData.stepImage}
-                  className="mt-3 absolute object-contain top-[-6.5px] end-22 w-8 h-8 rounded-lg "
-                />
-              )}
             </div>
 
-          </div>
+            {/* Step Number */}
+            <div>
+              <label className="block text-sm font-medium text-[#6b7280] mb-1">
+                Step Number
+              </label>
+              <input
+                type="text"
+                name="stepNumber"
+                value={formData.stepNumber}
+                onChange={handleChange}
+                className="w-full border border-[#91AEC0] rounded-md px-3 py-2 focus:outline-none focus:ring-[#344767]"
+              />
+            </div>
 
-          {/* Submit Button */}
-          <NewButton
-            type="submit"
-            className="w-[120px] h-9 text-sm bg-[#344767] hover:bg-[#344767d3] transition"
-            disabled={loading}
-          >
-            {loading ? "Saving..." : "Save"}
-          </NewButton>
-        </form>
-      </>
-    ) : (
-      <Loaderstart />
-    )}
-  </div>
-);
+            {/* Title */}
+            <div>
+              <label className="block text-sm font-medium text-[#6b7280] mb-1">
+                Title
+              </label>
+              <input
+                type="text"
+                name="title"
+                value={formData.title}
+                onChange={handleChange}
+                className="w-full border border-[#91AEC0] rounded-md px-3 py-2 focus:outline-none focus:ring-[#344767]"
+              />
+            </div>
+
+            {/* Sentence */}
+            <div>
+              <label className="block text-sm font-medium text-[#6b7280] mb-1">
+                Sentence
+              </label>
+              <input
+                type="text"
+                name="sentence"
+                value={formData.sentence}
+                onChange={handleChange}
+                className="w-full border border-[#91AEC0] rounded-md px-3 py-2 focus:outline-none focus:ring-[#344767]"
+              />
+            </div>
+
+            {/* Photo Upload */}
+            <div>
+              <label className="block text-sm font-medium text-[#6b7280] mb-1">
+                Photo
+              </label>
+              <div className="relative w-full">
+                <input
+                  type="file"
+                  id="photoUpload"
+                  name="stepImage"
+                  onChange={handleChange}
+                  className="hidden"
+                />
+                <label
+                  htmlFor="photoUpload"
+                  className="absolute top-0 end-0 cursor-pointer border-[#91AEC0] h-full flex items-center px-4 py-1 text-sm text-[#344767] font-semibold border rounded-e-md"
+                >
+                  Browse
+                </label>
+                <input
+                  type="text"
+                  readOnly
+                  value={
+                    formData.stepImage instanceof File
+                      ? formData.stepImage.name
+                      : ""
+                  }
+                  className="w-full  border cursor-auto border-[#91AEC0] rounded-md px-3 py-2 focus:outline-none"
+                />
+                {/* Preview */}
+                {imagePreview && (
+                  <img
+                    src={
+                      imagePreview.startsWith("blob:")
+                        ? imagePreview
+                        : imagePreview.replace("http://137.184.244.200:5050", "/img-proxy")
+                    }
+                    alt="Step Preview"
+                    className="mt-3 absolute object-contain top-[-6.5px] end-22 w-13 h-8 rounded-lg"
+                  />
+                )}
+
+              </div>
+
+            </div>
+
+            {/* Submit Button */}
+            <NewButton
+              type="submit"
+              className="w-[120px] h-9 text-sm bg-[#344767] hover:bg-[#344767d3] transition"
+              disabled={loading}
+            >
+              {loading ? "Saving..." : "Save"}
+            </NewButton>
+          </form>
+        </>
+      ) : (
+        <Loaderstart />
+      )}
+    </div>
+  );
 };
 
 export default EditPage;

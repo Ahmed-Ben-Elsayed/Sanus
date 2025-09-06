@@ -12,7 +12,9 @@ const AddMeals = ({ active, setactive }) => {
   const location = useLocation();
   const mealId = location.state?.mealId;
   const navigate = useNavigate();
-  const [loading, setloading] = useState(false);
+
+  // بدل boolean عملنا عدّاد
+  const [loadingCount, setLoadingCount] = useState(0);
 
   const [meal, setMeal] = useState({
     name: "",
@@ -38,44 +40,49 @@ const AddMeals = ({ active, setactive }) => {
 
   const BaseURL = import.meta.env.VITE_API_BASE_URL;
 
-  // API Calls (unchanged)
+  const startLoading = () => setLoadingCount((p) => p + 1);
+  const stopLoading = () => setLoadingCount((p) => Math.max(p - 1, 0));
+
+  // API Calls
   const getProteinSources = async () => {
     try {
-      setloading(true);
+      startLoading();
       const res = await axios.get(`${BaseURL}/protein-sources`);
       setProteinSources(res?.data?.data?.proteinSources || []);
     } catch (err) {
       console.log(err);
     } finally {
-      setloading(false);
+      stopLoading();
     }
   };
 
   const getAllergens = async () => {
     try {
-      setloading(true);
+      startLoading();
       const res = await axios.get(`${BaseURL}/allergensIngredients/allergens`);
       setAllAllergens(res?.data?.data?.allergens || []);
     } catch (err) {
       console.log(err);
+    } finally {
+      stopLoading();
     }
-    setloading(false);
   };
 
   const getIngredients = async () => {
     try {
-      const res = await axios.get(
-        `${BaseURL}/allergensIngredients/ingredients`
-      );
+      startLoading();
+      const res = await axios.get(`${BaseURL}/allergensIngredients/ingredients`);
       setAllIngredients(res?.data?.data?.ingredients || []);
     } catch (err) {
       console.log(err);
+    } finally {
+      stopLoading();
     }
   };
 
   const getMealById = async () => {
     try {
-      setloading(true);
+      startLoading();
       const res = await axios.get(`${BaseURL}/meals/${mealId}`, {
         headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
       });
@@ -87,7 +94,7 @@ const AddMeals = ({ active, setactive }) => {
         type: m.type || "",
         calories: m.calories?.toString() || "",
         temperatureType: m.temperatureType || "",
-        imageUrl: null,
+        imageUrl: m?.imageUrl || null,
         nutritionalValues: {
           protein: m.nutritionalValues?.protein?.toString() || "",
           fat: m.nutritionalValues?.fat?.toString() || "",
@@ -96,14 +103,14 @@ const AddMeals = ({ active, setactive }) => {
         },
       });
 
-      setSelectedIngredients(m.ingredients?.map((i) => i) || []);
-      setSelectedAllergens(m.allergens?.map((a) => a) || []);
+      setSelectedIngredients(m.ingredients?.map((i) => i._id) || []);
+      setSelectedAllergens(m.allergens?.map((a) => a._id) || []);
       setselectedProteinSources(m.proteinSource?.map((p) => p._id) || []);
     } catch (err) {
       console.log("Error fetching meal:", err);
       toast.error("Failed to load meal data");
     } finally {
-      setloading(false);
+      stopLoading();
     }
   };
 
@@ -144,7 +151,7 @@ const AddMeals = ({ active, setactive }) => {
     return null;
   };
 
-  // Submit (unchanged)
+  // Submit
   const saveMeal = async () => {
     const errorMsg = validateForm();
     if (errorMsg) {
@@ -153,7 +160,7 @@ const AddMeals = ({ active, setactive }) => {
     }
 
     try {
-      setloading(true);
+      startLoading();
       const data = new FormData();
       data.append("name", meal.name);
       data.append("description", meal.description);
@@ -185,15 +192,13 @@ const AddMeals = ({ active, setactive }) => {
         });
         toast.success("Meal added successfully 🎉");
       }
-      navigate("/Admin", {
-        state: {},
-      });
+      navigate("/Admin", { state: {} });
       setactive("Meals");
     } catch (err) {
       console.error("Error saving meal:", err);
       toast.error(err.response?.data?.message || "Something went wrong");
     } finally {
-      setloading(false);
+      stopLoading();
     }
   };
 
@@ -215,7 +220,7 @@ const AddMeals = ({ active, setactive }) => {
         </h2>
       </div>
 
-      {loading && <Loaderstart />}
+      {loadingCount > 0 && <Loaderstart />}
 
       <hr className="border-none block h-[1.5px] mb-5 bg-gray-200" />
 
@@ -226,18 +231,18 @@ const AddMeals = ({ active, setactive }) => {
             label="Meal Name"
             placeholder="Enter meal name"
             name="name"
-            value={meal.name}
+            value={meal?.name}
             onChange={handleChange}
           />
         </div>
-        
+
         <div>
           <ReusableInput
             label="Calories"
             type="number"
             placeholder="Enter calories"
             name="calories"
-            value={meal.calories}
+            value={meal?.calories}
             onChange={handleChange}
             custclassName="!pe-3"
           />
@@ -254,6 +259,7 @@ const AddMeals = ({ active, setactive }) => {
               { label: "Breakfast", value: "breakfast" },
               { label: "Lunch", value: "lunch" },
               { label: "Dinner", value: "dinner" },
+              { label: "Snack", value: "snack" },
             ]}
             className="!min-w-full mt-[4px]"
             custclassName="bg-white !text-[#476171]"
@@ -298,11 +304,11 @@ const AddMeals = ({ active, setactive }) => {
             custclassName="!pe-3"
             placeholder="Enter protein"
             name="protein"
-            value={meal.nutritionalValues.protein}
+            value={meal?.nutritionalValues?.protein}
             onChange={handleChange}
           />
         </div>
-        
+
         <div>
           <ReusableInput
             label="Fat"
@@ -310,11 +316,11 @@ const AddMeals = ({ active, setactive }) => {
             custclassName="!pe-3"
             placeholder="Enter fat"
             name="fat"
-            value={meal.nutritionalValues.fat}
+            value={meal?.nutritionalValues?.fat}
             onChange={handleChange}
           />
         </div>
-        
+
         <div>
           <ReusableInput
             label="Carbs"
@@ -322,7 +328,7 @@ const AddMeals = ({ active, setactive }) => {
             placeholder="Enter carbs"
             name="carbs"
             type="number"
-            value={meal.nutritionalValues.carbs}
+            value={meal?.nutritionalValues?.carbs}
             onChange={handleChange}
           />
         </div>
@@ -332,7 +338,7 @@ const AddMeals = ({ active, setactive }) => {
             label={"Portion"}
             placeholder="Enter portion"
             name={"portion"}
-            value={meal.nutritionalValues.Portion}
+            value={meal?.nutritionalValues?.Portion}
             options={[
               { label: "P1", value: "P1" },
               { label: "P2", value: "P2" },
@@ -346,7 +352,7 @@ const AddMeals = ({ active, setactive }) => {
               setMeal({
                 ...meal,
                 nutritionalValues: {
-                  ...meal.nutritionalValues,
+                  ...meal?.nutritionalValues,
                   Portion: e.target.value,
                 },
               })
@@ -406,7 +412,7 @@ const AddMeals = ({ active, setactive }) => {
             rows={3}
             className="border border-gray-300 rounded px-3 py-2 w-full"
             placeholder="Write description..."
-            value={meal.description}
+            value={meal?.description}
             onChange={handleChange}
           />
         </div>
@@ -432,7 +438,7 @@ const AddMeals = ({ active, setactive }) => {
               <input
                 type="text"
                 readOnly
-                value={meal.imageUrl ? meal.imageUrl.name : ""}
+                value={meal?.imageUrl ? meal?.imageUrl?.name : ""}
                 placeholder="Upload meal image"
                 className="w-full border cursor-auto border-[#91AEC0] rounded-md px-3 py-2 focus:outline-none pr-20"
               />
@@ -440,12 +446,17 @@ const AddMeals = ({ active, setactive }) => {
             {meal.imageUrl && (
               <div className="sm:w-auto w-full flex justify-center sm:block">
                 <img
-                  src={URL.createObjectURL(meal.imageUrl)}
+                  src={
+                    meal.imageUrl instanceof File
+                      ? URL.createObjectURL(meal.imageUrl)
+                      : meal.imageUrl.replace("http://137.184.244.200:5050", "/img-proxy")
+                  }
                   alt="Preview"
                   className="w-20 h-14 object-cover rounded"
                 />
               </div>
             )}
+
           </div>
         </div>
       </div>

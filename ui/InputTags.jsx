@@ -110,7 +110,7 @@ const InputTags = ({
                 key={index}
                 className="flex items-center gap-1 bg-[#E8E1DC] text-[#476171] px-3 py-1 rounded-full text-sm shadow-sm"
               >
-                <span>{option?.label || val}</span>
+                <span>{option?.label ?? String(val ?? "")}</span>
                 <button
                   type="button"
                   onClick={() => removeTag(val)}

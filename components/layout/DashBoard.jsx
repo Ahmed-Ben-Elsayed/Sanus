@@ -39,8 +39,8 @@ import ProteinSource from "../settings/ProtineType/AddProtineSource";
 import ProteinSources from "../settings/ProtineType/ProteinSources";
 const DashBoard = ({ dark, toggledark }) => {
   const navigate = useNavigate();
-  // const [currentSection, setCurrentSection] = useState("On Boarding");
-  const [currentSection, setCurrentSection] = useState("Settings");
+  const [currentSection, setCurrentSection] = useState("On Boarding");
+  // const [currentSection, setCurrentSection] = useState("Settings");
   const [checkingAuth, setCheckingAuth] = useState(true);
   const [modal, setModal] = useState(false)
   const user = JSON.parse(localStorage.getItem("user"));

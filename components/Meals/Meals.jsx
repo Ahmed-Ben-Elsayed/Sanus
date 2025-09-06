@@ -237,7 +237,7 @@ const Meals = ({ active, setactive }) => {
                       <img
                         className="w-8 h-8 sm:w-10 sm:h-10 object-contain rounded"
                         alt={plan?.name}
-                        src={plan?.imageUrl}
+                        src={plan?.imageUrl.replace("http://137.184.244.200:5050", "/img-proxy")}
                       />
                     </td>
                     <td className="p-2 sm:p-3">{plan?.name || "-"}</td>

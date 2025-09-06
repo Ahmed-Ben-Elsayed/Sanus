@@ -12,9 +12,9 @@ export const OnBoardingComponent = ({ active, setactive }) => {
   const navigate = useNavigate();
   const [pages, setPages] = useState([]);
   const [loading, setLoading] = useState(false);
-  const [modal , setmodal] = useState(false)
+  const [modal, setmodal] = useState(false)
   const token = localStorage.getItem("token");
-  const [pageId , SetPageId] = useState("")
+  const [pageId, SetPageId] = useState("")
 
   const getData = async () => {
     try {
@@ -74,11 +74,10 @@ export const OnBoardingComponent = ({ active, setactive }) => {
             }
             disabled={pages.length >= 3}
             onClick={() => navigate(`/Admin/Create`)}
-            className={`${
-              pages.length >= 3
+            className={`${pages.length >= 3
                 ? "cursor-not-allowed bg-gray-400"
                 : "bg-[#476171] cursor-pointer hover:bg-[#476171ee]"
-            } text-[#E8E1DC] me-[-8px] mt-4    flex items-center gap-2 py-2 px-4 rounded-lg`}
+              } text-[#E8E1DC] me-[-8px] mt-4    flex items-center gap-2 py-2 px-4 rounded-lg`}
           >
             Create Page <FaPlus className="text-md" />
           </button>
@@ -91,7 +90,7 @@ export const OnBoardingComponent = ({ active, setactive }) => {
               <tr className="text-left text-[#7B809A] text-sm border-b border-[#E8E8E8]">
                 <th className="py-3 px-2">Title Pages</th>
                 <th className="py-3 px-2">Date</th>
-                <th className="py-3 px-2 flex justify-end">Actions</th>
+                <th className="py-3 px-2 flex me-2 justify-end">Actions</th>
               </tr>
             </thead>
             <tbody>
@@ -115,19 +114,20 @@ export const OnBoardingComponent = ({ active, setactive }) => {
                   >
                     <td className="py-4 px-2 font-semibold">{page.title}</td>
                     <td className="py-4 px-2">{page.date}</td>
-                    <td className="py-4 px-2 flex justify-end items-center gap-2">
+                    <td className="py-4 px-2 me-[0px] flex justify-end items-center gap-0">
                       <NewButton
                         onClick={() => {
                           setactive("Edit Boarding");
                           navigate(`/Admin/${page.stepNumber || page.id}`);
                         }}
                         className="!bg-transparent !text-[#44818E] !shadow-none !px-2 !py-1 hover:underline"
-                        icon={FaRegEdit}
+                        icon={null}
                       >
+                        <img alt="" srcSet="/edit.png" className="w-4" />
                       </NewButton>
                       <NewButton
                         onClick={() => {
-                            setmodal(true),
+                          setmodal(true),
                             SetPageId(page?.id || page?._id)
                         }}
                         className="!bg-transparent !text-red-500 !shadow-none !px-2 !py-1 hover:underline"
@@ -189,7 +189,7 @@ export const OnBoardingComponent = ({ active, setactive }) => {
           )}
         </div>
       </div>
-      <Modal open={modal} onConfirm={()=>DeletePage(pageId)} cancelText="Cancel" showActions confirmText="Delete" children="Are You Sure Delete This Page"  onClose={()=>setmodal(false)}   />
+      <Modal open={modal} onConfirm={() => DeletePage(pageId)} cancelText="Cancel" showActions confirmText="Delete" children="Are You Sure Delete This Page" onClose={() => setmodal(false)} />
     </>
   );
 };

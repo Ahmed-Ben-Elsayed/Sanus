@@ -10,6 +10,7 @@ import { useLocation, useNavigate } from 'react-router-dom';
 export const AddNewpkg = ({ setactive }) => {
   const location = useLocation();
   const pkgId = location.state?.PkgId;
+
   const [form, setForm] = useState({
     name: '',
     type: '',
@@ -28,48 +29,65 @@ export const AddNewpkg = ({ setactive }) => {
 
   const [plane, setPlane] = useState([]);
   const [Templete, setTemplete] = useState([]);
-  const [loading, setLoading] = useState(false);
+
+  // ✅ عداد للطلبات
+  const [pendingRequests, setPendingRequests] = useState(0);
+  const loading = pendingRequests > 0;
+
   const BaseUrl = import.meta.env.VITE_API_BASE_URL;
-  const navigate = useNavigate()
-  const getPackage = async () => {
-    if (!pkgId) return;
+  const navigate = useNavigate();
+
+  // دالة مساعده لتعقب الطلبات
+  const trackRequest = async (fn) => {
+    setPendingRequests((p) => p + 1);
     try {
-      setLoading(true);
-      const res = await axios.get(`${BaseUrl}/package/${pkgId}`, {
-        headers: { Authorization: `Bearer ${localStorage.getItem('token')}`  },
-      });
-      const data = res.data.data.package;
-      setForm({
-        name: data.name || '',
-        type: data.type || '',
-        price: data.price || '',
-        numberOfDays: data.numberOfDays || '',
-        templateId: data.template._id || '',
-        includeBreakfast: data.includeBreakfast ?? false,
-        includeLunch: data.includeLunch ?? false,
-        includeDinner: data.includeDinner ?? false,
-        planId: data?.plan?._id || '',
-        description: data.description || '',
-        image: data.image,
-        includeSnacksAM: data.includeSnacksAM ?? false,
-        includeSnacksPM: data.includeSnacksPM ?? false,
-      });
-
-      console.log(data);
-
-    } catch (err) {
-      console.error(err);
-      toast.error('Error fetching package data');
+      await fn();
     } finally {
-      setLoading(false);
+      setPendingRequests((p) => p - 1);
     }
   };
-  // console.log(form);
+
+  const getPackage = async () => {
+    if (!pkgId) return;
+    const res = await axios.get(`${BaseUrl}/package/${pkgId}`, {
+      headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
+    });
+    const data = res.data.data.package;
+    setForm({
+      name: data.name || '',
+      type: data.type || '',
+      price: data.price || '',
+      numberOfDays: data.numberOfDays || '',
+      templateId: data.template?._id || '',
+      includeBreakfast: data.includeBreakfast ?? false,
+      includeLunch: data.includeLunch ?? false,
+      includeDinner: data.includeDinner ?? false,
+      planId: data?.plan?._id || '',
+      description: data.description || '',
+      image: data.image,
+      includeSnacksAM: data.includeSnacksAM ?? false,
+      includeSnacksPM: data.includeSnacksPM ?? false,
+    });
+  };
+
+  const getPlanes = async () => {
+    const planes = await axios.get(`${BaseUrl}/plans`, {
+      headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
+    });
+    if (planes.status === 200) setPlane(planes.data.data.plans);
+  };
+
+  const getTempletes = async () => {
+    const temps = await axios.get(`${BaseUrl}/template`, {
+      headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
+    });
+    if (temps.status === 200) setTemplete(temps.data.data.templates);
+  };
 
   useEffect(() => {
-    getPlanes();
-    getTempletes();
-    if (pkgId) getPackage();
+    trackRequest(getPlanes);
+    trackRequest(getTempletes);
+    if (pkgId) trackRequest(getPackage);
   }, [pkgId]);
 
   const handleChange = (e) => {
@@ -80,6 +98,7 @@ export const AddNewpkg = ({ setactive }) => {
   const handleFileChange = (e) => {
     setForm((prev) => ({ ...prev, image: e.target.files[0] }));
   };
+
   const handleCheckboxChange = (e) => {
     const { name, checked } = e.target;
     setForm((prev) => ({ ...prev, [name]: checked }));
@@ -88,91 +107,59 @@ export const AddNewpkg = ({ setactive }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-
     if (!form.name || !form.price || !form.numberOfDays) {
       toast.warning('Please fill all required fields');
       return;
     }
 
     try {
-      setLoading(true);
-      const formData = new FormData();
-      Object.keys(form).forEach((key) => {
-        if (key === 'numberOfDays') {
-          if (pkgId) return;
-        }
-        if (['includeBreakfast', 'includeLunch', 'includeDinner', 'includeSnacksAM', 'includeSnacksPM'].includes(key)) {
-          if (pkgId) return;
-        }
-        if (form[key] !== null && form[key] !== undefined) {
-          if (key === 'price') {
-            formData.append(key, Number(form[key]));
-          } else if (typeof form[key] === 'boolean') {
-            formData.append(key, form[key]);
-          } else {
-            formData.append(key, form[key]);
+      await trackRequest(async () => {
+        const formData = new FormData();
+        Object.keys(form).forEach((key) => {
+          if (key === 'numberOfDays' && pkgId) return;
+          if (
+            ['includeBreakfast', 'includeLunch', 'includeDinner', 'includeSnacksAM', 'includeSnacksPM'].includes(key) &&
+            pkgId
+          )
+            return;
+
+          if (form[key] !== null && form[key] !== undefined) {
+            if (key === 'price') {
+              formData.append(key, Number(form[key]));
+            } else if (typeof form[key] === 'boolean') {
+              formData.append(key, form[key]);
+            } else {
+              formData.append(key, form[key]);
+            }
           }
+        });
+
+        if (pkgId) {
+          await axios.patch(`${BaseUrl}/package/${pkgId}`, formData, {
+            headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
+          });
+          toast.success('Package updated successfully');
+        } else {
+          await axios.post(`${BaseUrl}/package`, formData, {
+            headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
+          });
+          toast.success('Package saved successfully');
         }
+
+        setactive('Packges');
+        navigate('/Admin', { state: {} });
       });
-
-
-      if (pkgId) {
-        await axios.patch(`${BaseUrl}/package/${pkgId}`, formData, {
-          headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
-        });
-        console.log(formData);
-        toast.success('Package updated successfully');
-      } else {
-        await axios.post(`${BaseUrl}/package`, formData, {
-          headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
-        });
-        toast.success('Package saved successfully');
-      }
-      setactive('Packges');
-      navigate('/Admin', {
-        state: {}
-      })
     } catch (err) {
       console.error(err);
       toast.error(err.response?.data?.message || 'Error saving package');
-    } finally {
-      setLoading(false);
     }
   };
 
-  const getPlanes = async () => {
-    try {
-      setLoading(true);
-      const planes = await axios.get(`${BaseUrl}/plans`, {
-        headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
-      });
-      if (planes.status === 200) setPlane(planes.data.data.plans);
-    } catch (err) {
-      console.error(err);
-    } finally {
-      setLoading(false);
-    }
-  };
 
-  const getTempletes = async () => {
-    try {
-      setLoading(true);
-      const temps = await axios.get(`${BaseUrl}/template`, {
-        headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
-      });
-      if (temps.status === 200) setTemplete(temps.data.data.templates);
-    } catch (err) {
-      console.error(err);
-    } finally {
-      setLoading(false);
-    }
-  };
-    console.log(form);
-    
   return (
     <>
-      {loading && <Loaderstart />}
       <div className="shadow-sm rounded-xl overflow-auto w-full bg-white h-[calc(100vh-77px)] p-4 flex flex-col">
+      {loading && <Loaderstart />}
         <div className="flex items-center gap-2 mb-3">
           <IoIosArrowBack
             className="cursor-pointer text-gray-400 text-xl"
@@ -204,7 +191,7 @@ export const AddNewpkg = ({ setactive }) => {
                   { label: 'Weight Loss', value: 'weight_loss' },
                   { label: 'Muscle Gain', value: 'muscle_gain' },
                   { label: 'Maintenance', value: 'maintenance' },
-                  { label: 'Health Improvement', value: 'health_improvement' }
+                  { label: 'Other', value: 'other' },
                 ]} placeholder="ex.Weight Loss"
                 value={form.type}
                 onChange={(e) => setForm({ ...form, type: e.target.value })}
@@ -281,7 +268,7 @@ export const AddNewpkg = ({ setactive }) => {
 
 
           <div className="flex flex-col">
-            <label className="text-sm text-[#476171] font-bold mb-1">Description of Meals</label>
+            <label className="text-sm text-[#476171] font-bold mb-1"> description of Packge </label>
             <textarea
               name="description"
               rows={3}
@@ -296,8 +283,13 @@ export const AddNewpkg = ({ setactive }) => {
           <div className="relative w-full">
             {
               form.image &&
-              <img alt="pkg image" className='w-5 end-25 absolute top-2' src={form?.image} />
+              <img
+                alt="pkg image"
+                className="w-7 end-25 absolute top-2 h-7 object-cover rounded"
+                src={form.image.replace("http://137.184.244.200:5050", "/img-proxy")}
+              />
             }
+
             <input
               type="file"
               id="photoUpload"
