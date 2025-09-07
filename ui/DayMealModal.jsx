@@ -28,10 +28,16 @@ const dayMap = {
   fri: "friday",
 };
 
-// === Custom Select Component ===
+// === Custom Select Component مع البحث ===
 const CustomSelect = ({ options, value, onChange, placeholder, className }) => {
   const [isOpen, setIsOpen] = useState(false);
+  const [search, setSearch] = useState("");
   const selectedOption = options.find((opt) => opt.value === value);
+
+  // فلترة حسب البحث
+  const filteredOptions = options.filter((opt) =>
+    opt.label.toLowerCase().includes(search.toLowerCase())
+  );
 
   return (
     <div className={`relative ${className}`}>
@@ -51,23 +57,40 @@ const CustomSelect = ({ options, value, onChange, placeholder, className }) => {
       </button>
 
       {isOpen && (
-        <div className="absolute z-10 mt-1 w-full bg-white shadow-lg rounded-md border border-gray-200 max-h-60 overflow-auto">
-          {options.map((option) => (
-            <div
-              key={option.value}
-              className={`px-4 py-2 cursor-pointer hover:bg-[#f0f4f7] transition-colors ${
-                value === option.value
-                  ? "bg-[#f0f4f7] text-[#476171] font-medium"
-                  : "text-gray-700"
-              }`}
-              onClick={() => {
-                onChange(option.value);
-                setIsOpen(false);
-              }}
-            >
-              {option.label}
-            </div>
-          ))}
+        <div className="absolute z-10 mt-1 w-full bg-white shadow-lg rounded-md border border-gray-200 max-h-72 overflow-auto">
+          {/* مربع البحث */}
+          <div className="p-2 border-b">
+            <input
+              type="text"
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              placeholder="Search meals..."
+              className="w-full px-3 py-2 border rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-[#476171]"
+            />
+          </div>
+
+          {/* الخيارات */}
+          {filteredOptions.length > 0 ? (
+            filteredOptions.map((option) => (
+              <div
+                key={option.value}
+                className={`px-4 py-2 cursor-pointer hover:bg-[#f0f4f7] transition-colors ${
+                  value === option.value
+                    ? "bg-[#f0f4f7] text-[#476171] font-medium"
+                    : "text-gray-700"
+                }`}
+                onClick={() => {
+                  onChange(option.value);
+                  setIsOpen(false);
+                  setSearch(""); 
+                }}
+              >
+                {option.label}
+              </div>
+            ))
+          ) : (
+            <div className="px-4 py-3 text-gray-400 text-sm">No results</div>
+          )}
         </div>
       )}
     </div>
@@ -96,12 +119,6 @@ const DayMealModal = ({
   const [meals, setMeals] = useState([]);
   const [loading, setLoading] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState({});
-  const [pagination, setPagination] = useState({
-    currentPage: 1,
-    totalPages: 1,
-    totalItems: 0,
-  });
-
   const [isReplaceOpen, setIsReplaceOpen] = useState(false);
   const [mealToReplace, setMealToReplace] = useState(null);
 
@@ -109,7 +126,7 @@ const DayMealModal = ({
 
   useEffect(() => {
     if (isOpen) {
-      getAllMeals(1);
+      getAllMeals();
       if (defaultMeals) {
         const processedMeals = {};
         Object.keys(defaultMeals).forEach((category) => {
@@ -134,36 +151,56 @@ const DayMealModal = ({
   }, [defaultMeals, day, week, isOpen]);
 
   // === Handlers ===
-  const getAllMeals = async (page = 1) => {
-    try {
-      setLoading(true);
-      const token = localStorage.getItem("token") || "";
+const getAllMeals = async () => {
+  try {
+    setLoading(true);
+    const token = localStorage.getItem("token") || "";
+
+    let page = 1;
+    const limit = 1000000 ; 
+    let totalPages = 1;
+    const collected = [];
+
+    do {
       const { data } = await axios.get(`${BaseUrl}/meals`, {
         headers: { Authorization: `Bearer ${token}` },
-        params: { page, limit: 20 },
+        params: { page, limit },
       });
 
       const apiMeals = data?.data?.meals ?? data?.meals ?? [];
-      const apiPagination =
-        data?.data?.pagination ?? data?.pagination ?? {
-          currentPage: page,
-          totalPages: 1,
-          totalItems: apiMeals.length,
-        };
+      collected.push(...apiMeals);
 
-      setMeals(apiMeals);
-      setPagination({
-        currentPage: Number(apiPagination.currentPage) || page,
-        totalPages: Number(apiPagination.totalPages) || 1,
-        totalItems: Number(apiPagination.totalItems) ?? apiMeals.length,
-      });
-    } catch (err) {
-      console.error(err);
-      toast.error("Failed to fetch meals");
-    } finally {
-      setLoading(false);
-    }
-  };
+      const apiPagination = data?.data?.pagination ?? data?.pagination ?? {};
+      const currentPage = Number(apiPagination.currentPage) || page;
+      const apiTotalPages = Number(apiPagination.totalPages);
+
+      if (apiTotalPages) {
+        totalPages = apiTotalPages;
+      } else {
+        if (apiMeals.length < limit) {
+          totalPages = currentPage;
+        }
+      }
+
+      page = currentPage + 1;
+    } while (page <= totalPages);
+
+    const uniqueMeals = Object.values(
+      collected.reduce((acc, m) => {
+        if (m && m._id) acc[m._id] = m;
+        return acc;
+      }, {})
+    );
+
+    setMeals(uniqueMeals);
+  } catch (err) {
+    console.error(err);
+    toast.error("Failed to fetch meals");
+  } finally {
+    setLoading(false);
+  }
+};
+
 
   const handleReplaceMeal = async (category, oldMealId, newMealId) => {
     if (!newMealId || oldMealId === newMealId) return;
@@ -260,11 +297,6 @@ const DayMealModal = ({
     onClose();
   };
 
-  const handlePageChange = (newPage) => {
-    if (newPage >= 1 && newPage <= pagination.totalPages) getAllMeals(newPage);
-  };
-
-  // فتح مودال التبديل
   const openReplaceModal = (category, meal) => {
     setMealToReplace({ category, meal });
     setIsReplaceOpen(true);
@@ -405,40 +437,6 @@ const DayMealModal = ({
                   ))}
                 </div>
               )}
-
-              {/* Pagination */}
-              {pagination.totalPages > 1 && (
-                <div className="flex justify-between items-center mt-6 px-2">
-                  <button
-                    onClick={() =>
-                      handlePageChange(pagination.currentPage - 1)
-                    }
-                    disabled={pagination.currentPage === 1}
-                    className="px-4 py-2 cursor-pointer bg-white border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2 transition-colors"
-                  >
-                    Previous
-                  </button>
-                  <span className="text-sm text-gray-600">
-                    Page{" "}
-                    <span className="font-medium">
-                      {pagination.currentPage}
-                    </span>{" "}
-                    of{" "}
-                    <span className="font-medium">
-                      {pagination.totalPages}
-                    </span>
-                  </span>
-                  <button
-                    onClick={() =>
-                      handlePageChange(pagination.currentPage + 1)
-                    }
-                    disabled={pagination.currentPage === pagination.totalPages}
-                    className="px-4 py-2 cursor-pointer bg-white border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2 transition-colors"
-                  >
-                    Next
-                  </button>
-                </div>
-              )}
             </div>
 
             {/* Footer */}
@@ -512,4 +510,4 @@ const DayMealModal = ({
   );
 };
 
-export default DayMealModal
+export default DayMealModal;

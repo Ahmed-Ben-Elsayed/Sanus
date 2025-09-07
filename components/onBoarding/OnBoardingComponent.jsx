@@ -32,6 +32,8 @@ export const OnBoardingComponent = ({ active, setactive }) => {
         "numberOfPages",
         JSON.stringify(formattedPages.length)
       );
+    console.log(response);
+    
     } catch (err) {
       console.error("Error fetching data:", err);
     } finally {
@@ -118,7 +120,7 @@ export const OnBoardingComponent = ({ active, setactive }) => {
                       <NewButton
                         onClick={() => {
                           setactive("Edit Boarding");
-                          navigate(`/Admin/${page.stepNumber || page.id}`);
+                          navigate(`/Admin/${page.stepNumber}`);
                         }}
                         className="!bg-transparent !text-[#44818E] !shadow-none !px-2 !py-1 hover:underline"
                         icon={null}
@@ -158,11 +160,11 @@ export const OnBoardingComponent = ({ active, setactive }) => {
                   {page.title}
                 </div>
                 <div className="text-xs text-gray-500 mt-1">{page.date}</div>
-                <div className="flex justify-start items-center gap-1">
+                <div className="flex justify-start items-center">
                   <NewButton
                     onClick={() => {
                       setactive("Edit Boarding");
-                      navigate(`/Admin/${page.stepNumber || page.id}`);
+                      navigate(`/Admin/${page.stepNumber}`);
                     }}
                     className="!bg-transparent !text-[#44818E] !shadow-none !px-2 !py-1 mt-3 hover:underline"
                     icon={FaRegEdit}

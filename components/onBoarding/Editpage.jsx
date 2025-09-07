@@ -117,7 +117,7 @@ const EditPage = ({ setCurrentSection }) => {
       {!loading && formData.pageid ? (
         <>
           <h2 className="text-xl font-semibold flex items-center gap-1 text-[#7A83A3] mb-6">
-            <IoIosArrowBack className="cursor-pointer" onClick={() => setCurrentSection("On Boarding")} />
+            <IoIosArrowBack className="cursor-pointer" onClick={() => {setCurrentSection("On Boarding") ,navigate(`/Admin`);}} />
             Edit Page {formData.pageTitle}
           </h2>
           <form onSubmit={handleSubmit} className="space-y-5">

@@ -151,9 +151,9 @@ const Meals = ({ active, setactive }) => {
   }, [pagination.totalPages, pagination.currentPage]);
 
   return (
+    <>
+    {loading ? <Loaderstart /> :
     <div className="shadow-sm rounded-xl w-full bg-white h-[calc(100vh-77px)] p-3 sm:p-4 flex flex-col">
-      {loading && <Loaderstart />}
-
       {/* Filters */}
       <div className="flex flex-col lg:flex-row justify-between items-end gap-4 mb-6">
         <div className="w-full flex flex-col lg:flex-row justify-between gap-4">
@@ -262,7 +262,7 @@ const Meals = ({ active, setactive }) => {
                           src="/edit.png"
                           alt="Edit"
                           className="w-3 h-4 sm:w-4 sm:h-5 object-contain"
-                        />
+                          />
                       </button>
                       <button
                         onClick={() => {
@@ -308,10 +308,10 @@ const Meals = ({ active, setactive }) => {
             disabled={pagination.currentPage === 1}
             className={`px-2 py-1 sm:px-3 sm:py-1 rounded-md cursor-pointer border text-xs sm:text-sm ${
               pagination.currentPage === 1
-                ? "text-gray-400 border-gray-200 cursor-not-allowed"
-                : "text-[#476171] border-gray-300 hover:bg-gray-50"
-            }`}
-            title="First"
+              ? "text-gray-400 border-gray-200 cursor-not-allowed"
+              : "text-[#476171] border-gray-300 hover:bg-gray-50"
+              }`}
+              title="First"
           >
             First
           </button>
@@ -321,8 +321,8 @@ const Meals = ({ active, setactive }) => {
             disabled={pagination.currentPage === 1}
             className={`px-2 py-1 sm:px-3 sm:py-1 cursor-pointer rounded-md border flex items-center gap-1 text-xs sm:text-sm ${
               pagination.currentPage === 1
-                ? "text-gray-400 border-gray-200 cursor-not-allowed"
-                : "text-[#476171] border-gray-300 hover:bg-gray-50"
+              ? "text-gray-400 border-gray-200 cursor-not-allowed"
+              : "text-[#476171] border-gray-300 hover:bg-gray-50"
             }`}
             title="Previous"
           >
@@ -340,7 +340,7 @@ const Meals = ({ active, setactive }) => {
               onClick={() => goToPage(num)}
               className={`px-2 py-1 sm:px-3 sm:py-1 cursor-pointer rounded-md border text-xs sm:text-sm ${
                 pagination.currentPage === num
-                  ? "bg-[#476171] text-white border-[#476171]"
+                ? "bg-[#476171] text-white border-[#476171]"
                   : "text-[#476171] border-gray-300 hover:bg-gray-50"
               }`}
             >
@@ -358,10 +358,10 @@ const Meals = ({ active, setactive }) => {
             disabled={pagination.currentPage === pagination.totalPages}
             className={`px-2 py-1 sm:px-3 sm:py-1 cursor-pointer rounded-md border flex items-center gap-1 text-xs sm:text-sm ${
               pagination.currentPage === pagination.totalPages
-                ? "text-gray-400 border-gray-200 cursor-not-allowed"
+              ? "text-gray-400 border-gray-200 cursor-not-allowed"
                 : "text-[#476171] border-gray-300  hover:bg-gray-50"
-            }`}
-            title="Next"
+                }`}
+              title="Next"
           >
             <span className="sm:mr-1">Next</span>
             <IoIosArrowForward className="hidden sm:block" />
@@ -374,9 +374,9 @@ const Meals = ({ active, setactive }) => {
               pagination.currentPage === pagination.totalPages
                 ? "text-gray-400 border-gray-200 cursor-not-allowed"
                 : "text-[#476171] border-gray-300 hover:bg-gray-50"
-            }`}
+              }`}
             title="Last"
-          >
+            >
             Last
           </button>
         </div>
@@ -390,10 +390,12 @@ const Meals = ({ active, setactive }) => {
         showActions
         confirmText="Delete"
         cancelText="Cancel"
-      >
+        >
         Are You Sure Delete This Meal?
       </Modal>
     </div>
+      }
+        </>
   );
 };
 

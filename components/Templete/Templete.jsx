@@ -172,7 +172,7 @@ const Templete = ({ active, setactive }) => {
                   });
                   setactive('Add New Templete')
                 }}
-                className="bg-[#476171] cursor-pointer text-white hover:bg-[#476171] flex items-center justify-center gap-2 py-[7px] px-5 rounded-lg w-full h-max"
+                className="bg-[#476171] cursor-pointer text-white hover:bg-[#476171] flex items-center justify-center gap-2 py-[8px] px-5 !mb-[1px] rounded-lg w-full h-max"
               >
                 <span className="hidden sm:inline">Add New</span>
                 <MdAdd className="text-xl" />

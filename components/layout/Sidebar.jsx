@@ -20,7 +20,7 @@ export const Sidebar = ({ currentSection, setCurrentSection }) => {
   const [isOpen, setIsOpen] = useState(false);
   const navigate = useNavigate();
 
-  const toggleSidebar = () => setIsOpen(!isOpen);
+  const toggleSidebar = () => setIsOpen(true);
 
   // قائمة الصفحات
   const pages = [
@@ -90,15 +90,13 @@ export const Sidebar = ({ currentSection, setCurrentSection }) => {
 
   return (
     <>
-      {/* زر الفتح/الإغلاق */}
       <button
-        className="fixed top-4 start-4 z-50 bg-[#476171] text-white p-2 rounded"
+        className={`!absolute top-4 start-4 z-50 ${isOpen ? " " : "bg-[#476171] " } text-white p-2 rounded`}
         onClick={toggleSidebar}
       >
-        {isOpen ? <FaTimes className="cursor-pointer" /> : <FaBars className="cursor-pointer" />}
+        {isOpen ? "" : <FaBars className="cursor-pointer" />}
       </button>
 
-      {/* القائمة الجانبية */}
       <div
         className={`bg-[#2A414F] sticky h-screen top-0 left-0 z-40 py-4 rounded-e-lg transition-all duration-500 ease-in-out
         ${isOpen ? "w-[70%] sm:w-[50%] overflow-auto md:w-[20%]" : "w-0 overflow-hidden"}`}
@@ -116,11 +114,10 @@ export const Sidebar = ({ currentSection, setCurrentSection }) => {
         </div>
       </div>
 
-      {/* خلفية لإغلاق القائمة في الموبايل */}
       {isOpen && (
         <div
           onClick={() => setIsOpen(false)}
-          className="fixed inset-0 bg-black/40 backdrop-blur-sm z-30 md:hidden"
+          className="fixed inset-0 bg-black/40 backdrop-blur-sm z-30"
         />
       )}
     </>

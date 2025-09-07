@@ -9,7 +9,7 @@ const ReusableSelector = ({
   options = [],
   className = "",
   custclassName = "",
-  disabled=false,
+  disabled = false,
   custclassNameArrow = "",
   onChangeAsObject = false,
   custclassNameItems = "",
@@ -17,11 +17,20 @@ const ReusableSelector = ({
   placeholder = "Select an option",
 }) => {
   const [open, setOpen] = useState(false);
+  const [search, setSearch] = useState("");
   const wrapperRef = useRef(null);
 
   const selectedOption = onChangeAsObject
     ? value
     : options.find((opt) => String(opt.value) === String(value));
+
+  // Filtered options
+  const filteredOptions =
+    options.length > 5
+      ? options.filter((opt) =>
+          opt.label.toLowerCase().includes(search.toLowerCase())
+        )
+      : options;
 
   useEffect(() => {
     const handleClickOutside = (event) => {
@@ -49,7 +58,7 @@ const ReusableSelector = ({
         className={`relative cursor-pointer border rounded-lg px-3 py-[8.5px] text-[11px] text-[#E8E1DC] bg-[#476171] ${custclassName} ${
           error ? "border-red-500" : "border-gray-300"
         }`}
-        onClick={() => disabled === false ?   setOpen((prev) => !prev) : ""}
+        onClick={() => (disabled === false ? setOpen((prev) => !prev) : "")}
         style={{
           minHeight: "42px",
           height: "42px",
@@ -81,10 +90,10 @@ const ReusableSelector = ({
 
         {open && (
           <div
-            className={`absolute top-full start-[-5px] md:w-[160px] w-full bg-white z-[9999] max-h-[300px] overflow-auto border mt-1 rounded-md  shadow-md ${custclassNameItems}`}
+            className={`absolute top-full start-[-5px] md:w-[160px] w-full bg-white z-[9999] max-h-[300px] overflow-auto border mt-1 rounded-md shadow-md ${custclassNameItems}`}
             style={{ position: "absolute", zIndex: 9999 }}
           >
-            {options.map((option, index) => (
+            {filteredOptions.map((option, index) => (
               <div
                 key={index}
                 onClick={(e) => {
@@ -93,6 +102,7 @@ const ReusableSelector = ({
                     ? onChange(option)
                     : onChange({ target: { name, value: option.value } });
                   setOpen(false);
+                  setSearch("");
                 }}
                 className="px-3 py-2 text-start hover:bg-gray-100 flex items-center gap-2 cursor-pointer text-gray-800"
               >
@@ -102,6 +112,13 @@ const ReusableSelector = ({
                 <span>{option.label}</span>
               </div>
             ))}
+
+            {/* If no results */}
+            {filteredOptions.length === 0 && (
+              <div className="px-3 py-2 text-gray-500 text-sm">
+                No results found
+              </div>
+            )}
           </div>
         )}
       </div>

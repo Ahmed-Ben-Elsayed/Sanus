@@ -15,7 +15,7 @@ const StyledWrapper = styled.div`
   left: 0;
   width: 100vw;
   height: 100vh;
-  background-color: rgba(255,255,255,0.8); /* يمكنك تغييره إلى  أو داكن */
+  background-color: rgba(255,255,255); /* يمكنك تغييره إلى  أو داكن */
   display: flex;
   align-items: center;
   justify-content: center;

@@ -287,6 +287,7 @@ const AddMeals = ({ active, setactive }) => {
             className="min-w-full mt-[4px]"
             custclassName="bg-white !text-[#476171]"
             custclassNameArrow="!text-[#476171]"
+            custclassNameItems="!min-w-full ms-1"
             onChange={(val) =>
               setMeal((prev) => ({
                 ...prev,
@@ -347,6 +348,7 @@ const AddMeals = ({ active, setactive }) => {
             ]}
             className="min-w-full mt-[4px]"
             custclassName="bg-white !text-[#476171]"
+            custclassNameItems="!min-w-full ms-1"
             custclassNameArrow="!text-[#476171]"
             onChange={(e) =>
               setMeal({

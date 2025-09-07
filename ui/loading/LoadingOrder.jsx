@@ -42,7 +42,7 @@ export default LoadingOrder;
 const Overlay = styled.div`
   position: fixed;
   inset: 0;
-  background-color: rgba(255, 255, 255, 0.85);
+  background-color: rgba(255, 255, 255);
   z-index: 9999;
   display: flex;
   justify-content: center;
