@@ -1,6 +1,10 @@
 {
   "rewrites": [
     {
+      "source": "/img-proxy/:path*",
+      "destination": "http://137.184.244.200:5050/:path*"
+    },
+    {
       "source": "/api/:path*",
       "destination": "http://137.184.244.200:5050/api/:path*"
     },
