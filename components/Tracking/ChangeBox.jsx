@@ -29,10 +29,11 @@ export const ChangeBox = ({ loading, setactive }) => {
               type="number"
               custclassName="h-[42px] w-full  pe-[10px!important]"
               placeholder="Boxes Number"
+              max={24}
             />
             <NewButton
               className="bg-[#4a6375] text-white w-[24%] h-[42px] rounded hover:bg-[#3a5160] transition duration-200 text-base"
-              onClick={() => { /* ضع هنا منطق الحفظ */ }}
+              // onClick={}
             >
               SAVE
             </NewButton>

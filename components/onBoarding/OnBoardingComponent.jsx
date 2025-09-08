@@ -11,7 +11,7 @@ export const OnBoardingComponent = ({ active, setactive }) => {
   const BASE_URL = import.meta.env.VITE_API_BASE_URL;
   const navigate = useNavigate();
   const [pages, setPages] = useState([]);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
   const [modal, setmodal] = useState(false)
   const token = localStorage.getItem("token");
   const [pageId, SetPageId] = useState("")

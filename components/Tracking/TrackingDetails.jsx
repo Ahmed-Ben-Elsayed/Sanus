@@ -40,9 +40,8 @@ export const TrackingDetails = ({ active, setactive }) => {
 
       setOrder(res.data.data.order);
 
-      // Process daily plans into weekData
-      if (res.data.data.order?.mealId?.dailyPlans) {
-        const daysData = res.data.data.order.mealId.dailyPlans.map((day) => ({
+      if (res.data.data.order?.MealPlan?.dailyPlans) {
+        const daysData = res.data.data.order.MealPlan.dailyPlans.map((day) => ({
           date: day.date,
           dayName: formatDateToDay(day.date),
           meals: day.meals,
@@ -78,11 +77,13 @@ export const TrackingDetails = ({ active, setactive }) => {
   };
 
   // === Meal Types ===
-  const mealTypes = ["breakfast", "lunch", "dinner", "snacks"];
+  const mealTypes = ["breakfast", "lunch", "dinner", "snacksAM", "snacksPM"];
 
   // === Export to Excel ===
   const exportToExcel = () => {
-    const sheetData = [["Day", "Meal Type", "Meal Name", "Start Time", "End Time"]];
+    const sheetData = [
+      ["Date", "Day", "Meal Type", "Meal Name" , "Protein", "Carbs", "Fats", "Start Time", "End Time"],
+    ];
 
     weeks[currentWeek].forEach((day) => {
       const date = new Date(day.date).toLocaleDateString("en-US", {
@@ -92,28 +93,57 @@ export const TrackingDetails = ({ active, setactive }) => {
       });
 
       mealTypes.forEach((mealType) => {
-        const meals = day.meals[mealType];
-        const firstMeal = meals?.length ? meals[0] : null;
-
-        sheetData.push([
-          date,
-          mealType.charAt(0).toUpperCase() + mealType.slice(1),
-          firstMeal?.meal?.name || "No Meal",
-          firstMeal?.timeWindow?.start || "-",
-          firstMeal?.timeWindow?.end || "-",
-        ]);
+        const meals = day.meals[mealType] || [];
+        if (meals.length > 0) {
+          meals.forEach((m) => {
+            sheetData.push([
+              new Date(day.date).toLocaleDateString("en-GB"), // Date
+              formatDateToDay(day.date), // Day name
+              mealType.charAt(0).toUpperCase() + mealType.slice(1), // Meal Type
+              m?.meal?.name || "Custom Meal", // Meal Name
+              m?.meal?.nutritionalValues?.protein || "-", // Protein
+              m?.meal?.nutritionalValues?.carbs || "-", // Carbs
+              m?.meal?.nutritionalValues?.fat || "-", // Fats
+              m?.timeWindow?.start || "-", // Start Time
+              m?.timeWindow?.end || "-", // End Time
+            ]);
+          });
+        } else {
+          sheetData.push([
+            new Date(day.date).toLocaleDateString("en-GB"),
+            formatDateToDay(day.date),
+            mealType.charAt(0).toUpperCase() + mealType.slice(1),
+            "No Meal",
+            "-", "-", "-", "-",
+            "-", "-",
+          ]);
+        }
       });
     });
 
     const worksheet = XLSX.utils.aoa_to_sheet(sheetData);
+
+    worksheet["!cols"] = [
+      { wch: 12 }, // Date
+      { wch: 12 }, // Day
+      { wch: 15 }, // Meal Type
+      { wch: 25 }, // Meal Name
+      { wch: 10 }, // Protein
+      { wch: 10 }, // Carbs
+      { wch: 10 }, // Fats
+      { wch: 12 }, // Start Time
+      { wch: 12 }, // End Time
+    ];
+
     const workbook = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(workbook, worksheet, "Meal Plan");
+    XLSX.utils.book_append_sheet(workbook, worksheet, `Week ${currentWeek + 1}`);
 
     const excelBuffer = XLSX.write(workbook, { bookType: "xlsx", type: "array" });
     const data = new Blob([excelBuffer], { type: "application/octet-stream" });
 
     saveAs(data, `MealPlan_Week${currentWeek + 1}.xlsx`);
   };
+
 
   // === Loading State ===
   if (isLoading) return <Loaderstart />;
@@ -235,19 +265,18 @@ export const TrackingDetails = ({ active, setactive }) => {
               <tbody>
                 {mealTypes.map((mealType, i) => (
                   <tr key={i}>
-                    <td className="border text-[#344767] border-[#B0B0B0] p-2 font-medium capitalize">
+                    <td className="border border-s-0 text-[#344767] border-[#B0B0B0] p-2 font-medium capitalize">
                       {mealType}
                     </td>
                     {weeks[currentWeek]?.map((day, dayIndex) => {
                       const meals = day.meals[mealType];
                       const firstMeal = meals?.length > 0 ? meals[0] : null;
-
                       return (
-                        <td key={dayIndex} className="border border-[#B0B0B0] p-2">
+                        <td key={dayIndex} className="border border-e-0 border-[#B0B0B0] p-2">
                           {firstMeal ? (
                             <div className="flex flex-col items-center">
                               <img
-                                src={"/food-7248455_1280.png"}
+                                src={firstMeal.meal?.imageUrl || "/food-7248455_1280.png"}
                                 className="w-14 h-14 object-cover rounded-full mb-1 shadow"
                               />
                               <span className="text-xs md:text-sm font-medium text-[#344767] text-center">
@@ -269,10 +298,10 @@ export const TrackingDetails = ({ active, setactive }) => {
       </div>
 
       {/* Delivery Information */}
-      <div className="w-full overflow-x-auto px-0">
-        <table className="w-full mt-6 min-w-[700px] text-sm border text-center">
+      <div className="w-full overflow-x-auto  px-0">
+        <table className="w-full mt-6 min-w-[700px] text-sm border-[#7B809A] border border-s-0 border-e-0   text-center">
           <thead>
-            <tr className="text-[#7B809A] font-bold">
+            <tr className="text-[#7B809A]  font-bold">
               <th className="px-2 md:px-4 py-2"></th>
               <th className="px-2 md:px-4 py-2">Location</th>
               <th className="px-2 md:px-4 py-2">Building</th>
@@ -303,7 +332,7 @@ export const TrackingDetails = ({ active, setactive }) => {
 
       {/* Payment Information */}
       <div className="w-full overflow-x-auto px-0">
-        <table className="w-full mt-6 min-w-[600px] text-sm border text-center">
+        <table className="w-full mt-6 min-w-[600px] border-[#7B809A] border-s-0 border-e-0 text-sm border text-center">
           <thead>
             <tr>
               <th className="px-4 py-2 text-[#7B809A] font-bold">Payment Method</th>

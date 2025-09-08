@@ -38,6 +38,8 @@ export const ChangeLocation = ({ active, setactive }) => {
       });
       const fetchedAddress = response?.data?.data?.order?.shippingAddress;
       setShippingAddress(fetchedAddress);
+      console.log(response.data.data.order.shippingAddress);
+      
     } catch (err) {
       console.error('Failed to fetch order:', err);
     } finally {
@@ -105,7 +107,8 @@ export const ChangeLocation = ({ active, setactive }) => {
         },
       });
       toast.success('Address updated successfully.');
-      // setactive('Tracking Subscription');
+      setactive('Tracking Subscription');
+      setLoading(false);
     } catch (err) {
       console.error('Error updating address:', err);
       toast.error('Failed to update address.');

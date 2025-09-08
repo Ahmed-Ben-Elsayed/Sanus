@@ -28,13 +28,11 @@ const dayMap = {
   fri: "friday",
 };
 
-// === Custom Select Component مع البحث ===
 const CustomSelect = ({ options, value, onChange, placeholder, className }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [search, setSearch] = useState("");
   const selectedOption = options.find((opt) => opt.value === value);
 
-  // فلترة حسب البحث
   const filteredOptions = options.filter((opt) =>
     opt.label.toLowerCase().includes(search.toLowerCase())
   );
@@ -55,10 +53,8 @@ const CustomSelect = ({ options, value, onChange, placeholder, className }) => {
           }`}
         />
       </button>
-
       {isOpen && (
-        <div className="absolute z-10 mt-1 w-full bg-white shadow-lg rounded-md border border-gray-200 max-h-72 overflow-auto">
-          {/* مربع البحث */}
+        <div className="absolute z-10 mt-1 h-[175px] w-full bg-white shadow-lg rounded-md border border-gray-200 max-h-72 overflow-auto">
           <div className="p-2 border-b">
             <input
               type="text"
@@ -68,8 +64,6 @@ const CustomSelect = ({ options, value, onChange, placeholder, className }) => {
               className="w-full px-3 py-2 border rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-[#476171]"
             />
           </div>
-
-          {/* الخيارات */}
           {filteredOptions.length > 0 ? (
             filteredOptions.map((option) => (
               <div
@@ -356,7 +350,7 @@ const getAllMeals = async () => {
                   {mealsCategories.map(({ key, label, icon }) => (
                     <div
                       key={key}
-                      className="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden"
+                      className="bg-white rounded-lg shadow-sm border border-gray-200 min-h-[300px] overflow-hidden"
                     >
                       {/* Category Header */}
                       <div className="flex items-center justify-between p-4 bg-[#f0f4f7] text-[#476171] rounded-t-lg">

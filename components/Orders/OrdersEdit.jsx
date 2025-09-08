@@ -28,7 +28,7 @@ export const OrdersEdit = ({ active, setactive }) => {
         },
       });
       setOrder(res.data.data.order);
-      
+      console.log(res.data.data.order);
     } catch (err) {
       console.log(err);
       toast.error("Error fetching order");
@@ -43,10 +43,10 @@ export const OrdersEdit = ({ active, setactive }) => {
     }
   }, [OrderId]);
 useEffect(() => {
-  if (order?.mealId?.dailyPlans) {
+  if (order?.MealPlan?.dailyPlans) {
     const today = new Date().toDateString();
 
-    const index = order.mealId.dailyPlans.findIndex((plan) => {
+    const index = order.MealPlan.dailyPlans.findIndex((plan) => {
       const planDate = new Date(plan.date).toDateString();
       return planDate === today;
     });
@@ -62,7 +62,7 @@ useEffect(() => {
   if (!order) return <div className="p-8 text-center">Order not found</div>;
 
   // Prepare date options for selector
-  const dateOptions = order?.mealId?.dailyPlans?.map((plan, index) => {
+  const dateOptions = order?.MealPlan?.dailyPlans?.map((plan, index) => {
     const date = new Date(plan.date);
     return {
       value: index,
@@ -76,7 +76,7 @@ useEffect(() => {
 
   // Get meals for the selected day
   const getMealsForDay = () => {
-    const selectedPlan = order.mealId?.dailyPlans?.[selectedDateIndex];
+    const selectedPlan = order.MealPlan?.dailyPlans?.[selectedDateIndex];
     if (!selectedPlan) return [];
     
     const meals = [];
@@ -125,7 +125,7 @@ useEffect(() => {
   
   // Get selected date for display
   const getSelectedDate = () => {
-    const selectedPlan = order.mealId?.dailyPlans?.[selectedDateIndex];
+    const selectedPlan = order.MealPlan?.dailyPlans?.[selectedDateIndex];
     if (!selectedPlan) return "";
     
     return new Date(selectedPlan.date).toLocaleDateString("en-US", {
@@ -145,9 +145,9 @@ useEffect(() => {
 const exportToExcel = () => {
   const data = meals.map((meal) => ({
     Type: meal.type,
-    Portion: meal.portion,
+    Portion: meal.meal?.nutritionalValues?.Portion || "",
     Name: meal.meal?.name || "",
-    Description: meal.meal?.["Describtion "] || "",
+    Description: meal.meal?.description || "",
   }));
 
   const ws = XLSX.utils.json_to_sheet(data);
@@ -166,7 +166,7 @@ const groupDailyPlansByWeek = (plans, daysInWeek = 7) => {
   return result;
 };
 
-const dailyPlans = order?.mealId?.dailyPlans || [];
+const dailyPlans = order?.MealPlan?.dailyPlans || [];
 const weeks = groupDailyPlansByWeek(dailyPlans);
 const currentWeek = Math.floor(selectedDateIndex / 7);
 
@@ -227,17 +227,17 @@ const currentWeek = Math.floor(selectedDateIndex / 7);
                   </td>
                   <td className="border border-[#B0B0B0] p-2">
                     <img
-                      src={"/food-7248455_1280.png"}
+                      src={ meal?.imageUrl || "/food-7248455_1280.png"}
                       alt="Meal"
                       className="w-13 md:w-20 mx-auto mb-1"
                     />
                     <span className="text-xs md:text-sm">{meal.meal.name}</span>
                   </td>
                   <td className="border text-[#344767] border-[#B0B0B0] p-2 font-medium">
-                    {meal.meal?.["Describtion "]}
+                    {meal.meal?.description}
                   </td>
                   <td className="border text-[#344767] border-[#B0B0B0] p-2 font-medium">
-                    {meal.meal?.nutritionalValues?.["Portion "] }
+                    {meal.meal?.nutritionalValues?.Portion }
                   </td>
                   <td className="border text-[#344767] border-[#B0B0B0] p-2 font-medium">
                     {meal.meal?.calories+"kcal"}
@@ -246,10 +246,10 @@ const currentWeek = Math.floor(selectedDateIndex / 7);
                     {meal.meal?.nutritionalValues?.protein+"g" }
                   </td>
                   <td className="border text-[#344767] border-[#B0B0B0] p-2 font-medium">
-                    {meal.meal?.nutritionalValues?.["Fat "] }
+                    {meal.meal?.nutritionalValues?.fat+"g" }
                   </td>
                   <td className="border text-[#344767] border-[#B0B0B0] p-2 font-medium">
-                    {meal.meal?.nutritionalValues?.Carbs+"g" }
+                    {meal.meal?.nutritionalValues?.carbs+"g" }
                   </td>
                 </tr>
               ))

@@ -1,8 +1,9 @@
 import React, { useState } from "react";
-import { FaBars, FaTimes } from "react-icons/fa";
+import { FaBars, FaClosedCaptioning, FaTimes } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
-
-// مكون عنصر القائمة الجانبية
+import { AiFillCloseCircle } from "react-icons/ai";
+import { SlClose } from "react-icons/sl";
+import { IoClose } from "react-icons/io5";
 const SidebarItem = ({ item, isActive, onClick }) => (
   <li
     onClick={onClick}
@@ -20,7 +21,7 @@ export const Sidebar = ({ currentSection, setCurrentSection }) => {
   const [isOpen, setIsOpen] = useState(false);
   const navigate = useNavigate();
 
-  const toggleSidebar = () => setIsOpen(true);
+  const toggleSidebar = () => setIsOpen(!isOpen);
 
   // قائمة الصفحات
   const pages = [
@@ -91,10 +92,10 @@ export const Sidebar = ({ currentSection, setCurrentSection }) => {
   return (
     <>
       <button
-        className={`!absolute top-4 start-4 z-50 ${isOpen ? " " : "bg-[#476171] " } text-white p-2 rounded`}
+        className={`!absolute top-4 start-4 z-50 ${isOpen ? " bg-[#476171]" : "bg-[#476171] " } text-white p-2 rounded`}
         onClick={toggleSidebar}
       >
-        {isOpen ? "" : <FaBars className="cursor-pointer" />}
+        {isOpen ? <IoClose   className="cursor-pointer text-xl text-[]"  /> : <FaBars className="cursor-pointer" />}
       </button>
 
       <div
@@ -115,9 +116,9 @@ export const Sidebar = ({ currentSection, setCurrentSection }) => {
       </div>
 
       {isOpen && (
-        <div
+        <div  
           onClick={() => setIsOpen(false)}
-          className="fixed inset-0 bg-black/40 backdrop-blur-sm z-30"
+          className="fixed inset-0 bg-black/40 backdrop-blur-sm md:opacity-0 z-[-1]"
         />
       )}
     </>

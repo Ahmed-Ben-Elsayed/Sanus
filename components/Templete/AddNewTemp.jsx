@@ -247,8 +247,8 @@ const AddNewTemp = ({ setactive }) => {
             <hr className="border-gray-300 my-3" />
 
             {/* Inputs */}
-            <div className="inputs grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-7 gap-3 mb-6">
-                <div className="xl:col-span-2">
+            <div className="inputs grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-3 mb-6">
+                <div className="xl:col-span-1 lg:col-span-2 sm:col-span-1">
                     <ReusableInput
                         label="Template Name"
                         value={Temp.Name}
@@ -283,9 +283,9 @@ const AddNewTemp = ({ setactive }) => {
                 <ReusableInput
                     type="number"
                     custclassName="!pe-1"
-                    label="Number of Meal1"
+                    label="Number of Meals "
                     value={Temp.lunchDinnerOptionsCount}
-                    placeholder="Meal1 count"
+                    placeholder="Meals count"
                     onChange={(e) => handleInputChange("lunchDinnerOptionsCount", e.target.value)}
                     min="1"
                 />
@@ -359,7 +359,7 @@ const AddNewTemp = ({ setactive }) => {
             <div className="mt-4 flex justify-end pb-4 md:pb-0">
                 <button
                     onClick={saveTemplate}
-                    className="bg-[#7A83A3] cursor-pointer text-white px-6 py-3 md:px-4 md:py-2 rounded-lg w-full sm:w-auto"
+                    className="bg-[#476171]  hover:bg-[#476171ee] cursor-pointer text-white px-6 py-3 md:px-10 md:py-2 rounded-lg w-full sm:w-auto"
                 >
                     {TempleteId ? "Update" : "Confirm"}
                 </button>

@@ -13,7 +13,7 @@ const EditPage = ({ setCurrentSection }) => {
   const BASE_URL = import.meta.env.VITE_API_BASE_URL;
   const { id } = useParams();
   const navigate = useNavigate();
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
   const [imagePreview, setImagePreview] = useState(null);
   const [formData, setFormData] = useState({
     pageid: "",
@@ -226,7 +226,7 @@ const EditPage = ({ setCurrentSection }) => {
             {/* Submit Button */}
             <NewButton
               type="submit"
-              className="w-[120px] h-9 text-sm bg-[#344767] hover:bg-[#344767d3] transition"
+              className="w-[120px] h-9 text-sm bg-[#344767]  hover:bg-[#2A3C47]  transition"
               disabled={loading}
             >
               {loading ? "Saving..." : "Save"}

@@ -11,12 +11,10 @@ import {
   IoIosArrowUp,
 } from "react-icons/io";
 import { PiExport } from "react-icons/pi";
-import Loading from "../../ui/loading/LoadingOrder";
 import { toast } from "react-toastify";
 import { TbDatabaseExclamation } from "react-icons/tb";
 import { useNavigate } from "react-router-dom";
 import Loaderstart from "../../ui/loading/Loaderstart";
-import NewButton from "../../ui/NewButton";
 
 export const Tracking = ({ active, setactive }) => {
   const [orders, setOrders] = useState([]);
@@ -82,7 +80,6 @@ export const Tracking = ({ active, setactive }) => {
         currentPage: 1,
       }));
       console.log(res);
-      
     } catch (err) {
       console.log(err);
     } finally {
@@ -109,7 +106,6 @@ export const Tracking = ({ active, setactive }) => {
       console.error("Failed to fetch packages:", err);
     }
   };
-
   const getPalans = async () => {
     try {
       const response = await axios.get(`${BASE_URL}/plans/`);
@@ -315,14 +311,15 @@ export const Tracking = ({ active, setactive }) => {
       : true;
 
     const matchesPackage = pkg ? packageId === pkg || pkg === "All" : true;
-    const paymentStatus = order?.paymentStatus === "paid";
+    const paymentStatus = order?.paymentStatus === "paid"   ;
+    const status = order?.status === "active"   ;
     const matchesFrom = from
       ? new Date(order.createdAt) >= new Date(from)
       : true;
     const matchesTo = to
       ? new Date(order.createdAt) <= new Date(to)
       : true;
-      const hasFutureMeals = order.mealId?.dailyPlans?.some(plan => {
+      const hasFutureMeals = order.MealPlan?.dailyPlans?.some(plan => {
     return new Date(plan.date) >= new Date().setHours(0, 0, 0, 0);
   });
 
@@ -331,6 +328,7 @@ export const Tracking = ({ active, setactive }) => {
       matchesPhone &&
       matchesPackage &&
       matchesFrom &&
+      status&&
       matchesTo && paymentStatus && hasFutureMeals
     );
   });

@@ -17,7 +17,7 @@ const Settings = ({setactive}) => {
             key={tab.id}
             onClick={() => { setActiveTab(tab.id) , setactive(`Settings/${tab.name}`)}}
             className={`cursor-pointer flex justify-center items-center h-40 rounded transition 
-              ${activeTab === tab.id ? "bg-[#2A3C47] text-white shadow-md" : "bg-gray-100 hover:bg-gray-200"}`}
+              ${activeTab === tab.id ? "bg-[#476171] hover:bg-[#2A3C47] text-white shadow-md" : "bg-gray-100 hover:bg-gray-200"}`}
           >
             {tab.name}
           </div>

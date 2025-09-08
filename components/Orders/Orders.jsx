@@ -60,7 +60,6 @@ export const Orders = ({ active, setactive }) => {
     const originalStyles = [];
     const elements = node.querySelectorAll("*");
 
-    // ✅ إزالة الألوان غير المدعومة
     elements.forEach((el) => {
       const computedStyle = window.getComputedStyle(el);
       ["color", "backgroundColor", "borderColor"].forEach((prop) => {
@@ -74,7 +73,6 @@ export const Orders = ({ active, setactive }) => {
       });
     });
 
-    // ✅ احفظ الأبعاد الدقيقة للكارت
     const width = node.offsetWidth;
     const height = node.offsetHeight;
 
@@ -291,17 +289,27 @@ export const Orders = ({ active, setactive }) => {
     }
   };
 
-  const getTodaysMealName = (order, mealType) => {
-    if (!order?.mealId?.dailyPlans) return null;
+ const getTodaysMealName = (order, mealType) => {
+  if (!order?.MealPlan?.dailyPlans) return null;
 
-    const today = new Date().toISOString().split('T')[0];
-    const todaysPlan = order.mealId.dailyPlans.find(
-      plan => plan?.date?.split('T')[0] === today
-    );
+  const today = new Date().toISOString().split("T")[0];
+  const todaysPlan = order.MealPlan.dailyPlans.find(
+    (plan) => plan?.date?.split("T")[0] === today
+  );
 
-    if (!todaysPlan?.meals?.[mealType]?.[0]?.meal) return null;
-    return todaysPlan.meals[mealType][0].meal.trim();
-  };
+  const mealEntry = todaysPlan?.meals?.[mealType]?.[0]?.meal;
+  if (!mealEntry) return null;
+
+  if (typeof mealEntry === "string") {
+    return mealEntry.trim();
+  }
+
+  if (typeof mealEntry === "object") {
+    return mealEntry.name  || JSON.stringify(mealEntry);
+  }
+
+  return String(mealEntry);
+};
 
   const handleMealClick = (description) => {
     setSelectedDescription(description || "No meal details available");
@@ -323,7 +331,6 @@ export const Orders = ({ active, setactive }) => {
 
   useEffect(() => {
     if (selectedmeal) {
-      // Any logic for when selectedmeal changes
     }
   }, [selectedmeal, typeMeal]);
 
@@ -331,13 +338,11 @@ export const Orders = ({ active, setactive }) => {
     const { orderNumber, phone, package: pkg, from, to } = filters;
     const packageId = order.items?.[0]?.package?._id || "";
 
-    // Convert dates for comparison
     const fromDate = from ? new Date(from) : null;
     const toDate = to ? new Date(to) : null;
     const orderDate = new Date(order.createdAt);
 
-    // ✅ نحدد بداية ونهاية الوجبات من dailyPlans
-    const dailyPlans = order?.mealId?.dailyPlans || [];
+    const dailyPlans = order?.MealPlan?.dailyPlans || [];
     const planDates = dailyPlans.map((p) => new Date(p.date));
     const minDate = planDates.length ? new Date(Math.min(...planDates)) : null;
     const maxDate = planDates.length ? new Date(Math.max(...planDates)) : null;
@@ -345,8 +350,11 @@ export const Orders = ({ active, setactive }) => {
     const today = new Date();
     today.setHours(0, 0, 0, 0);
 
-    const isInMealRange =
-      minDate && maxDate ? today >= minDate && today <= maxDate : false;
+    const hasTodayMeal = dailyPlans.some(plan => {
+      const planDate = new Date(plan.date);
+      planDate.setHours(0, 0, 0, 0);
+      return planDate.getTime() === today.getTime();
+    });
 
     const matchesOrderNumber = orderNumber
       ? String(startIndex + i + 1).includes(orderNumber)
@@ -370,7 +378,7 @@ export const Orders = ({ active, setactive }) => {
       matchesTo &&
       paymentStatus &&
       status &&
-      isInMealRange 
+      hasTodayMeal
     );
   });
 
@@ -597,11 +605,10 @@ export const Orders = ({ active, setactive }) => {
                       <button
                         onClick={() => goToPage(pagination.currentPage - 1)}
                         disabled={pagination.currentPage === 1}
-                        className={`flex items-center gap-1 cursor-pointer px-2 sm:px-3 py-1 rounded-md text-xs sm:text-sm ${
-                          pagination.currentPage === 1
+                        className={`flex items-center gap-1 cursor-pointer px-2 sm:px-3 py-1 rounded-md text-xs sm:text-sm ${pagination.currentPage === 1
                             ? "text-gray-400 cursor-not-allowed"
                             : "text-[#476171] hover:bg-gray-100"
-                        }`}
+                          }`}
                       >
                         <IoIosArrowBack className="text-[#476171]" />
                         Previous
@@ -629,11 +636,10 @@ export const Orders = ({ active, setactive }) => {
                             <button
                               key={pageNum}
                               onClick={() => goToPage(pageNum)}
-                              className={`px-2 sm:px-3 py-1 rounded-md text-xs sm:text-sm ${
-                                pagination.currentPage === pageNum
+                              className={`px-2 sm:px-3 py-1 rounded-md text-xs sm:text-sm ${pagination.currentPage === pageNum
                                   ? "bg-[#476171] cursor-pointer text-white"
                                   : "hover:bg-gray-100 cursor-pointer"
-                              }`}
+                                }`}
                             >
                               {pageNum}
                             </button>
@@ -646,11 +652,10 @@ export const Orders = ({ active, setactive }) => {
                         disabled={
                           pagination.currentPage === pagination.totalPages
                         }
-                        className={`flex items-center gap-1 px-2 sm:px-3 py-1 rounded-md text-xs sm:text-sm ${
-                          pagination.currentPage === pagination.totalPages
+                        className={`flex items-center gap-1 px-2 sm:px-3 py-1 rounded-md text-xs sm:text-sm ${pagination.currentPage === pagination.totalPages
                             ? "text-gray-400 cursor-not-allowed"
                             : "text-[#476171] hover:bg-gray-100 cursor-pointer"
-                        }`}
+                          }`}
                       >
                         Next
                         <IoIosArrowForward className="text-[#476171]" />
@@ -686,7 +691,7 @@ export const Orders = ({ active, setactive }) => {
           setShowModalsticker(true)
         }} children={"Get Sticker"} > Get Sticker </NewButton>
       </Modal>
-      
+
       <Modal open={showModalsticker} onClose={() => setShowModalsticker(false)}>
         <div className="p-4 text-[#000000] text-sm max-w-full overflow-auto">
           <h2 className="text-lg font-semibold mb-3">Order Details</h2>
@@ -725,7 +730,7 @@ export const Orders = ({ active, setactive }) => {
           )}
         </div>
       </Modal>
-      
+
       <Modal
         open={showModalorder}
         onClose={() => { setShowModalorder(false), setShowModalsticker(false) }}

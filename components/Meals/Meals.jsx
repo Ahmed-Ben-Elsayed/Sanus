@@ -14,7 +14,7 @@ const Meals = ({ active, setactive }) => {
   const navigate = useNavigate();
 
   const [meals, setMeals] = useState([]);
-  const [loading, setloading] = useState(false);
+  const [loading, setloading] = useState(true);
   const [mealId, setMealID] = useState();
   const [model, setmodel] = useState(false);
 
@@ -193,10 +193,7 @@ const Meals = ({ active, setactive }) => {
               className="h-[42px] w-full text-xs sm:text-sm"
               custclassName="h-[42px]"
             />
-
-         
           </div>
-
           <div className="flex items-end mt-2 sm:mt-[28px] gap-2">
             <NewButton
               onClick={() => {
@@ -210,9 +207,7 @@ const Meals = ({ active, setactive }) => {
           </div>
         </div>
       </div>
-
       <hr className="border-none block h-[1.5px] mb-5 bg-gray-200" />
-
       {/* Table */}
       <div className="overflow-x-auto flex-1">
         <div className="min-w-[600px] sm:min-w-full">

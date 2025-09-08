@@ -2,21 +2,23 @@ import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { IoIosArrowBack } from "react-icons/io";
 import { useLocation } from "react-router-dom";
-import Loading from "../../ui/loading/LoadingOrder"; // تأكد من وجود هذا المكون
 import LoadingOrder from "../../ui/loading/LoadingOrder";
 import { toast } from "react-toastify";
 import NewButton from "../../ui/NewButton";
 
 export const AddNote = ({ active, setactive }) => {
   const [note, setNote] = useState("");
-  const [loading, setLoading] = useState(false);
+  const [loadingFetch, setLoadingFetch] = useState(false);
+  const [loadingSave, setLoadingSave] = useState(false);
+
   const BASE_URL = import.meta.env.VITE_API_BASE_URL;
   const location = useLocation();
-  const orderIdNote = location.state.orderId;
+  const orderIdNote = location?.state?.orderId;
 
+  // ✅ fetch order note
   const getbyid = async (id) => {
     try {
-      setLoading(true);
+      setLoadingFetch(true);
       const res = await axios.get(`${BASE_URL}/orders/${id}`, {
         headers: {
           Authorization: `Bearer ${localStorage.getItem("token")}`,
@@ -24,8 +26,9 @@ export const AddNote = ({ active, setactive }) => {
       });
       setNote(res?.data?.data?.order?.notes || "");
     } catch (err) {
+      toast.error("Failed to load note");
     } finally {
-      setLoading(false);
+      setLoadingFetch(false);
     }
   };
 
@@ -35,32 +38,36 @@ export const AddNote = ({ active, setactive }) => {
     }
   }, [orderIdNote]);
 
+  // ✅ save note
   const handleSave = async () => {
-    if (note.trim()) {
-      try {
-        setLoading(true);
-        await axios.patch(
-          `${BASE_URL}/orders/${orderIdNote}/updateNote`,
-          { notes: note },
-          {
-            headers: {
-              Authorization: `Bearer ${localStorage.getItem("token")}`,
-            },
-          }
-        );
-        toast.success("Note saved successfully");
-      } catch (err) {
-        console.log(err);
-        toast.error("Failed to save note");
-      } finally {
-        setLoading(false);
-      }
-    } else {
+    if (!note.trim()) {
       alert("Please enter a note before saving.");
+      return;
+    }
+
+    try {
+      setLoadingSave(true);
+      await axios.patch(
+        `${BASE_URL}/orders/${orderIdNote}/updateNote`,
+        { notes: note },
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        }
+      );
+      toast.success("Note saved successfully");
+      setLoadingSave(false);
+      setactive("Restaurant Orders");
+    } catch (err) {
+      console.log(err);
+      toast.error("Failed to save note");
+    } finally {
+      setLoadingSave(false);
     }
   };
 
-  if (loading) return <LoadingOrder />;
+  if (loadingFetch) return <LoadingOrder />;
 
   return (
     <div className="w-full min-h-[100%] mx-auto p-6 bg-white rounded-lg shadow">
@@ -93,9 +100,9 @@ export const AddNote = ({ active, setactive }) => {
       <NewButton
         onClick={handleSave}
         className="bg-[#4a6375] cursor-pointer text-white px-8 py-1 rounded-md hover:bg-[#3a5160] transition duration-200 disabled:opacity-50"
-        disabled={loading}
+        disabled={loadingSave}
       >
-        {loading ? "Saving..." : "SAVE"}
+        {loadingSave ? "Saving..." : "SAVE"}
       </NewButton>
     </div>
   );
