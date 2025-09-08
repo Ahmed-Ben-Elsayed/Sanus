@@ -9,8 +9,12 @@ import CreatePage from "../components/onBoarding/CreatePage";
 import DashBoard from "../components/layout/DashBoard";
 
 function App() {
+  if (process.env.NODE_ENV === "production") {
+  console.log = () => {};
+  console.warn = () => {};
+  console.error = () => {};
+}
   const { i18n } = useTranslation();
-
   useEffect(() => {
     document.body.dir = i18n.language === "ar" ? "rtl" : "ltr";
   }, [i18n.language]);
