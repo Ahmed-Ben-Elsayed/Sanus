@@ -158,7 +158,7 @@ export const Plan = ({ setactive }) => {
                             </tr>
                         </thead>
                         <tbody>
-                            {filteredPlans.length > 0 ? (
+                            {filteredPlans?.length > 0 ? (
                                 filteredPlans.map((plan, index) => (
                                     <tr key={index} className="border-b border-b-gray-300 text-[#344767]">
                                         <td className="p-3">{plan?.name}</td>
