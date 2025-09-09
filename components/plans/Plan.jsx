@@ -71,7 +71,7 @@ export const Plan = ({ setactive }) => {
         }
     }
 
-    const filteredPlans = plans.filter((plan) => {
+    const filteredPlans = plans?.filter((plan) => {
         const nameMatch = filters.planname
             ? plan.name.toLowerCase().includes(filters.planname.toLowerCase())
             : true;
