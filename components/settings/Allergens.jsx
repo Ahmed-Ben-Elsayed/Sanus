@@ -164,7 +164,7 @@ const Allergens = ({ setactive }) => {
                             {filteredAllergens.length > 0 ? (
                                 filteredAllergens.map((allergen, index) => (
                                     <tr key={index} className="border-b border-b-gray-300 text-[#344767]">
-                                        <td className="p-3">{allergen?.name} / {allergen?.nameAr} </td>
+                                        <td className="p-3">{allergen?.name} </td>
                                         <td className="p-3">
                                             {allergen?.createdAt
                                                 ? new Date(allergen?.createdAt).toLocaleDateString()

@@ -36,7 +36,7 @@ const AddIngredients = ({ setactive }) => {
       setLoading(true);
       await axios.post(
         `${BaseURL}/allergensIngredients/ingredients`,
-        { name: ingredientName, nameAr: ingredientNameAr },
+        { name: ingredientName, nameAr: "soon" },
         {
           headers: {
             Authorization: `Bearer ${localStorage.getItem("token")}`,
@@ -69,7 +69,7 @@ const AddIngredients = ({ setactive }) => {
       setLoading(true);
       await axios.put(
         `${BaseURL}/allergensIngredients/ingredients/${ingredientId}`,
-        { name: ingredientName, nameAr: ingredientNameAr },
+        { name: ingredientName, nameAr: "soon" },
         {
           headers: {
             Authorization: `Bearer ${localStorage.getItem("token")}`,
@@ -80,6 +80,7 @@ const AddIngredients = ({ setactive }) => {
       setIngredientNameAr("");
       toast.success("Ingredient Updated Successfully");
       navigate("/Admin", { state: {} });
+      setactive("Settings/Ingredients");
     } catch (err) {
       console.log(err);
       toast.error(
@@ -90,7 +91,6 @@ const AddIngredients = ({ setactive }) => {
     }
   };
 
-  // Get ingredient by id
   const getIngredient = async () => {
     try {
       setLoading(true);
@@ -143,7 +143,7 @@ const AddIngredients = ({ setactive }) => {
         {/* Input Section */}
         <div className="md:w-[85%] w-full mx-auto md:mx-0">
           <div className="flex flex-col md:flex-row gap-3 items-start md:items-center">
-            <div className="w-full md:w-1/2">
+            <div className="w-full md:w-4/15">
               <ReusableInput
                 label="Ingredient Name"
                 value={ingredientName}
@@ -151,14 +151,14 @@ const AddIngredients = ({ setactive }) => {
                 placeholder="Enter ingredient name"
               />
             </div>
-            <div className="w-full md:w-1/2">
+            {/* <div className="w-full md:w-1/2">
               <ReusableInput
                 label="Ingredient Name ( Ar )"
                 value={ingredientNameAr}
                 onChange={(e) => setIngredientNameAr(e.target.value)}
                 placeholder="Enter ingredient Ar name"
               />
-            </div>
+            </div> */}
           </div>
 
           {/* Buttons */}

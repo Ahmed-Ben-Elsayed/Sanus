@@ -150,7 +150,7 @@ const Ingredients = ({ setactive }) => {
                             {filteredIngredients.length > 0 ? (
                                 filteredIngredients.map((ing, index) => (
                                     <tr key={index} className="border-b border-b-gray-300 text-[#344767]">
-                                        <td className="p-3">{ing?.name} / {ing?.nameAr} </td>
+                                        <td className="p-3">{ing?.name} </td>
                                         <td className="p-3">
                                             {ing?.createdAt
                                                 ? new Date(ing?.createdAt).toLocaleDateString()

@@ -36,7 +36,7 @@ const AddAllergens = ({ setactive }) => {
       setLoading(true);
       await axios.post(
         `${BaseURL}/allergensIngredients/allergens`,
-        { name: allergenName, nameAr: allergenNameAr },
+        { name: allergenName, nameAr: "soon" },
         {
           headers: {
             Authorization: `Bearer ${localStorage.getItem("token")}`,
@@ -69,7 +69,7 @@ const AddAllergens = ({ setactive }) => {
       setLoading(true);
       await axios.put(
         `${BaseURL}/allergensIngredients/allergens/${allergenId}`,
-        { name: allergenName, nameAr: allergenNameAr },
+        { name: allergenName, nameAr: "soon" },
         {
           headers: {
             Authorization: `Bearer ${localStorage.getItem("token")}`,
@@ -144,7 +144,7 @@ const AddAllergens = ({ setactive }) => {
         {/* Input Section */}
         <div className="md:w-[85%] w-full mx-auto md:mx-0">
           <div className="flex flex-col md:flex-row gap-3 items-start md:items-center">
-            <div className="w-full md:w-1/2">
+            <div className="w-full md:w-4/15">
               <ReusableInput
                 label="Allergen Name"
                 value={allergenName}
@@ -152,14 +152,14 @@ const AddAllergens = ({ setactive }) => {
                 placeholder="Enter allergen name"
               />
             </div>
-            <div className="w-full md:w-1/2">
+            {/* <div className="w-full md:w-1/2">
               <ReusableInput
                 label="Allergen Name ( Ar )"
                 value={allergenNameAr}
                 onChange={(e) => setAllergenNameAr(e.target.value)}
                 placeholder="Enter allergen Ar name"
               />
-            </div>
+            </div> */}
           </div>
 
           {/* Buttons */}
