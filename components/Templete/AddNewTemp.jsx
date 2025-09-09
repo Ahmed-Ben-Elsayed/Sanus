@@ -336,7 +336,7 @@ const AddNewTemp = ({ setactive }) => {
                                     <div
                                         key={`${weekName}-${day}`}
                                         onClick={() => openModal(day, weekName)}
-                                        className={`h-16 md:h-20 flex items-center justify-center rounded-lg border border-gray-300 cursor-pointer text-xs md:text-sm p-1 text-center ${day === "FRI"
+                                        className={`h-16 md:h-23  flex items-center justify-center rounded-lg border border-gray-300 cursor-pointer text-xs md:text-sm p-1   text-center ${day === "FRI"
                                             ? "bg-gray-400 text-white"
                                             : "hover:bg-gray-50"
                                             }`}
@@ -344,8 +344,16 @@ const AddNewTemp = ({ setactive }) => {
                                         {day === "FRI"
                                             ? ""
                                             : saved && (saved.breakfast.length > 0 || saved.lunch.length > 0 || saved.dinner.length > 0 || saved.snacksAM.length > 0 || saved.snacksPM.length > 0)
-                                                ? "✅ Saved"
-                                                : "Select"
+                                                ? <div className="flex font-semibold flex-col items-center gap-1 ">
+                                                    {`${weekName}-${day}`}
+                                                    <p className="font-normal text-gray-400 ">View Details</p>
+                                                    <img className="w-6" alt="" srcSet="/saved.png" />
+                                                </div>
+                                                : 
+                                                <div className="flex font-semibold flex-col items-center gap-1 ">
+                                                    <p className="font-normal text-gray-400 ">More Details</p>
+                                                    <p className="font-semibold text-[#476171] mt-1 bg-gray-200 px-3 rounded-2xl ">Select</p>
+                                                </div>
                                         }
                                     </div>
                                 );
