@@ -2,18 +2,18 @@ import React, { useEffect, useState } from "react";
 import ReusableInput from "../../ui/ReuseInput";
 import { IoIosArrowBack } from "react-icons/io";
 import ReusableSelector from "../../ui/ReusableSelector";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import axios from "axios";
 import Loading from "../../ui/loading/LoadingOrder";
 import { toast } from "react-toastify";
 import NewButton from "../../ui/NewButton";
 
-export const TimeSlot = ({ active, setactive }) => {
+export const TimeSlot = ({ active }) => {
   const location = useLocation();
   const timeslotId = location?.state?.orderId;
 
   const BASE_URL = import.meta.env.VITE_API_BASE_URL;
-
+  const navigate = useNavigate()
   const [selectedTime, setSelectedTime] = useState(null);
   const [times, setTimes] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -84,6 +84,7 @@ export const TimeSlot = ({ active, setactive }) => {
       );
 
       toast.success("Time slot updated successfully");
+      navigate("/Admin/Tracking_Subscription", { state: {} });
     } catch (err) {
       toast.error(err?.data?.response?.message);
       console.log(err );
@@ -113,7 +114,7 @@ export const TimeSlot = ({ active, setactive }) => {
               <IoIosArrowBack
                 className="cursor-pointer"
                 size={22}
-                onClick={() => setactive("Tracking Subscription")}
+                onClick={() =>{  navigate("/Admin/Tracking_Subscription",{state:{}})}}
               />
               Time Slot
             </h2>

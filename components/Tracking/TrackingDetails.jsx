@@ -3,7 +3,7 @@ import { IoIosArrowBack } from "react-icons/io";
 import { MdOutlineFileDownload } from "react-icons/md";
 import axios from "axios";
 import { toast } from "react-toastify";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import * as XLSX from "xlsx";
 import { saveAs } from "file-saver";
 
@@ -17,12 +17,12 @@ const formatDateToDay = (dateString) => {
   return days[date.getDay()];
 };
 
-export const TrackingDetails = ({ active, setactive }) => {
+export const TrackingDetails = () => {
   const [order, setOrder] = useState(null);
   const [weekData, setWeekData] = useState([]);
   const [currentWeek, setCurrentWeek] = useState(0);
   const [isLoading, setIsLoading] = useState(true);
-
+  const navigate = useNavigate()
   const BASE_URL = import.meta.env.VITE_API_BASE_URL;
   const location = useLocation();
   const OrderId = location.state?.orderId;
@@ -162,7 +162,7 @@ export const TrackingDetails = ({ active, setactive }) => {
           We couldn't find the subscription details for this order.
         </p>
         <button
-          onClick={() => setactive("Tracking Subscription")}
+          onClick={() => navigate("/Admin/Tracking_Subscription",{state:{}})}
           className="mt-4 px-4 py-2 bg-[#476171] text-white rounded-md hover:bg-[#3a515e]"
         >
           Back to Subscriptions
@@ -179,7 +179,7 @@ export const TrackingDetails = ({ active, setactive }) => {
         <h2 className="text-lg md:text-xl font-semibold flex items-center gap-1 text-[#7A83A3]">
           <IoIosArrowBack
             className="cursor-pointer"
-            onClick={() => setactive("Tracking Subscription")}
+            onClick={() =>{  navigate("/Admin/Tracking_Subscription",{state:{}}) }}
           />
           Subscription Details
         </h2>

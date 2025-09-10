@@ -3,9 +3,9 @@ import axios from 'axios';
 import Loading from '../../ui/loading/LoadingOrder';
 import { toast } from 'react-toastify';
 import { IoIosArrowBack } from 'react-icons/io';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 
-export const AddtimeSlot = ({ onCreated, active, setactive }) => {
+export const AddtimeSlot = ({ onCreated }) => {
   const BASE_URL = import.meta.env.VITE_API_BASE_URL;
   const [fromTime, setFromTime] = useState("");
   const [toTime, setToTime] = useState("");
@@ -14,7 +14,7 @@ export const AddtimeSlot = ({ onCreated, active, setactive }) => {
   const TimeslotId = location?.state?.TimeslotId || null;
 
   const isEditMode = Boolean(TimeslotId);
-
+  const navigate = useNavigate();
   // تحويل من "8am-11am" إلى {from: "08:00", to: "11:00"}
   const parseTimeSlot = (slot) => {
     const [from, to] = slot.split("-");
@@ -113,8 +113,7 @@ export const AddtimeSlot = ({ onCreated, active, setactive }) => {
 
       setFromTime("");
       setToTime("");
-      setactive("Timeslot");
-
+      navigate("/Admin/Timeslot");
       if (onCreated) onCreated();
     } catch (err) {
       toast.error(err?.response?.data?.message || "Something went wrong");
@@ -124,11 +123,11 @@ export const AddtimeSlot = ({ onCreated, active, setactive }) => {
   };
 
   return (
-    <div className="w-full h-[100%] p-6 bg-white rounded-lg shadow">
+    <div className="w-full h-full md:min-h-[calc(100vh-77px)] p-6 bg-white rounded-lg shadow">
       <h2 className="text-lg my-[20px] mt-[-10px] md:text-xl font-semibold flex items-center gap-1 text-[#7A83A3]">
         <IoIosArrowBack
           className="cursor-pointer"
-          onClick={() => setactive("Timeslot")}
+          onClick={() =>{   navigate("/Admin/Timeslot")}}
         />
         {isEditMode ? "Edit Time Slot" : "Add Time Slot"}
       </h2>

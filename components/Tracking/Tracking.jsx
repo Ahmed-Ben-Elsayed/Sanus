@@ -16,10 +16,10 @@ import { TbDatabaseExclamation } from "react-icons/tb";
 import { useNavigate } from "react-router-dom";
 import Loaderstart from "../../ui/loading/Loaderstart";
 
-export const Tracking = ({ active, setactive }) => {
+export const Tracking = ({}) => {
   const [orders, setOrders] = useState([]);
   const [expandedOrderIndex, setExpandedOrderIndex] = useState(null);
-  const [loading, setloading] = useState(false);
+  const [loading, setloading] = useState(true);
   const navigate = useNavigate();
   const [orderId, setOrderId] = useState();
 
@@ -41,8 +41,8 @@ export const Tracking = ({ active, setactive }) => {
 
   useEffect(() => {
     const calculatePageSize = () => {
-      const tableHeight = window.innerHeight - 300; 
-      const rowHeight = 50; 
+      const tableHeight = window.innerHeight - 300;
+      const rowHeight = 50;
       const calculatedPageSize = Math.floor(tableHeight / rowHeight);
 
       setPagination((prev) => ({
@@ -51,8 +51,8 @@ export const Tracking = ({ active, setactive }) => {
       }));
     };
 
-    calculatePageSize(); 
-    window.addEventListener("resize", calculatePageSize); 
+    calculatePageSize();
+    window.addEventListener("resize", calculatePageSize);
 
     return () => window.removeEventListener("resize", calculatePageSize);
   }, []);
@@ -99,7 +99,7 @@ export const Tracking = ({ active, setactive }) => {
         })),
       ];
       console.log(response);
-      
+
       console.log("Formatted packages:", formatted);
       setPackages(formatted);
     } catch (err) {
@@ -122,7 +122,7 @@ export const Tracking = ({ active, setactive }) => {
       console.error("Failed to fetch packages:", err);
     }
   };
-  
+
   useEffect(() => {
     getOrders();
     getPackages();
@@ -182,7 +182,7 @@ export const Tracking = ({ active, setactive }) => {
 
     XLSX.writeFile(workbook, "Delivery_Details.xlsx");
   };
-  
+
   const exportToExcel = () => {
     if (!orders || orders.length === 0) {
       console.warn("No orders available to export.");
@@ -288,7 +288,7 @@ export const Tracking = ({ active, setactive }) => {
       setloading(false);
     }
   };
-  
+
   const handleFilterChange = (e) => {
     const { name, value } = e.target;
     setFilters((prev) => ({
@@ -296,7 +296,7 @@ export const Tracking = ({ active, setactive }) => {
       [e.target.name]: e.target.value,
     }));
   };
-  
+
   const filteredOrders = orders.filter((order, i) => {
     const { orderNumber, phone, package: pkg, from, to } = filters;
 
@@ -311,24 +311,24 @@ export const Tracking = ({ active, setactive }) => {
       : true;
 
     const matchesPackage = pkg ? packageId === pkg || pkg === "All" : true;
-    const paymentStatus = order?.paymentStatus === "paid"   ;
-    const status = order?.status === "active"   ;
+    const paymentStatus = order?.paymentStatus === "paid";
+    const status = order?.status === "active";
     const matchesFrom = from
       ? new Date(order.createdAt) >= new Date(from)
       : true;
     const matchesTo = to
       ? new Date(order.createdAt) <= new Date(to)
       : true;
-      const hasFutureMeals = order.MealPlan?.dailyPlans?.some(plan => {
-    return new Date(plan.date) >= new Date().setHours(0, 0, 0, 0);
-  });
+    const hasFutureMeals = order.MealPlan?.dailyPlans?.some(plan => {
+      return new Date(plan.date) >= new Date().setHours(0, 0, 0, 0);
+    });
 
     return (
       matchesOrderNumber &&
       matchesPhone &&
       matchesPackage &&
       matchesFrom &&
-      status&&
+      status &&
       matchesTo && paymentStatus && hasFutureMeals
     );
   });
@@ -341,7 +341,7 @@ export const Tracking = ({ active, setactive }) => {
       ...prev,
       totalItems,
       totalPages,
-      currentPage: 1, 
+      currentPage: 1,
     }));
   }, [filters, orders]);
 
@@ -354,7 +354,7 @@ export const Tracking = ({ active, setactive }) => {
     <>
       {loading && <Loaderstart />}
       <div className="shadow-sm rounded-xl w-full bg-white min-h-[calc(100vh-77px)] p-2 sm:p-4 flex flex-col">
-        {/* Filter Section */}  
+        {/* Filter Section */}
         <div className="flex flex-col md:flex-row justify-between items-end gap-2 sm:gap-4 mb-4 sm:mb-6">
           {/* Filters */}
           <div className="grid grid-cols-1 xs:grid-cols-2 sm:grid-cols-3 md:flex flex-wrap gap-10 md:gap-3 w-full md:w-auto">
@@ -411,7 +411,7 @@ export const Tracking = ({ active, setactive }) => {
                 className="text-[#476171] text-xs py-2 h-[42px] w-full"
               />
             </div>
-        </div>
+          </div>
           <div className="flex mt-10  flex-col gap-2 flex-shrink-0 md:mt-[-10px!important] min-w-[130px] w-full md:w-auto">
             <ReusableSelector
               placeholder={
@@ -431,12 +431,12 @@ export const Tracking = ({ active, setactive }) => {
               custclassNameItems="w-[100%!important] start-[0px!important]"
             />
           </div>
-          </div>
+        </div>
         <hr className="border-none block h-[1.5px] mt-[-10px] mb-3 sm:mb-5 bg-gray-200" />
-        
+
         {/* Table Section */}
         <div className="flex-grow overflow-x-auto rounded-lg">
-          {orders.length > 0 ? (
+          {paginatedOrders?.length > 0 ? (
             <div className="overflow-x-auto md:h-[100%] min-h-[50vh] ">
               <table className="min-w-full divide-y   divide-gray-200">
                 <thead className="bg-gray-100">
@@ -470,158 +470,153 @@ export const Tracking = ({ active, setactive }) => {
                     </th>
                   </tr>
                 </thead>
-             <tbody className="bg-white divide-y divide-gray-200">
-  {paginatedOrders.length === 0 ? (
-    <tr>
-      <td
-        colSpan="9"
-        className="px-2 sm:px-4 py-6 text-center text-gray-500 text-sm"
-      >
-        No orders found
-      </td>
-    </tr>
-  ) : (
-    paginatedOrders.map((order, i) => (
-      <React.Fragment key={i}>
-        <tr className="hover:bg-gray-50">
-          <td className="px-2 sm:px-4 py-3 whitespace-nowrap">
-            <div className="flex text-xs sm:text-sm items-center gap-2">
-              <button
-                onClick={() =>
-                  setExpandedOrderIndex(expandedOrderIndex === i ? null : i)
-                }
-                className="focus:outline-none"
-              >
-                {expandedOrderIndex === i ? (
-                  <IoIosArrowUp className="text-gray-600 text-sm cursor-pointer" />
-                ) : (
-                  <IoIosArrowDown className="text-gray-600 text-sm cursor-pointer" />
-                )}
-              </button>
-              <span className="text-[#344767] text-xs sm:text-sm font-medium">
-                # {startIndex + i + 1}
-              </span>
-            </div>
-          </td>
-          <td className="px-2 sm:px-4 py-3 text-[#344767] text-xs sm:text-sm">
-            {order?.user?.name}
-          </td>
-          <td className="px-2 sm:px-4 py-3 text-[#344767] text-xs sm:text-sm">
-            {order?.shippingAddress?.phone}
-          </td>
-          <td className="px-2 sm:px-4 py-3 text-[#344767] text-xs sm:text-sm">
-            {order?.items?.[0]?.package?.name}
-          </td>
-          <td className="px-2 sm:px-4 py-3 text-[#344767] text-xs sm:text-sm">
-            {new Date(order.createdAt).toLocaleDateString("en-GB")}
-          </td>
-          <td className="px-2 sm:px-4 py-3 text-[#344767] text-xs sm:text-sm">
-            {order?.totalAmount}
-          </td>
-          <td className="px-2 sm:px-4 py-3 text-gray-700 text-xs sm:text-sm">
-            {order?.time_slot?.value}
-          </td>
-          <td className="px-2 sm:px-4 py-3">
-            <ReusableSelector
-              name="status"
-              custclassNameArrow="text-[#344767!important]"
-              custclassNameItems="w-[100%!important] start-[0px!important]"
-              value={order?.status}
-              onChange={(e) => {
-                if (e.target.value !== "scheduled_freeze")
-                  handleStatusChange(e.target.value, order._id);
-                if (e.target.value === "scheduled_freeze") {
-                  setactive("Freeze");
-                  navigate("/Admin", {
-                    state: { orderId: order?._id || order?.id },
-                  });
-                }
-              }}
-              options={[
-                { label: "Active", value: "active" },
-                { label: "Freeze", value: "scheduled_freeze" },
-                { label: "Cancel", value: "cancel" },
-                { label: "Expired", value: "expired" },
-              ]}
-              className="py-[0px!important]"
-              custclassName={`rounded-md text-xs w-[90%] min-h-[2px!important] h-[30px!important] flex items-center ${getStatusClass(
-                order?.status
-              )}`}
-            />
-          </td>
-          <td className="px-2 sm:px-4 py-3">
-            <ReusableSelector
-              name="action"
-              custclassNameItems="start-[-59px!important] w-[170px!important]"
-              placeholder="Actions"
-              onChange={(e) => {
-                if (e.target.value === "info") {
-                  setactive("Tracking Subscription Edit");
-                  navigate("/Admin", {
-                    state: { orderId: order?._id || order?.id },
-                  });
-                } else if (e.target.value === "note") {
-                  setactive("Add Note Tracking");
-                } else if (e.target.value === "scheduled_freeze") {
-                  setactive("Freeze");
-                  navigate("/Admin", {
-                    state: { orderId: order?._id || order?.id },
-                  });
-                } else if (e.target.value === "Add") {
-                  setactive("Add SupSubscription");
-                } else if (e.target.value === "time slot") {
-                  setactive("Time Slot");
-                  navigate("/Admin", {
-                    state: { orderId: order?._id || order?.id },
-                  });
-                } else if (e.target.value === "Chang") {
-                  setactive("Change Box");
-                  console.log(active);
-                } else if (e.target.value === "ChangL") {
-                  setactive("Change Location");
-                  navigate("/Admin", {
-                    state: { orderId: order?._id || order?.id },
-                  });
-                }
-              }}
-              options={[
-                { value: "info", label: "More Details", icon: "/Icons.png" },
-                { value: "time slot", label: "Change Time Slot", icon: "/Timer.png" },
-                { value: "Chang", label: "Change Box", icon: "/Box.png" },
-                { value: "ChangL", label: "Change Location", icon: "/Location.png" },
-              ]}
-              custclassName="rounded-md text-xs w-[90%] min-h-[2px!important] h-[30px!important] flex items-center"
-            />
-          </td>
-        </tr>
-        {expandedOrderIndex === i && (
-          <tr>
-            <td colSpan="9" className="px-2 sm:px-4 py-3 bg-gray-50">
-              <div className="grid grid-cols-1 text-xs sm:text-sm">
-                <div>
-                  <p className="text-gray-600 gap-2 justify-center flex flex-col">
-                    {order?.history?.map((msg, index) => (
-                      <div className="w-full flex items-center gap-1" key={index}>
-                        <MdArrowForward /> {msg?.message}
-                      </div>
-                    ))}
-                  </p>
-                </div>
-              </div>
-            </td>
-          </tr>
-        )}
-      </React.Fragment>
-    ))
-  )}
-</tbody>
+                <tbody className="bg-white divide-y divide-gray-200">
+                  {paginatedOrders.length === 0 ? (
+                    <tr>
+                      <td
+                        colSpan="9"
+                        className="px-2 sm:px-4 py-6 text-cente r text-gray-500 text-sm"
+                      >
+                        No orders found
+                      </td>
+                    </tr>
+                  ) : (
+                    paginatedOrders.map((order, i) => (
+                      <React.Fragment key={i}>
+                        <tr className="hover:bg-gray-50">
+                          <td className="px-2 sm:px-4 py-3 whitespace-nowrap">
+                            <div className="flex text-xs sm:text-sm items-center gap-2">
+                              <button
+                                onClick={() =>
+                                  setExpandedOrderIndex(expandedOrderIndex === i ? null : i)
+                                }
+                                className="focus:outline-none"
+                              >
+                                {expandedOrderIndex === i ? (
+                                  <IoIosArrowUp className="text-gray-600 text-sm cursor-pointer" />
+                                ) : (
+                                  <IoIosArrowDown className="text-gray-600 text-sm cursor-pointer" />
+                                )}
+                              </button>
+                              <span className="text-[#344767] text-xs sm:text-sm font-medium">
+                                # {startIndex + i + 1}
+                              </span>
+                            </div>
+                          </td>
+                          <td className="px-2 sm:px-4 py-3 text-[#344767] text-xs sm:text-sm">
+                            {order?.user?.name}
+                          </td>
+                          <td className="px-2 sm:px-4 py-3 text-[#344767] text-xs sm:text-sm">
+                            {order?.shippingAddress?.phone}
+                          </td>
+                          <td className="px-2 sm:px-4 py-3 text-[#344767] text-xs sm:text-sm">
+                            {order?.items?.[0]?.package?.name}
+                          </td>
+                          <td className="px-2 sm:px-4 py-3 text-[#344767] text-xs sm:text-sm">
+                            {new Date(order.createdAt).toLocaleDateString("en-GB")}
+                          </td>
+                          <td className="px-2 sm:px-4 py-3 text-[#344767] text-xs sm:text-sm">
+                            {order?.totalAmount}
+                          </td>
+                          <td className="px-2 sm:px-4 py-3 text-gray-700 text-xs sm:text-sm">
+                            {order?.time_slot?.value}
+                          </td>
+                          <td className="px-2 sm:px-4 py-3">
+                            <ReusableSelector
+                              name="status"
+                              custclassNameArrow="text-[#344767!important]"
+                              custclassNameItems="w-[100%!important] start-[0px!important]"
+                              value={order?.status}
+                              onChange={(e) => {
+                                if (e.target.value !== "scheduled_freeze")
+                                  handleStatusChange(e.target.value, order._id);
+                                if (e.target.value === "scheduled_freeze") {
+                                  navigate("/Admin/Tracking_Subscription/scheduled_freeze", {
+                                    state: { orderId: order?._id || order?.id },
+                                  });
+                                }
+                              }}
+                              options={[
+                                { label: "Active", value: "active" },
+                                { label: "Freeze", value: "scheduled_freeze" },
+                                { label: "Cancel", value: "cancel" },
+                                { label: "Expired", value: "expired" },
+                              ]}
+                              className="py-[0px!important]"
+                              custclassName={`rounded-md text-xs w-[90%] min-h-[2px!important] h-[30px!important] flex items-center ${getStatusClass(
+                                order?.status
+                              )}`}
+                            />
+                          </td>
+                          <td className="px-2 sm:px-4 py-3">
+                            <ReusableSelector
+                              name="action"
+                              custclassNameItems="start-[-59px!important] w-[170px!important]"
+                              placeholder="Actions"
+                              onChange={(e) => {
+                                if (e.target.value === "info") {
+                                  navigate("/Admin/Tracking_Subscription/moreinfo", {
+                                    state: { orderId: order?._id || order?.id },
+                                  });
+                                } else if (e.target.value === "note") {
+                                } else if (e.target.value === "scheduled_freeze") {
+                                  navigate("/Admin/Tracking_Subscription/scheduled_freeze", {
+                                    state: { orderId: order?._id || order?.id },
+                                  });
+                                } else if (e.target.value === "Add") {
+                                  navigate("/Admin/Tracking_Subscription/Add");
+                                } else if (e.target.value === "time slot") {
+                                  navigate("/Admin/Tracking_Subscription/time_slot", {
+                                    state: { orderId: order?._id || order?.id },
+                                  });
+                                } else if (e.target.value === "Chang") {
+                                  navigate("/Admin/Tracking_Subscription/Change_Box", {
+                                    state: { orderId: order?._id || order?.id },
+                                  });
+                                } else if (e.target.value === "ChangL") {
+                                  navigate("/Admin/Tracking_Subscription/Change_Location", {
+                                    state: { orderId: order?._id || order?.id },
+                                  });
+                                }
+                              }}
+                              options={[
+                                { value: "info", label: "More Details", icon: "/Icons.png" },
+                                { value: "time slot", label: "Change Time Slot", icon: "/Timer.png" },
+                                { value: "Chang", label: "Change Box", icon: "/Box.png" },
+                                { value: "ChangL", label: "Change Location", icon: "/Location.png" },
+                              ]}
+                              custclassName="rounded-md text-xs w-[90%] min-h-[2px!important] h-[30px!important] flex items-center"
+                            />
+                          </td>
+                        </tr>
+                        {expandedOrderIndex === i && (
+                          <tr>
+                            <td colSpan="9" className="px-2 sm:px-4 py-3 bg-gray-50">
+                              <div className="grid grid-cols-1 text-xs sm:text-sm">
+                                <div>
+                                  <p className="text-gray-600 gap-2 justify-center flex flex-col">
+                                    {order?.history?.map((msg, index) => (
+                                      <div className="w-full flex items-center gap-1" key={index}>
+                                        <MdArrowForward /> {msg?.message}
+                                      </div>
+                                    ))}
+                                  </p>
+                                </div>
+                              </div>
+                            </td>
+                          </tr>
+                        )}
+                      </React.Fragment>
+                    ))
+                  )}
+                </tbody>
 
               </table>
             </div>
           ) : (
-            <div className="flex flex-col items-center justify-center h-full py-12">
+            <div className="flex flex-col items-center justify-center h-[60vh] py-12">
               <TbDatabaseExclamation className="text-5xl text-gray-400 mb-4" />
-              <p className="text-xl text-gray-600">No Orders Found</p>
+              <p className="text-xl text-gray-600">No Tracking Subscription Found</p>
               <p className="text-gray-500 mt-2">Try adjusting your filters</p>
             </div>
           )}
@@ -645,11 +640,10 @@ export const Tracking = ({ active, setactive }) => {
               <button
                 onClick={() => goToPage(pagination.currentPage - 1)}
                 disabled={pagination.currentPage === 1}
-                className={`px-2 sm:px-3 py-1 rounded-md text-xs sm:text-sm ${
-                  pagination.currentPage === 1
+                className={`px-2 sm:px-3 py-1 rounded-md text-xs sm:text-sm ${pagination.currentPage === 1
                     ? "text-gray-400 cursor-not-allowed"
                     : "text-gray-700 hover:bg-gray-100"
-                }`}
+                  }`}
               >
                 <IoIosArrowBack className="inline mr-1" />
                 Previous
@@ -677,11 +671,10 @@ export const Tracking = ({ active, setactive }) => {
                     <button
                       key={pageNum}
                       onClick={() => goToPage(pageNum)}
-                      className={`px-2 sm:px-3 py-1 rounded-md text-xs sm:text-sm ${
-                        pagination.currentPage === pageNum
+                      className={`px-2 sm:px-3 py-1 rounded-md text-xs sm:text-sm ${pagination.currentPage === pageNum
                           ? "bg-gray-700 text-white"
                           : "text-gray-700 hover:bg-gray-100"
-                      }`}
+                        }`}
                     >
                       {pageNum}
                     </button>
@@ -692,11 +685,10 @@ export const Tracking = ({ active, setactive }) => {
               <button
                 onClick={() => goToPage(pagination.currentPage + 1)}
                 disabled={pagination.currentPage === pagination.totalPages}
-                className={`px-2 sm:px-3 py-1 rounded-md text-xs sm:text-sm ${
-                  pagination.currentPage === pagination.totalPages
+                className={`px-2 sm:px-3 py-1 rounded-md text-xs sm:text-sm ${pagination.currentPage === pagination.totalPages
                     ? "text-gray-400 cursor-not-allowed"
                     : "text-gray-700 hover:bg-gray-100"
-                }`}
+                  }`}
               >
                 Next
                 <IoIosArrowForward className="inline ml-1" />

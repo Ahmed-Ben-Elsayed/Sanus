@@ -25,7 +25,7 @@ import jsPDF from "jspdf";
 export const Orders = ({ active, setactive }) => {
   const [orders, setOrders] = useState([]);
   const [expandedOrderIndex, setExpandedOrderIndex] = useState(null);
-  const [loading, setloading] = useState(false);
+  const [loading, setloading] = useState(true);
   const navigate = useNavigate();
   const [showModal, setShowModal] = useState(false);
   const [showModalorder, setShowModalorder] = useState(false);
@@ -402,7 +402,7 @@ export const Orders = ({ active, setactive }) => {
   return (
     <>
       {loading && <LoadingOrder />}
-      <div className="shadow-sm rounded-xl w-full bg-[#FFFFFF] min-h-[calc(100vh-77px)] flex flex-col p-2 sm:p-4">
+      <div className="shadow-sm rounded-xl w-full bg-[#FFFFFF] h-full md:h-[calc(100vh-77px)] flex flex-col p-2 sm:p-4">
         {/* Filter Section */}
         <div className="flex flex-col md:flex-row md:items-end gap-2 sm:gap-4 justify-between mb-4 sm:mb-6">
           <div className="grid grid-cols-1 xs:grid-cols-2 md:grid-cols-3 lg:flex flex-wrap gap-10  md:gap-2 w-full">
@@ -481,7 +481,7 @@ export const Orders = ({ active, setactive }) => {
 
         {/* Orders Table */}
         <div className="flex-1 min-h-0 flex flex-col">
-          {orders.length > 0 ? (
+          {paginatedOrders?.length > 0 ? (
             <>
               <div
                 className="overflow-x-auto flex-grow border border-gray-200 rounded-lg"
@@ -549,13 +549,11 @@ export const Orders = ({ active, setactive }) => {
                               placeholder="Action"
                               onChange={(e) => {
                                 if (e.target.value === "info") {
-                                  setactive("Orders Edit");
-                                  navigate("/Admin", {
+                                  navigate("/Admin/Restaurant_Orders/moreinfo", {
                                     state: { orderId: order?._id },
                                   });
                                 } else if (e.target.value === "note") {
-                                  setactive("Add Note");
-                                  navigate(`/Admin`, {
+                                  navigate(`/Admin/Restaurant_Orders/add_note`, {
                                     state: { orderId: order?._id }
                                   });
                                 } else if (e.target.value === "sticker") {
@@ -666,7 +664,7 @@ export const Orders = ({ active, setactive }) => {
               )}
             </>
           ) : (
-            <div className="h-full flex justify-center items-center text-[#476171] flex-col gap-3 text-lg sm:text-2xl text-center p-4">
+            <div className="h-[60vh] flex justify-center items-center text-[#476171] flex-col gap-3 text-lg sm:text-2xl text-center p-4">
               <TbDatabaseExclamation className="text-4xl sm:text-5xl" />
               <p>No Orders Found</p>
               <p className="text-sm sm:text-base text-gray-500 mt-2">

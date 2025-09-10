@@ -2,21 +2,20 @@ import axios from 'axios';
 import React, { useEffect, useState } from 'react';
 import { MdAdd } from 'react-icons/md';
 import ReusableInput from '../../ui/ReuseInput';
-import { IoIosCloseCircle } from 'react-icons/io';
 import Modal from '../../ui/Modal';
 import Loaderstart from '../../ui/loading/Loaderstart';
-import { FaCheckCircle } from 'react-icons/fa';
+import { TbDatabaseExclamation } from 'react-icons/tb';
 import { toast } from 'react-toastify';
 import { useNavigate } from 'react-router-dom';
 
-const Templete = ({ active, setactive }) => {
+const Templete = () => {
   const [currentTime, setCurrentTime] = useState(new Date().toLocaleTimeString());
   const [Templetes, setTempletes] = useState([]);
   const [TempleteId, setTempletesId] = useState(null);
   const [AllTempletes, setAllTempletes] = useState([]);
   const [plane, setPlane] = useState([]);
   const [modal, setModal] = useState(false);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
   const navigate = useNavigate()
   useEffect(() => {
     const interval = setInterval(() => {
@@ -136,7 +135,7 @@ const Templete = ({ active, setactive }) => {
   return (
     <>
       {loading && <Loaderstart />}
-      <div className="shadow-sm rounded-xl w-full bg-white h-[calc(100vh-77px)] p-4 flex flex-col">
+      <div className="shadow-sm rounded-xl w-full bg-white h-full md:min-h-[calc(100vh-77px)] p-4 flex flex-col">
         {/* Filter Section */}
         <div className="flex flex-col  lg:flex-row justify-between items-stretch lg:items-end gap-4 mb-6">
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 w-full lg:w-full">
@@ -167,10 +166,9 @@ const Templete = ({ active, setactive }) => {
             <div className="flex  !items-end">
               <button
                 onClick={() => {
-                  navigate('/Admin', {
-                    state: { }
+                  navigate('/Admin/Templates/Add', {
+                    state: {}
                   });
-                  setactive('Add New Templete')
                 }}
                 className="bg-[#476171] cursor-pointer text-white hover:bg-[#476171] flex items-center justify-center gap-2 py-[8px] px-5 !mb-[1px] rounded-lg w-full h-max"
               >
@@ -182,64 +180,68 @@ const Templete = ({ active, setactive }) => {
         </div>
         <hr className="border-none block h-[1.5px] mb-5 bg-gray-200" />
         {/* Table */}
-        <div className="overflow-x-auto flex-1">
-          <table className="min-w-full text-sm">
-            <thead>
-              <tr className="text-left bg-gray-100 text-[#7B809A]">
-                <th className="p-2 lg:p-3">Templete Name</th>
-                <th className="p-2 lg:p-3 hidden sm:table-cell">Start Date</th>
-                <th className="p-2 lg:p-3 hidden md:table-cell">Num Of Meal</th>
-                <th className="p-2 lg:p-3">Breakfast</th>
-                <th className="p-2 lg:p-3 hidden lg:table-cell">Snack AM</th>
-                <th className="p-2 lg:p-3 hidden lg:table-cell">Snack PM</th>
-                <th className="p-2 lg:p-3">Actions</th>
-              </tr>
-            </thead>
-            <tbody>
-              {Templetes?.length > 0 ? (
-                Templetes.map((tpl, index) => (
-                  <tr key={index} className="border-b border-b-gray-300 text-[#344767]">
-                    <td className="p-2 lg:p-3 font-medium">{tpl?.name}</td>
-                    <td className="p-2 lg:p-3 hidden sm:table-cell">{new Date(tpl?.startDate).toLocaleDateString()}</td>
-                    <td className="p-2 lg:p-3 hidden md:table-cell">{"" || '5'}</td>
-                    <td className="p-2 lg:p-3">{tpl?.breakfastOptionsCount}</td>
-                    <td className="p-2 lg:p-3 hidden lg:table-cell">{tpl?.snacksAMOptionsCount}</td>
-                    <td className="p-2 lg:p-3 hidden lg:table-cell">{tpl?.snacksPMOptionsCount}</td>
-                    <td className="p-2 lg:p-3">
-                      <div className="flex items-center justify-start gap-1">
-                        <button 
-                          onClick={() => {
-                            navigate('/Admin', {
-                              state: { TempleteId: tpl?._id || tpl.id }
-                            });
-                            setactive('Add New Templete')
-                          }}
-                          className="p-1 rounded cursor-pointer hover:bg-gray-100 transition-colors"
-                          aria-label="Edit template"
-                        >
-                          <img alt="Edit" srcSet="/edit.png" className='w-4 h-4 md:w-4 md:h-4' />
-                        </button>
-                        <button
-                          onClick={() => { setModal(true); setTempletesId(tpl?._id) }}
-                          className="p-1 rounded cursor-pointer hover:bg-gray-100 transition-colors"
-                          aria-label="Delete template"
-                        >
-                          <img alt="Delete" srcSet="/Delete.png" className='w-4 h-4 md:w-5 md:h-5' />
-                        </button>
-                      </div>
-                    </td>
-                  </tr>
-                ))
-              ) : (
-                <tr>
-                  <td colSpan="7" className="p-4 text-center text-gray-500">
-                    No templates found
-                  </td>
+        {Templetes?.length > 0 ? (
+          <div className="overflow-x-auto flex-1">
+            <table className="min-w-full text-sm">
+              <thead>
+                <tr className="text-left bg-gray-100 text-[#7B809A]">
+                  <th className="p-2 lg:p-3">Templete Name</th>
+                  <th className="p-2 lg:p-3 hidden sm:table-cell">Start Date</th>
+                  <th className="p-2 lg:p-3 hidden md:table-cell">Num Of Meal</th>
+                  <th className="p-2 lg:p-3">Breakfast</th>
+                  <th className="p-2 lg:p-3 hidden lg:table-cell">Snack AM</th>
+                  <th className="p-2 lg:p-3 hidden lg:table-cell">Snack PM</th>
+                  <th className="p-2 lg:p-3">Actions</th>
                 </tr>
-              )}
-            </tbody>
-          </table>
-        </div>
+              </thead>
+              <tbody>
+                {
+
+                  Templetes.map((tpl, index) => (
+                    <tr key={index} className="border-b border-b-gray-300 text-[#344767]">
+                      <td className="p-2 lg:p-3 font-medium">{tpl?.name}</td>
+                      <td className="p-2 lg:p-3 hidden sm:table-cell">{new Date(tpl?.startDate).toLocaleDateString()}</td>
+                      <td className="p-2 lg:p-3 hidden md:table-cell">{"" || '5'}</td>
+                      <td className="p-2 lg:p-3">{tpl?.breakfastOptionsCount}</td>
+                      <td className="p-2 lg:p-3 hidden lg:table-cell">{tpl?.snacksAMOptionsCount}</td>
+                      <td className="p-2 lg:p-3 hidden lg:table-cell">{tpl?.snacksPMOptionsCount}</td>
+                      <td className="p-2 lg:p-3">
+                        <div className="flex items-center justify-start gap-1">
+                          <button
+                            onClick={() => {
+                              navigate('/Admin/Templates/Edit', {
+                                state: { TempleteId: tpl?._id || tpl.id }
+                              });
+                            }}
+                            className="p-1 rounded cursor-pointer hover:bg-gray-100 transition-colors"
+                            aria-label="Edit template"
+                          >
+                            <img alt="Edit" srcSet="/edit.png" className='w-4 h-4 md:w-4 md:h-4' />
+                          </button>
+                          <button
+                            onClick={() => { setModal(true); setTempletesId(tpl?._id) }}
+                            className="p-1 rounded cursor-pointer hover:bg-gray-100 transition-colors"
+                            aria-label="Delete template"
+                          >
+                            <img alt="Delete" srcSet="/Delete.png" className='w-4 h-4 md:w-5 md:h-5' />
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                  ))
+                }
+              </tbody>
+            </table>
+          </div>
+        ) : (
+          <div className="h-[60vh] flex justify-center items-center text-[#476171] flex-col gap-3 text-lg sm:text-2xl text-center p-4">
+            <TbDatabaseExclamation className="text-4xl sm:text-5xl" />
+            <p>No templetes Found</p>
+            <p className="text-sm sm:text-base text-gray-500 mt-2">
+              Try adjusting your filters or create a new templete
+            </p>
+          </div>
+        )}
         {modal &&
           <Modal
             onClose={() => setModal(false)}

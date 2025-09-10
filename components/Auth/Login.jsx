@@ -14,7 +14,7 @@ const Login = () => {
   useEffect(() => {
     const token = localStorage.getItem("token");
     if (token) {
-      navigate("/Admin");
+      navigate("/Admin/On_Boarding");
     } else {
       setCheckingAuth(false);
     }
@@ -51,7 +51,7 @@ const Login = () => {
       toast.success("Login successful");
       localStorage.setItem("token", res.data.token);
       localStorage.setItem("user", JSON.stringify(res.data.data.user));
-      navigate("/Admin");
+      navigate("/Admin/On_Boarding");
     } catch (err) {
       toast.error(err.response?.data?.message);
     } finally {

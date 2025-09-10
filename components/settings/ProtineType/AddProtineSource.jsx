@@ -7,7 +7,7 @@ import Loaderstart from "../../../ui/loading/Loaderstart";
 import ReusableInput from "../../../ui/ReuseInput";
 import NewButton from "../../../ui/NewButton";
 
-const ProteinSource = ({ setactive }) => {
+const ProteinSource = () => {
   const [proteinName, setProteinName] = useState("");
   const [loading, setLoading] = useState(false);
   const [proteinId, setProteinId] = useState(null);
@@ -44,8 +44,7 @@ const ProteinSource = ({ setactive }) => {
       );
       setProteinName("");
       toast.success("Protein Source Created Successfully");
-      navigate("/Admin", { state: {} });
-      setactive("Settings/Protein Sources");
+      navigate("/Admin/Settings/ProteinSources", { state: {} });
     } catch (err) {
       console.log(err);
       toast.error(
@@ -76,8 +75,7 @@ const ProteinSource = ({ setactive }) => {
       );
       setProteinName("");
       toast.success("Protein Source Updated Successfully");
-      navigate("/Admin", { state: {} });
-      setactive("Settings/Protein Sources");
+      navigate("/Admin/Settings/ProteinSources", { state: {} });
     } catch (err) {
       console.log(err);
       toast.error(
@@ -127,8 +125,7 @@ const ProteinSource = ({ setactive }) => {
           <IoIosArrowBack
             className="cursor-pointer text-gray-400 text-xl"
             onClick={() => {
-              navigate("/Admin", { state: {} });
-              setactive("Settings/Protein Sources");
+              navigate("/Admin/Settings/ProteinSources", { state: {} });
             }}
           />
           <h2 className="text-lg md:text-xl font-semibold text-[#7A83A3]">
@@ -162,8 +159,7 @@ const ProteinSource = ({ setactive }) => {
             </NewButton>
             <NewButton
               onClick={() => {
-                navigate("/Admin", { state: {} });
-                setactive("Settings/Protein Sources");
+                navigate("/Admin/Settings/ProteinSources", { state: {} });
               }}
               className="bg-gray-200 hover:bg-gray-300 text-[#476171] px-6 py-2 rounded w-full md:w-auto"
             >

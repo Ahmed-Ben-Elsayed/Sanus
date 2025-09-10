@@ -7,7 +7,7 @@ import ReusableSelector from '../../ui/ReusableSelector';
 import Loaderstart from '../../ui/loading/Loaderstart';
 import { useLocation, useNavigate } from 'react-router-dom';
 
-export const AddNewpkg = ({ setactive }) => {
+export const AddNewpkg = () => {
   const location = useLocation();
   const pkgId = location.state?.PkgId;
 
@@ -152,8 +152,7 @@ export const AddNewpkg = ({ setactive }) => {
           toast.success('Package saved successfully');
         }
 
-        setactive('Packges');
-        navigate('/Admin', { state: {} });
+        navigate('/Admin/Packages', { state: {} });
       });
     } catch (err) {
       console.error(err);
@@ -170,9 +169,7 @@ export const AddNewpkg = ({ setactive }) => {
           <IoIosArrowBack
             className="cursor-pointer text-gray-400 text-xl"
             onClick={() => {
-              setactive('Packges'), navigate('/Admin', {
-                state: {}
-              })
+              navigate('/Admin/Packages', { state: {} });
             }}
           />
           <h2 className="text-lg md:text-xl font-semibold text-[#7A83A3]">Add New Package</h2>
@@ -189,21 +186,6 @@ export const AddNewpkg = ({ setactive }) => {
               value={form.name}
               onChange={handleChange}
             />
-            {/* <div className='w-full mt-[3px]'>
-              <ReusableSelector
-                name="Type"
-                label="Type of Packege"
-                options={[
-                  { label: 'Weight Loss', value: 'weight_loss' },
-                  { label: 'Muscle Gain', value: 'muscle_gain' },
-                  { label: 'Maintenance', value: 'maintenance' },
-                  { label: 'Other', value: 'other' },
-                ]} placeholder="ex.Weight Loss"
-                value={form.type}
-                onChange={(e) => setForm({ ...form, type: e.target.value })}
-                custclassName='!min-w-full bg-white !text-[#3B505C] !w-full' custclassNameArrow='!text-[#3B505C]' className='min-w-full'
-              />
-            </div> */}
             <ReusableInput
               name="numberOfDays"
               label="Num of Box"

@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import ReusableInput from "../../ui/ReuseInput";
 import { IoIosArrowBack } from "react-icons/io";
 import axios from "axios";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import Loaderstart from "../../ui/loading/Loaderstart";
 
 const InfoSection = ({ title, fields }) => (
@@ -22,13 +22,13 @@ const InfoSection = ({ title, fields }) => (
   </div>
 );
 
-export const CustomerInfo = ({ setCurrentSection }) => {
+export const CustomerInfo = () => {
   const BASE_URL = import.meta.env.VITE_API_BASE_URL;
   const location = useLocation();
   const custId = location.state.custId;
   const [customer, setCustomer] = useState({});
   const [loading, setLoading] = useState(false);
-
+  const navigate = useNavigate();
   const getdata = async (id) => {
     try {
       setLoading(true);
@@ -82,7 +82,7 @@ export const CustomerInfo = ({ setCurrentSection }) => {
         <h2 className="text-lg md:text-xl font-semibold flex items-center gap-1 text-[#7A83A3]">
           <IoIosArrowBack
             className="cursor-pointer"
-            onClick={() => setCurrentSection("Account Customers")}
+            onClick={() => {  navigate("/Admin/Account_Customers", { state: {} })}}
           />
           Customer Info
         </h2>

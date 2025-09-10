@@ -7,7 +7,7 @@ import { IoIosArrowBack } from "react-icons/io";
 import Loaderstart from "../../ui/loading/Loaderstart";
 import NewButton from "../../ui/NewButton";
 
-const CreatePage = ({ setCurrentSection }) => {
+const CreatePage = () => {
   const token = localStorage.getItem("token");
   const BASE_URL = import.meta.env.VITE_API_BASE_URL;
   const navigate = useNavigate();
@@ -61,8 +61,7 @@ const CreatePage = ({ setCurrentSection }) => {
       });
 
       toast.success("Page created successfully");
-      setCurrentSection?.("On Boarding");
-      navigate("/Admin", { replace: true });
+      navigate("/Admin/On_Boarding", { replace: true });
     } catch(err) {
       toast.error(err?.response?.data?.message);      
     } finally {
@@ -72,7 +71,7 @@ const CreatePage = ({ setCurrentSection }) => {
     useEffect(() => {
         const n = localStorage.getItem("numberOfPages");
         if (n>=3) {
-                navigate("/Admin", { replace: true });
+                navigate("/Admin/On_Boarding", { replace: true });
             } 
     },[])
   return (
@@ -84,7 +83,7 @@ const CreatePage = ({ setCurrentSection }) => {
          <h2 className="text-lg md:text-xl mb-4 font-semibold flex items-center gap-1 text-[#7A83A3]">
                   <IoIosArrowBack
                     className="cursor-pointer"
-                    onClick={() => navigate("/Admin")}
+                    onClick={() => navigate("/Admin/On_Boarding")}
                   />
                   Create Page
                 </h2>

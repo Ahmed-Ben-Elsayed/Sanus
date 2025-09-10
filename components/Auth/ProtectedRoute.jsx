@@ -34,7 +34,7 @@ const ProtectedRoute = ({ children }) => {
 
       if (!valid) {
         setIsAuthenticated(false);
-        toast.error("❌ Session expired. Please login again.", {
+        toast.error("Please login again.", {
           position: "top-center",
           autoClose: 2000,
         });

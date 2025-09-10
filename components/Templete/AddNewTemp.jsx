@@ -23,7 +23,7 @@ const getNextSaturday = () => {
     return today.toISOString().split("T")[0];
 };
 
-const AddNewTemp = ({ setactive }) => {
+const AddNewTemp = () => {
     const [Modal, setModal] = useState(false);
     const [day, setDay] = useState("");
     const [week, setWeek] = useState("");
@@ -196,8 +196,7 @@ const AddNewTemp = ({ setactive }) => {
                 toast.success("Template saved successfully ✅");
             }
 
-            setactive("Templete");
-            navigate('/Admin', {
+            navigate('/Admin/Templates', {
                 state: {}
             });
         } catch (err) {
@@ -234,7 +233,7 @@ const AddNewTemp = ({ setactive }) => {
                 <IoIosArrowBack
                     className="cursor-pointer text-gray-400 text-xl"
                     onClick={() => {
-                        setactive("Templete"), navigate('/Admin', {
+                        navigate('/Admin/Templates', {
                             state: {}
                         });
                     }}

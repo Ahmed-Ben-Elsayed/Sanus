@@ -19,6 +19,11 @@ export default defineConfig({
         changeOrigin: true,
         rewrite: (path) => path.replace(/^\/img-proxy/, ""),
       },
+      "/api": {
+        target: "http://137.184.244.200:5050",
+        changeOrigin: true,
+        rewrite: (path) => path.replace(/^\/api/, "/api"),
+      },
     },
   },
 })

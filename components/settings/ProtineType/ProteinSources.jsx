@@ -7,8 +7,10 @@ import Loaderstart from '../../../ui/loading/Loaderstart';
 import ReusableInput from '../../../ui/ReuseInput';
 import NewButton from '../../../ui/NewButton';
 import Modal from '../../../ui/Modal';
+import { TbDatabaseExclamation } from 'react-icons/tb';
+import { IoIosArrowBack } from 'react-icons/io';
 
-const ProteinSources = ({ setactive }) => {
+const ProteinSources = ( ) => {
     const getStatusClass = (status) => {
         switch (status) {
             case "active":
@@ -21,7 +23,7 @@ const ProteinSources = ({ setactive }) => {
     };
 
     const [proteinSources, setProteinSources] = useState([]);
-    const [loading, setLoading] = useState(false);
+    const [loading, setLoading] = useState(true);
     const [modalOpen, setModalOpen] = useState(false);
     const [selectedProteinId, setSelectedProteinId] = useState(null);
     const navigate = useNavigate();
@@ -93,7 +95,20 @@ const ProteinSources = ({ setactive }) => {
         <>
             {loading && <Loaderstart />}
             <div className="shadow-sm rounded-xl w-full bg-white h-[calc(100vh-77px)] p-4 flex flex-col">
-                {/* Filter Section */}
+                    <div className="flex items-center gap-1 mb-2 ms-[-5px]">
+                                                    <IoIosArrowBack
+                                                        className="cursor-pointer text-gray-400 text-md"
+                                                        onClick={() => {
+                                                            navigate('/Admin/Settings', {
+                                                                state: {}
+                                                            });
+                                                        }}
+                                                    />
+                                                    <h2 className="text-sm md:text-md font-semibold text-[#7A83A3]">
+                                                        Settings / Protein Sources
+                                                    </h2>
+                                                </div>
+                    {/* Filter Section */}
                 <div className="flex flex-col lg:flex-row justify-between items-end gap-4 mb-6">
                     <div className="w-full flex flex-col lg:flex-row justify-between gap-4">
                         <div className="flex-1 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-10 md:gap-3">
@@ -136,8 +151,7 @@ const ProteinSources = ({ setactive }) => {
                         <div className="flex items-end mt-[13px]">
                             <NewButton
                                 onClick={() => {
-                                    navigate('/Admin', { state: {} })
-                                    setactive('Settings/Protein Sources/Add New Protein');
+                                    navigate('/Admin/Settings/ProteinSources/Add', { state: {} })
                                 }}
                                 children={"Add New Protein Source"} icon={MdAdd}
                                 className='mt-4'
@@ -149,6 +163,7 @@ const ProteinSources = ({ setactive }) => {
                 <hr className="border-none block h-[1.5px] mb-5 bg-gray-200" />
 
                 {/* Table */}
+                            {filteredProteins.length > 0 ? (
                 <div className="overflow-x-auto h-100">
                     <table className="min-w-full text-sm">
                         <thead>
@@ -159,7 +174,8 @@ const ProteinSources = ({ setactive }) => {
                             </tr>
                         </thead>
                         <tbody>
-                            {filteredProteins.length > 0 ? (
+                            {
+
                                 filteredProteins.map((protein, index) => (
                                     <tr key={index} className="border-b border-b-gray-300 text-[#344767]">
                                         <td className="p-3">{protein?.name} </td>
@@ -174,12 +190,11 @@ const ProteinSources = ({ setactive }) => {
                                                 alt="Edit"
                                                 className="w-4 object-contain cursor-pointer"
                                                 onClick={() => {
-                                                    setactive('Settings/Protein Sources/Add New Protein');
-                                                    navigate('/Admin', {
+                                                    navigate('/Admin/Settings/ProteinSources/Edit', {
                                                         state: { proteinId: protein?._id }
                                                     });
                                                 }}
-                                            />
+                                                />
                                             <img
                                                 onClick={() => {
                                                     setSelectedProteinId(protein._id);
@@ -192,16 +207,19 @@ const ProteinSources = ({ setactive }) => {
                                         </td>
                                     </tr>
                                 ))
-                            ) : (
-                                <tr>
-                                    <td colSpan="3" className="text-center p-4 text-gray-500">
-                                        No protein sources found
-                                    </td>
-                                </tr>
-                            )}
+                            }
                         </tbody>
                     </table>
                 </div>
+                            ) : (
+                                <div className="h-[60vh] flex justify-center items-center text-[#476171] flex-col gap-3 text-lg sm:text-2xl text-center p-4">
+                                           <TbDatabaseExclamation className="text-4xl sm:text-5xl" />
+                                           <p>No Protein Sources Found</p>
+                                           <p className="text-sm sm:text-base text-gray-500 mt-2">
+                                             Try adjusting your filters or create a new Protein Source
+                                           </p>
+                                         </div>
+                            )}
             </div>
 
             <Modal

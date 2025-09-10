@@ -8,7 +8,7 @@ import { IoIosArrowBack } from "react-icons/io";
 import Loaderstart from "../../ui/loading/Loaderstart";
 import NewButton from "../../ui/NewButton";
 
-const EditPage = ({ setCurrentSection }) => {
+const EditPage =  () => {
   const token = localStorage.getItem("token");
   const BASE_URL = import.meta.env.VITE_API_BASE_URL;
   const { id } = useParams();
@@ -98,8 +98,7 @@ const EditPage = ({ setCurrentSection }) => {
       );
 
       toast.success("Page updated successfully");
-      setCurrentSection("On Boarding");
-      navigate("/Admin");
+      navigate("/Admin/On_Boarding");
     } catch (error) {
       console.log(error);
 
@@ -117,7 +116,7 @@ const EditPage = ({ setCurrentSection }) => {
       {!loading && formData.pageid ? (
         <>
           <h2 className="text-xl font-semibold flex items-center gap-1 text-[#7A83A3] mb-6">
-            <IoIosArrowBack className="cursor-pointer" onClick={() => {setCurrentSection("On Boarding") ,navigate(`/Admin`);}} />
+            <IoIosArrowBack className="cursor-pointer" onClick={() => { navigate(`/Admin/On_Boarding`); setCurrentSection("On Boarding"); }} />
             Edit Page {formData.pageTitle}
           </h2>
           <form onSubmit={handleSubmit} className="space-y-5">

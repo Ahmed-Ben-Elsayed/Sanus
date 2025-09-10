@@ -1,13 +1,13 @@
 import React, { useEffect, useState } from "react";
 import { IoIosArrowBack } from "react-icons/io";
 import ReusableInput from "../../ui/ReuseInput";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import axios from "axios";
 import Loaderstart from "../../ui/loading/Loaderstart";
 import { toast } from "react-toastify";
 import NewButton from "../../ui/NewButton";
 
-export const Freeze = ({ setactive }) => {
+export const Freeze = () => {
   const [dateFrom, setDateFrom] = useState("");
   const [dateTo, setDateTo] = useState("");
   const [loading, setLoading] = useState(false);
@@ -15,7 +15,7 @@ export const Freeze = ({ setactive }) => {
   const location = useLocation();
   const orderId = location.state?.orderId;
   const BaseUrl = import.meta.env.VITE_API_BASE_URL;
-
+  const navigate = useNavigate()
   const getFreeze = async (id) => {
     try {
       setLoading(true);
@@ -71,9 +71,9 @@ export const Freeze = ({ setactive }) => {
         }
       );
       toast.success("Freeze saved successfully");
-      setactive("Tracking Subscription");
+      navigate("/Admin/Tracking_Subscription", { state: {} });
     } catch (err) {
-      toast.error(err.response.data.message)
+      toast.error(err.response.data.message);
     } finally {
       setSaving(false);
     }
@@ -82,14 +82,14 @@ export const Freeze = ({ setactive }) => {
   return (
     <>
       {loading && <Loaderstart />}
-      <div className="w-full min-h-[100%] p-6 bg-white rounded-lg shadow">
+      <div className="w-full  h-full  md:min-h-[calc(100vh-77px)] p-6 bg-white rounded-lg shadow">
         {/* Header */}
         <div className="mb-3">
           <h2 className="text-lg md:text-xl font-semibold flex items-center gap-2 text-[#7A83A3]">
             <IoIosArrowBack
               className="cursor-pointer"
               size={22}
-              onClick={() => setactive("Tracking Subscription")}
+              onClick={() => {  navigate("/Admin/Tracking_Subscription", { state: {} })  }}
             />
             Freeze
           </h2>

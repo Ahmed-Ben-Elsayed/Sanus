@@ -8,7 +8,7 @@ import { useNavigate } from "react-router-dom";
 import Loaderstart from "../../ui/loading/Loaderstart";
 import NewButton from "../../ui/NewButton";
 
-export const Customers = ({ active, setactive }) => {
+export const Customers = () => {
   const [customer, setCustomer] = useState([]);
   const [loading, setLoading] = useState(false);
   const [filters, setFilters] = useState({
@@ -94,7 +94,7 @@ export const Customers = ({ active, setactive }) => {
   };
 
   return (
-    <div className="shadow-sm bg-white rounded-xl w-full h-full p-4 overflow-y-auto">
+    <div className="shadow-sm bg-white rounded-xl w-full h-full md:min-h-[calc(100vh-77px)] p-4 overflow-y-auto">
       <div className="overflow-x-auto">
         {/* === Filters === */}
         <div className="flex flex-col md:flex-row gap-4 justify-between items-end flex-wrap">
@@ -199,10 +199,9 @@ export const Customers = ({ active, setactive }) => {
                     </td>
                     <td
                       onClick={() => {
-                        setactive("Customer Info"),
-                          navigate("/Admin", {
-                            state: { custId: cust.id || cust._id },
-                          });
+                        navigate("/Admin/Account_Customers/moreInfo", {
+                          state: { custId: cust.id || cust._id },
+                        });
                       }}
                       className="px-4 py-2 text-[12px] text-[#44818E] underline font-bold cursor-pointer"
                     >

@@ -7,14 +7,15 @@ import NewButton from '../../ui/NewButton';
 import Modal from '../../ui/Modal';
 import { toast } from 'react-toastify';
 import { useNavigate } from 'react-router-dom';
+import { TbDatabaseExclamation } from 'react-icons/tb';
+import { IoIosArrowBack } from 'react-icons/io';
 
-const Ingredients = ({ setactive }) => {
+const Ingredients = ( ) => {
     const [ingredients, setIngredients] = useState([]);
-    const [loading, setLoading] = useState(false);
+    const [loading, setLoading] = useState(true);
     const [modalOpen, setModalOpen] = useState(false);
     const [selectedIngredientId, setSelectedIngredientId] = useState(null);
     const navigate = useNavigate();
-
     const [filters, setFilters] = useState({
         ingredientName: "",
         from: "",
@@ -81,6 +82,19 @@ const Ingredients = ({ setactive }) => {
         <>
             {loading && <Loaderstart />}
             <div className="shadow-sm rounded-xl w-full bg-white h-[calc(100vh-77px)] p-4 flex flex-col">
+                <div className="flex items-center gap-1 mb-2 ms-[-5px]">
+                                                <IoIosArrowBack
+                                                    className="cursor-pointer text-gray-400 text-md"
+                                                    onClick={() => {
+                                                        navigate('/Admin/Settings', {
+                                                            state: {}
+                                                        });
+                                                    }}
+                                                />
+                                                <h2 className="text-sm md:text-md font-semibold text-[#7A83A3]">
+                                                    Settings / Ingredients
+                                                </h2>
+                                            </div>
                 {/* Filter Section */}
                 <div className="flex flex-col lg:flex-row justify-between items-end gap-4 mb-6">
                     <div className="w-full flex flex-col lg:flex-row justify-between gap-4">
@@ -124,8 +138,7 @@ const Ingredients = ({ setactive }) => {
                         <div className="flex items-end mt-[13px]">
                             <NewButton
                                 onClick={() => {
-                                    navigate('/Admin', { state: {} })
-                                    setactive('Settings/Ingredients/Add New Ingredient');
+                                    navigate('/Admin/Settings/Ingredients/Add', { state: {} })
                                 }}
                                 children={"Add New Ingredient"} icon={MdAdd}
                                 className='mt-4'
@@ -137,6 +150,7 @@ const Ingredients = ({ setactive }) => {
                 <hr className="border-none block h-[1.5px] mb-5 bg-gray-200" />
 
                 {/* Table */}
+                            {filteredIngredients.length > 0 ? (
                 <div className="overflow-x-auto h-100">
                     <table className="min-w-full text-sm">
                         <thead>
@@ -147,7 +161,8 @@ const Ingredients = ({ setactive }) => {
                             </tr>
                         </thead>
                         <tbody>
-                            {filteredIngredients.length > 0 ? (
+                            {
+
                                 filteredIngredients.map((ing, index) => (
                                     <tr key={index} className="border-b border-b-gray-300 text-[#344767]">
                                         <td className="p-3">{ing?.name} </td>
@@ -162,8 +177,7 @@ const Ingredients = ({ setactive }) => {
                                                 alt="Edit"
                                                 className="w-4 object-contain cursor-pointer"
                                                 onClick={() => {
-                                                    setactive('Settings/Ingredients/Add New Ingredient');
-                                                    navigate('/Admin', {
+                                                    navigate('/Admin/Settings/Ingredients/Edit', {
                                                         state: { ingredientId: ing?._id }
                                                     });
                                                 }}
@@ -176,20 +190,23 @@ const Ingredients = ({ setactive }) => {
                                                 src="/Delete.png"
                                                 alt="Delete"
                                                 className="w-5 cursor-pointer"
-                                            />
+                                                />
                                         </td>
                                     </tr>
                                 ))
-                            ) : (
-                                <tr>
-                                    <td colSpan="3" className="text-center p-4 text-gray-500">
-                                        No ingredients found
-                                    </td>
-                                </tr>
-                            )}
+                            }
                         </tbody>
                     </table>
                 </div>
+                            ) : (
+                               <div className="h-[60vh] flex justify-center items-center text-[#476171] flex-col gap-3 text-lg sm:text-2xl text-center p-4">
+                                          <TbDatabaseExclamation className="text-4xl sm:text-5xl" />
+                                          <p>No Ingredients Found</p>
+                                          <p className="text-sm sm:text-base text-gray-500 mt-2">
+                                            Try adjusting your filters or create a new ingredient
+                                          </p>
+                                        </div>
+                            )}
             </div>
 
             <Modal

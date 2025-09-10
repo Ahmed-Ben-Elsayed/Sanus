@@ -1,13 +1,17 @@
 import React, { useEffect, useState } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
+import { RiLogoutCircleRFill } from "react-icons/ri";
+
 import { Sidebar } from "./Sidebar";
-// import { OrdersComponent } from "./onBoarding/OrdersComponent";
+import Modal from "../../ui/Modal";
+import { motion } from "framer-motion";
+// Main Components
 import { OnBoardingComponent } from "../onBoarding/OnBoardingComponent";
 import EditPage from "../onBoarding/Editpage";
-import { useLocation, useNavigate } from "react-router-dom";
+import CreatePage from "../onBoarding/CreatePage";
 import { Customers } from "../Customers/Customers";
 import { CustomerInfo } from "../Customers/CustomerInfo";
 import { Orders } from "../Orders/Orders";
-import CreatePage from "../onBoarding/CreatePage";
 import { AddNote } from "../Orders/AddNote";
 import { Freeze } from "../Tracking/Freeze";
 import { TimeSlot } from "../Tracking/TimeSlot";
@@ -18,31 +22,71 @@ import { ChangeBox } from "../Tracking/ChangeBox";
 import { Timeslot } from "../Timeslot/Timeslot";
 import { AddtimeSlot } from "../Timeslot/AddtimeSlot";
 import { ChangeLocation } from "../Tracking/ChangeLocation";
-import { AddNewPlan } from "../plans/AddNewPlane";
-import { ViewMore } from "../plans/ViewMore";
 import { Plan } from "../plans/Plan";
 import { Packge } from "../packege/Packge";
-import { RiLogoutCircleRFill } from "react-icons/ri";
-
-import { AddNewpkg } from "../packege/AddNewpkg";
-import Modal from "../../ui/Modal";
 import Meals from "../Meals/Meals";
-import AddMeals from "../Meals/AddMeals";
 import Templete from "../Templete/Templete";
-import AddNewTemp from "../Templete/AddNewTemp";
 import Settings from "../settings/Settings";
 import Allergens from "../settings/Allergens";
-import AddAllergens from "../settings/AddAllergens";
 import Ingredients from "../settings/Ingredients";
-import AddIngredients from "../settings/AddIngredients";
-import ProteinSource from "../settings/ProtineType/AddProtineSource";
 import ProteinSources from "../settings/ProtineType/ProteinSources";
+import AddAllergens from "../settings/AddAllergens";
+import AddIngredients from "../settings/AddIngredients";
+import AddMeals from "../Meals/AddMeals";
+import AddNewTemp from "../Templete/AddNewTemp";
+// Named Exports (AddNew… components)
+import { AddNewPlan } from "../plans/AddNewPlane";
+import { AddNewpkg } from "../packege/AddNewpkg";
+import ProteinSource from "../settings/ProtineType/AddProtineSource";
+import Loaderstart from "../../ui/loading/Loaderstart";
+
+const pathComponents = {
+  "/Admin/On_Boarding": OnBoardingComponent,
+  "/Admin/On_Boarding/CreatePage": CreatePage,
+  "/Admin/Account_Customers": Customers,
+  "/Admin/Account_Customers/moreInfo": CustomerInfo,
+  "/Admin/Tracking_Subscription": Tracking,
+  "/Admin/Tracking_Subscription/Add": AddNote,
+  "/Admin/Tracking_Subscription/Change_Location": ChangeLocation,
+  "/Admin/Tracking_Subscription/moreinfo": TrackingDetails,
+  "/Admin/Tracking_Subscription/time_slot": TimeSlot,
+  "/Admin/Tracking_Subscription/Change_Box": ChangeBox,
+  "/Admin/Tracking_Subscription/scheduled_freeze": Freeze,
+  "/Admin/Restaurant_Orders": Orders,
+  "/Admin/Restaurant_Orders/add_note": AddNote,
+  "/Admin/Restaurant_Orders/moreinfo": OrdersEdit,
+  "/Admin/Timeslot": Timeslot,
+  "/Admin/Timeslot/Add": AddtimeSlot,
+  "/Admin/Timeslot/Edit": AddtimeSlot,
+  "/Admin/Plans": Plan,
+  "/Admin/Plans/Add": AddNewPlan,
+  "/Admin/Plans/Edit": AddNewPlan,
+  "/Admin/Packages": Packge,
+  "/Admin/Packages/Add": AddNewpkg,
+  "/Admin/Packages/Edit": AddNewpkg,
+  "/Admin/Meals": Meals,
+  "/Admin/Meals/Add": AddMeals,
+  "/Admin/Meals/Edit": AddMeals,
+  "/Admin/Templates": Templete,
+  "/Admin/Templates/Add": AddNewTemp,
+  "/Admin/Templates/Edit": AddNewTemp,
+  "/Admin/Settings": Settings,
+  "/Admin/Settings/Allergens": Allergens,
+  "/Admin/Settings/Allergens/Add": AddAllergens,
+  "/Admin/Settings/Allergens/Edit": AddAllergens,
+  "/Admin/Settings/Ingredients": Ingredients,
+  "/Admin/Settings/Ingredients/Add": AddIngredients,
+  "/Admin/Settings/Ingredients/Edit": AddIngredients,
+  "/Admin/Settings/ProteinSources": ProteinSources,
+  "/Admin/Settings/ProteinSources/Add":   ProteinSource,
+  "/Admin/Settings/ProteinSources/Edit":   ProteinSource,
+};
+
 const DashBoard = ({ dark, toggledark }) => {
   const navigate = useNavigate();
-  const [currentSection, setCurrentSection] = useState("On Boarding");
-  // const [currentSection, setCurrentSection] = useState("Settings");
+  const location = useLocation();
   const [checkingAuth, setCheckingAuth] = useState(true);
-  const [modal, setModal] = useState(false)
+  const [modal, setModal] = useState(false);
   const user = JSON.parse(localStorage.getItem("user"));
 
   useEffect(() => {
@@ -55,189 +99,105 @@ const DashBoard = ({ dark, toggledark }) => {
   }, [navigate]);
 
   if (checkingAuth) {
-    return null;
+    return "";
   }
-  const location = useLocation();
-  const isCreating = location.pathname.includes("/Create");
-  const logOut = () => {
-    localStorage.clear()
-    navigate('/')
-    setModal(false)
-  }
-  return (
-    <div className="flex min-h-screen">
-      {/* Sidebar */}
-      <Sidebar
-        currentSection={currentSection}
-        setCurrentSection={setCurrentSection}
-      />
 
-      {/* Main Content Area */}
-      <div className={` ${dark ? "bg-black transition-[1.5s] text-white " : ""} flex flex-col flex-1 px-4 py-4 overflow-y-auto`}>
+  const logOut = () => {
+    localStorage.clear();
+    navigate("/");
+    setModal(false);
+  };
+
+  let ComponentToRender = pathComponents[location.pathname];
+
+  if (location.pathname.startsWith("/Admin/On_Boarding/") && !location.pathname.endsWith("CreatePage")) {
+    ComponentToRender = EditPage;
+  }
+
+  return (
+    <div className="flex min-h-screen ">
+      {/* Sidebar */}
+      <Sidebar dark={dark} />
+
+      {/* Main Content */}
+      <div className={`flex-1 px-4 py-4   overflow-y-auto ${dark ? "bg-black text-white transition-[1.5s]" : ""}`}>
         {/* Header */}
         <nav className="flex flex-col md:flex-row justify-between md:items-center gap-3 mb-4">
-          <h1 className={`text-xl ms-10 font-bold ${dark ? "text-white" : "text-[#344767]"} `}>
-            {currentSection.includes("Orders")
-              ? "Restaurant Orders"
-              : currentSection.includes("Tracking Subscription")
-                ? "Tracking Subscription"
-                : currentSection}
+          <h1 className={`text-xl ms-10 font-bold ${dark ? "text-white" : "text-[#344767]"}`}>
+            {location.pathname.split("/").slice(-1)[0].replace(/_/g, " ")}
           </h1>
-          <div className="flex flex-col-reverse md:flex-row items-end  md:items-center justify-end gap-3 w-full md:w-[60%]">
-            {/* <input
-              type="text"
-              placeholder="Search here"
-              className="border border-[#acb4ba] outline-none placeholder:text-[#6E777C] text-sm rounded-lg w-full md:w-[70%] px-3 py-[5px]"
-            /> */}
-            {/* <Switch onclick={toggledark} checked={dark} /> */}
-            <div className="flex items-center gap-2">
-              <img
-                src="/notification.png"
-                alt="Notification"
-                className="w-5 h-5 object-contain"
-              />
-              <span className={`text-sm font-bold   ${dark ? "text-white" : "text-[#344767]"}`}>
-                Hi, {user?.name || "User"}!
-              </span>
-              <span onClick={() => setModal(true)} className="text-2xl font-bold text-[#344767]">
-                <RiLogoutCircleRFill className={`cursor-pointer  ${dark ? "text-white" : "text-[#344767]"}`} />
-              </span>
-            </div>
+          <div className="flex items-center gap-2">
+            <img src="/notification.png" alt="Notification" className="w-5 h-5 object-contain" />
+            <span className={`text-sm font-bold ${dark ? "text-white" : "text-[#344767]"}`}>
+              Hi, {user?.name || "User"}!
+            </span>
+            <span onClick={() => setModal(true)} className="text-2xl cursor-pointer">
+              <RiLogoutCircleRFill className={`${dark ? "text-white" : "text-[#344767]"}`} />
+            </span>
           </div>
         </nav>
 
-        {/* Main Page Content */}
-        <div className={`flex-1 `}>
-          {currentSection === "Account Customers" && (
-            <Customers active={currentSection} dark={dark} setactive={setCurrentSection} />
-          )}
-          {currentSection === "Tracking Subscription" && (
-            <Tracking active={currentSection} dark={dark} setactive={setCurrentSection} />
-          )}
-          {currentSection === "Add Note" && (
-            <AddNote active={currentSection} dark={dark} setactive={setCurrentSection} />
-          )}
+        {/* Page Component */}
+        <div className="flex-1 ">
+          {ComponentToRender ? (
+            <ComponentToRender dark={dark} />
+          ) : (
+            <div className="flex flex-col min-h-[calc(100vh-77px)] items-center justify-center rounded bg-[#385263] text-white px-4">
+              {/* Animation for 404 number */}
+              <motion.h1
+                initial={{ scale: 0.5, opacity: 0 }}
+                animate={{ scale: 1, opacity: 1 }}
+                transition={{ duration: 0.6 }}
+                className="text-9xl font-extrabold tracking-widest text-[#E8E1DC]"
+              >
+                404
+              </motion.h1>
 
-          {currentSection === "Freeze" && (
-            <Freeze active={currentSection} dark={dark} setactive={setCurrentSection} />
-          )}
-          {currentSection === "Add SupSubscription" && (
-            <Orders active={currentSection} dark={dark} setactive={setCurrentSection} />
-          )}
-          {currentSection === "Time Slot" && (
-            <TimeSlot active={currentSection} dark={dark} setactive={setCurrentSection} />
-          )}
-          {currentSection === "Change Address" && (
-            <Orders active={currentSection} dark={dark} setactive={setCurrentSection} />
-          )}
-          {currentSection === "Change Box" && (
-            <ChangeBox active={currentSection} dark={dark} setactive={setCurrentSection} />
-          )}
-          {currentSection === "Change Location" && (
-            <ChangeLocation active={currentSection} dark={dark} setactive={setCurrentSection} />
-          )}
-          {currentSection === "Timeslot" && (
-            <Timeslot active={currentSection} dark={dark} setactive={setCurrentSection} />
-          )}
-          {currentSection === "add timeslot" && (
-            <AddtimeSlot active={currentSection} dark={dark} setactive={setCurrentSection} />
-          )}
-          {currentSection === "Customer Info" && (
-            <CustomerInfo
-              onBack={() => setCurrentSection("Account Customer")}
-              setCurrentSection={setCurrentSection}
-              currentSection={currentSection} dark={dark}
-            />
-          )}
-          {currentSection === "Restaurant Orders" && (
-            <Orders active={currentSection} dark={dark} setactive={setCurrentSection} />
-          )}
-          {currentSection === "Plans" && (
-            <Plan active={currentSection} dark={dark} setactive={setCurrentSection} />
-          )}
-          {currentSection === "Templete" && (
-            <Templete active={currentSection} dark={dark} setactive={setCurrentSection} />
-          )}
-          {currentSection === "Add New Templete" && (
-            <AddNewTemp active={currentSection} dark={dark} setactive={setCurrentSection} />
-          )}
-          {currentSection === "Packges" && (
-            <Packge active={currentSection} dark={dark} setactive={setCurrentSection} />
-          )}
-          {currentSection === "Meals" && (
-            <Meals active={currentSection} dark={dark} setactive={setCurrentSection} />
-          )}
-          {currentSection === "Add New Meal" && (
-            <AddMeals active={currentSection} dark={dark} setactive={setCurrentSection} />
-          )}
-          {currentSection === "Add New Plan" && (
-            <AddNewPlan active={currentSection} dark={dark} setactive={setCurrentSection} />
-          )}
-          {currentSection === "Settings/Allergens/Add New Allergen" && (
-            <AddAllergens active={currentSection} dark={dark} setactive={setCurrentSection} />
-          )}
-          {currentSection === "Settings/Ingredients/Add New Ingredient" && (
-            <AddIngredients active={currentSection} dark={dark} setactive={setCurrentSection} />
-          )}
-          {currentSection === "Add New Packge" && (
-            <AddNewpkg active={currentSection} dark={dark} setactive={setCurrentSection} />
-          )}
-          {currentSection === "Settings" && (
-            <Settings active={currentSection} dark={dark} setactive={setCurrentSection} />
-          )}
-          {currentSection === "Settings/Allergens" && (
-            <Allergens active={currentSection} dark={dark} setactive={setCurrentSection} />
-          )}
-          {currentSection === "Settings/Ingredients" && (
-            <Ingredients active={currentSection} dark={dark} setactive={setCurrentSection} />
-          )}
-         
-          {currentSection === "Settings/Protein Sources" && (
-            <ProteinSources active={currentSection} dark={dark} setactive={setCurrentSection} />
-          )}
-          {currentSection === "Settings/Protein Sources/Add New Protein" && (
-            <ProteinSource active={currentSection} dark={dark} setactive={setCurrentSection} />
-          )}
-          {currentSection === "View More" && (
-            <ViewMore active={currentSection} dark={dark} setactive={setCurrentSection} />
-          )}
-          {currentSection === "Orders Edit" && (
-            <OrdersEdit
-              onBack={() => setCurrentSection("Orders")}
-              active={currentSection}
-              setactive={setCurrentSection} dark={dark}
-            />
-          )}
-          {currentSection === "Tracking Subscription Edit" && (
-            <TrackingDetails
-              onBack={() => setCurrentSection("Tracking Subscription")}
-              active={currentSection}
-              setactive={setCurrentSection} dark={dark}
-            />
-          )}
-          {currentSection === "On Boarding" && !isCreating && (
-            <OnBoardingComponent
-              active={currentSection}
-              setactive={setCurrentSection} dark={dark}
-            />
-          )}
-          {currentSection === "Edit Boarding" && !isCreating && (
-            <EditPage
-              onBack={() => setCurrentSection("On Boarding")}
-              setCurrentSection={setCurrentSection}
-              currentSection={currentSection} dark={dark}
-            />
-          )}
-          {isCreating && (
-            <CreatePage
-              onBack={() => setCurrentSection("On Boarding")}
-              setCurrentSection={setCurrentSection}
-              currentSection={currentSection} dark={dark}
-            />
+              {/* Page not found text */}
+              <motion.p
+                initial={{ y: 40, opacity: 0 }}
+                animate={{ y: 0, opacity: 1 }}
+                transition={{ delay: 0.3, duration: 0.6 }}
+                className="mt-4 text-2xl md:text-3xl font-semibold"
+              >
+                Page Not Found
+              </motion.p>
+
+              <motion.p
+                initial={{ y: 40, opacity: 0 }}
+                animate={{ y: 0, opacity: 1 }}
+                transition={{ delay: 0.5, duration: 0.6 }}
+                className="mt-2 text-gray-300 text-center max-w-md"
+              >
+                Sorry, the page you are looking for doesn’t exist or has been moved.
+              </motion.p>
+
+              {/* Button back to home */}
+              <motion.button
+                initial={{ y: 40, opacity: 0 }}
+                animate={{ y: 0, opacity: 1 }}
+                transition={{ delay: 0.7, duration: 0.6 }}
+                onClick={() => navigate("/Admin/On_Boarding")}
+                className="mt-6 px-6 py-3 bg-[#E8E1DC] cursor-pointer text-[#2A414F] rounded-2xl font-semibold shadow-lg hover:scale-105 hover:shadow-2xl transition-all duration-300"
+              >
+                Back to Home
+              </motion.button>
+            </div>
           )}
         </div>
       </div>
-      {modal && <Modal open={modal} onClose={() => setModal(false)} children={"Are You Sure Logout"} confirmText="Logout" cancelText="No" showActions onConfirm={() => logOut()} />}
+      {/* Logout Modal */}
+      {modal && (
+        <Modal
+          open={modal}
+          onClose={() => setModal(false)}
+          children={"Are You Sure Logout"}
+          confirmText="Logout"
+          cancelText="No"
+          showActions
+          onConfirm={logOut}
+        />
+      )}
     </div>
   );
 };

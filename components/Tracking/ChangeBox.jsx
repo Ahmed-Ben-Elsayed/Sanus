@@ -3,10 +3,11 @@ import { IoIosArrowBack } from "react-icons/io";
 import LoadingOrder from "../../ui/loading/LoadingOrder";
 import ReusableInput from "../../ui/ReuseInput";
 import NewButton from "../../ui/NewButton";
-
-export const ChangeBox = ({ loading, setactive }) => {
+import { useNavigate } from "react-router-dom";
+export const ChangeBox = ({ loading }) => {
+  const navigate = useNavigate()
   return (
-    <div className="p-0 pb-5 font-sans shadow-2xl h-full overflow-y-auto bg-white rounded-xl overflow-x-hidden">
+    <div className="p-0 pb-5 font-sans shadow-2xl h-full md:min-h-[calc(100vh-77px)] overflow-y-auto bg-white rounded-xl overflow-x-hidden">
       {loading ? (
         <LoadingOrder />
       ) : (
@@ -15,7 +16,7 @@ export const ChangeBox = ({ loading, setactive }) => {
             <h2 className="text-lg ms-5 md:text-xl font-semibold flex items-center gap-1 text-[#7A83A3]">
               <IoIosArrowBack
                 className="cursor-pointer"
-                onClick={() => setactive("Tracking Subscription")}
+                onClick={() =>{   navigate("/Admin/Tracking_Subscription",{state:{}}) }}
               />
               Change Box
             </h2>

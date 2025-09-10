@@ -1,16 +1,16 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { IoIosArrowBack } from "react-icons/io";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import LoadingOrder from "../../ui/loading/LoadingOrder";
 import { toast } from "react-toastify";
 import NewButton from "../../ui/NewButton";
 
-export const AddNote = ({ active, setactive }) => {
+export const AddNote = () => {
   const [note, setNote] = useState("");
   const [loadingFetch, setLoadingFetch] = useState(false);
   const [loadingSave, setLoadingSave] = useState(false);
-
+  const navigate = useNavigate()
   const BASE_URL = import.meta.env.VITE_API_BASE_URL;
   const location = useLocation();
   const orderIdNote = location?.state?.orderId;
@@ -58,7 +58,8 @@ export const AddNote = ({ active, setactive }) => {
       );
       toast.success("Note saved successfully");
       setLoadingSave(false);
-      setactive("Restaurant Orders");
+      navigate('/Admin/Restaurant_Orders',{state:{}});
+
     } catch (err) {
       console.log(err);
       toast.error("Failed to save note");
@@ -70,14 +71,14 @@ export const AddNote = ({ active, setactive }) => {
   if (loadingFetch) return <LoadingOrder />;
 
   return (
-    <div className="w-full min-h-[100%] mx-auto p-6 bg-white rounded-lg shadow">
+    <div className="w-full h-full md:min-h-[calc(100vh-77px)] mx-auto p-6 bg-white rounded-lg shadow">
       {/* Header */}
       <div className="mb-3">
         <h2 className="text-lg md:text-xl text-gray-400 font-semibold flex items-center gap-2">
           <IoIosArrowBack
             className="cursor-pointer"
             size={22}
-            onClick={() => setactive("Restaurant Orders")}
+            onClick={() => {   navigate('/Admin/Restaurant_Orders',{state:{}})} }
           />
           Add Note
         </h2>

@@ -7,7 +7,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 import NewButton from "../../ui/NewButton";
 import { toast } from "react-toastify";
 
-const AddAllergens = ({ setactive }) => {
+const AddAllergens = () => {
   const [allergenName, setAllergenName] = useState("");
   const [allergenNameAr, setAllergenNameAr] = useState("");
   const [loading, setLoading] = useState(false);
@@ -24,7 +24,7 @@ const AddAllergens = ({ setactive }) => {
   }, [passedId]);
 
   const isEditMode = Boolean(allergenId);
-
+  let counter = 1;
   // Create
   const handleSave = async () => {
     if (!allergenName.trim()) {
@@ -36,7 +36,7 @@ const AddAllergens = ({ setactive }) => {
       setLoading(true);
       await axios.post(
         `${BaseURL}/allergensIngredients/allergens`,
-        { name: allergenName, nameAr: "soon" },
+        { name: allergenName  },
         {
           headers: {
             Authorization: `Bearer ${localStorage.getItem("token")}`,
@@ -46,8 +46,7 @@ const AddAllergens = ({ setactive }) => {
       setAllergenName("");
       setAllergenNameAr("");
       toast.success("Allergen Created Successfully");
-      navigate("/Admin", { state: {} });
-      setactive("Settings/Allergens");
+      navigate("/Admin/Settings/Allergens", { state: {} });
     } catch (err) {
       console.log(err);
       toast.error(
@@ -69,7 +68,7 @@ const AddAllergens = ({ setactive }) => {
       setLoading(true);
       await axios.put(
         `${BaseURL}/allergensIngredients/allergens/${allergenId}`,
-        { name: allergenName, nameAr: "soon" },
+        { name: allergenName },
         {
           headers: {
             Authorization: `Bearer ${localStorage.getItem("token")}`,
@@ -79,8 +78,7 @@ const AddAllergens = ({ setactive }) => {
       setAllergenName("");
       setAllergenNameAr("");
       toast.success("Allergen Updated Successfully");
-      navigate("/Admin", { state: {} });
-              setactive("Settings/Allergens");
+      navigate("/Admin/Settings/Allergens", { state: {} });
     } catch (err) {
       console.log(err);
       toast.error(
@@ -130,8 +128,7 @@ const AddAllergens = ({ setactive }) => {
           <IoIosArrowBack
             className="cursor-pointer text-gray-400 text-xl"
             onClick={() => {
-              navigate("/Admin", { state: {} });
-              setactive("Settings/Allergens");
+              navigate("/Admin/Settings/Allergens", { state: {} });
             }}
           />
           <h2 className="text-lg md:text-xl font-semibold text-[#7A83A3]">
@@ -172,8 +169,7 @@ const AddAllergens = ({ setactive }) => {
             </NewButton>
             <NewButton
               onClick={() => {
-                navigate("/Admin", { state: {} });
-                setactive("Settings/Allergens");
+                navigate("/Admin/Settings/Allergens", { state: {} });
               }}
               className="bg-gray-200 hover:bg-gray-300 text-[#476171] px-6 py-2 rounded w-full md:w-auto"
             >

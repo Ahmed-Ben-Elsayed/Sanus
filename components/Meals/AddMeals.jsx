@@ -8,12 +8,11 @@ import { toast } from "react-toastify";
 import InputTags from "../../ui/InputTags";
 import Loaderstart from "../../ui/loading/Loaderstart";
 
-const AddMeals = ({ active, setactive }) => {
+const AddMeals = () => {
   const location = useLocation();
   const mealId = location.state?.mealId;
   const navigate = useNavigate();
 
-  // بدل boolean عملنا عدّاد
   const [loadingCount, setLoadingCount] = useState(0);
 
   const [meal, setMeal] = useState({
@@ -192,8 +191,7 @@ const AddMeals = ({ active, setactive }) => {
         });
         toast.success("Meal added successfully 🎉");
       }
-      navigate("/Admin", { state: {} });
-      setactive("Meals");
+      navigate("/Admin/Meals", { state: {} });
     } catch (err) {
       console.error("Error saving meal:", err);
       toast.error(err.response?.data?.message || "Something went wrong");
@@ -203,16 +201,15 @@ const AddMeals = ({ active, setactive }) => {
   };
 
   return (
-    <div className="shadow-sm rounded-xl overflow-auto w-full bg-white p-4 flex flex-col">
+    <div className="shadow-sm rounded-xl overflow-auto w-full h-full md:h-[calc(100vh-77px)]  bg-white p-4 flex flex-col">
       {/* Header */}
       <div className="flex items-center gap-2 mb-3">
         <IoIosArrowBack
           className="cursor-pointer text-gray-400 text-xl"
           onClick={() => {
-            setactive("Meals"),
-              navigate("/Admin", {
-                state: {},
-              });
+            navigate("/Admin/Meals", {
+              state: {},
+            });
           }}
         />
         <h2 className="text-lg md:text-xl font-semibold text-[#7A83A3]">

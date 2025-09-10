@@ -7,7 +7,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 import NewButton from "../../ui/NewButton";
 import { toast } from "react-toastify";
 
-const AddIngredients = ({ setactive }) => {
+const AddIngredients = ( ) => {
   const [ingredientName, setIngredientName] = useState("");
   const [ingredientNameAr, setIngredientNameAr] = useState("");
   const [loading, setLoading] = useState(false);
@@ -36,7 +36,7 @@ const AddIngredients = ({ setactive }) => {
       setLoading(true);
       await axios.post(
         `${BaseURL}/allergensIngredients/ingredients`,
-        { name: ingredientName, nameAr: "soon" },
+        { name: ingredientName },
         {
           headers: {
             Authorization: `Bearer ${localStorage.getItem("token")}`,
@@ -46,8 +46,7 @@ const AddIngredients = ({ setactive }) => {
       setIngredientName("");
       setIngredientNameAr("");
       toast.success("Ingredient Created Successfully");
-      navigate("/Admin", { state: {} });
-      setactive("Settings/Ingredients");
+      navigate("/Admin/Settings/Ingredients", { state: {} });
     } catch (err) {
       console.log(err);
       toast.error(
@@ -69,7 +68,7 @@ const AddIngredients = ({ setactive }) => {
       setLoading(true);
       await axios.put(
         `${BaseURL}/allergensIngredients/ingredients/${ingredientId}`,
-        { name: ingredientName, nameAr: "soon" },
+        { name: ingredientName},
         {
           headers: {
             Authorization: `Bearer ${localStorage.getItem("token")}`,
@@ -79,8 +78,7 @@ const AddIngredients = ({ setactive }) => {
       setIngredientName("");
       setIngredientNameAr("");
       toast.success("Ingredient Updated Successfully");
-      navigate("/Admin", { state: {} });
-      setactive("Settings/Ingredients");
+      navigate("/Admin/Settings/Ingredients", { state: {} });
     } catch (err) {
       console.log(err);
       toast.error(
@@ -129,8 +127,7 @@ const AddIngredients = ({ setactive }) => {
           <IoIosArrowBack
             className="cursor-pointer text-gray-400 text-xl"
             onClick={() => {
-              navigate("/Admin", { state: {} });
-              setactive("Settings/Ingredients");
+              navigate("/Admin/Settings/Ingredients", { state: {} });
             }}
           />
           <h2 className="text-lg md:text-xl font-semibold text-[#7A83A3]">
@@ -151,14 +148,7 @@ const AddIngredients = ({ setactive }) => {
                 placeholder="Enter ingredient name"
               />
             </div>
-            {/* <div className="w-full md:w-1/2">
-              <ReusableInput
-                label="Ingredient Name ( Ar )"
-                value={ingredientNameAr}
-                onChange={(e) => setIngredientNameAr(e.target.value)}
-                placeholder="Enter ingredient Ar name"
-              />
-            </div> */}
+         
           </div>
 
           {/* Buttons */}
@@ -171,8 +161,7 @@ const AddIngredients = ({ setactive }) => {
             </NewButton>
             <NewButton
               onClick={() => {
-                navigate("/Admin", { state: {} });
-                setactive("Settings/Ingredients");
+                navigate("/Admin/Settings/Ingredients", { state: {} });
               }}
               className="bg-gray-200 hover:bg-gray-300 text-[#476171] px-6 py-2 rounded w-full md:w-auto"
             >

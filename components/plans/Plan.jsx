@@ -8,8 +8,9 @@ import NewButton from '../../ui/NewButton';
 import Modal from '../../ui/Modal';
 import { toast } from 'react-toastify';
 import { replace, useNavigate } from 'react-router-dom';
+import { TbDatabaseExclamation } from 'react-icons/tb';
 
-export const Plan = ({ setactive }) => {
+export const Plan = () => {
     const getStatusClass = (status) => {
         switch (status) {
             case "active":
@@ -21,7 +22,7 @@ export const Plan = ({ setactive }) => {
         }
     };
     const [plans, setplans] = useState([])
-    const [loading, setloading] = useState(false)
+    const [loading, setloading] = useState(true)
     const [Modalopen, setModalopen] = useState(false);
     const [selectedPlanId, setSelectedPlanId] = useState(null);
     const navigate = useNavigate()
@@ -42,7 +43,7 @@ export const Plan = ({ setactive }) => {
             })
             setplans(plans.data?.data?.plans)
             console.log(plans);
-            
+
         } catch (err) {
             console.log(err);
         } finally {
@@ -133,8 +134,7 @@ export const Plan = ({ setactive }) => {
                         <div className="flex items-end mt-[13px]">
                             <NewButton
                                 onClick={() => {
-                                    setactive("Add New Plan"),
-                                    navigate('/Admin', { state: {} })
+                                    navigate('/Admin/Plans/Add', { state: {} });
                                 }}
                                 children={"Add New "} icon={MdAdd}
                                 className='mt-4'
@@ -148,70 +148,60 @@ export const Plan = ({ setactive }) => {
                 <hr className="border-none block h-[1.5px] mb-5 bg-gray-200" />
 
                 {/* Table */}
-                <div className="overflow-x-auto h-100">
-                    <table className="min-w-full  text-sm">
-                        <thead>
-                            <tr className="text-left bg-gray-100 text-[#7B809A]">
-                                <th className="p-3">Plan Name</th>
-                                <th className="p-3">Date</th>
-                                <th className="p-3 text-right">Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {filteredPlans?.length > 0 ? (
-                                filteredPlans.map((plan, index) => (
-                                    <tr key={index} className="border-b border-b-gray-300 text-[#344767]">
-                                        <td className="p-3">{plan?.name}</td>
-                                        <td className="p-3">{plan?.createdAt ? new Date(plan?.createdAt).toLocaleDateString() : ""}</td>
-                                        {/* <td className="p-3">
-                                            <ReusableSelector
-                                                options={[
-                                                    { label: "Active", value: "active" },
-                                                    { label: "Not Active", value: "not-active" },
-                                                ]}
-                                                value="active"
-                                                className="min-w-[120px]"
-                                                custclassNameArrow='text-[#344767!important]'
-                                                custclassNameItems='w-[100%!important] start-[0px]'
-                                                custclassName={` ${getStatusClass("active")} rounded-md text-xs w-[90%]  min-h-[2px!important] h-[30px!important] flex items-center `}
+                {filteredPlans?.length > 0 ? (
+                    <div className="overflow-x-auto h-100">
+                        <table className="min-w-full  text-sm">
+                            <thead>
+                                <tr className="text-left bg-gray-100 text-[#7B809A]">
+                                    <th className="p-3">Plan Name</th>
+                                    <th className="p-3">Date</th>
+                                    <th className="p-3 text-right">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {
 
-                                            />
-                                        </td> */}
-                                        <td className="p-3 flex gap-2 justify-end">
-                                            <img
-                                                src="/edit.png"
-                                                alt="Edit"
-                                                className="w-4 object-contain cursor-pointer"
-                                                onClick={() => {
-                                                    setactive('Add New Plan');
-                                                        navigate('/Admin', {
+                                    filteredPlans.map((plan, index) => (
+                                        <tr key={index} className="border-b border-b-gray-300 text-[#344767]">
+                                            <td className="p-3">{plan?.name}</td>
+                                            <td className="p-3">{plan?.createdAt ? new Date(plan?.createdAt).toLocaleDateString() : ""}</td>
+                                            <td className="p-3 flex gap-2 justify-end">
+                                                <img
+                                                    src="/edit.png"
+                                                    alt="Edit"
+                                                    className="w-4 object-contain cursor-pointer"
+                                                    onClick={() => {
+                                                        navigate('/Admin/Plans/Edit', {
                                                             state: { planid: plan?._id }
                                                         });
-                                                }}
-                                            />
-                                            <img
-                                                onClick={() => {
-                                                    setSelectedPlanId(plan._id);
-                                                    setModalopen(true);
-                                                }}
-                                                src="/Delete.png"
-                                                alt="Delete"
-                                                className="w-5 cursor-pointer"
-                                            />
-                                        </td>
+                                                    }}
+                                                />
+                                                <img
+                                                    onClick={() => {
+                                                        setSelectedPlanId(plan._id);
+                                                        setModalopen(true);
+                                                    }}
+                                                    src="/Delete.png"
+                                                    alt="Delete"
+                                                    className="w-5 cursor-pointer"
+                                                />
+                                            </td>
 
-                                    </tr>
-                                ))
-                            ) : (
-                                <tr>
-                                    <td colSpan="4" className="text-center p-4 text-gray-500">
-                                        No plans found
-                                    </td>
-                                </tr>
-                            )}
-                        </tbody>
-                    </table>
-                </div>
+                                        </tr>
+                                    ))
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                ) : (
+                  <div className="h-[60vh] flex justify-center items-center text-[#476171] flex-col gap-3 text-lg sm:text-2xl text-center p-4">
+                                <TbDatabaseExclamation className="text-4xl sm:text-5xl" />
+                                <p>No Plans Found</p>
+                                <p className="text-sm sm:text-base text-gray-500 mt-2">
+                                  Try adjusting your filters or create a new plan
+                                </p>
+                              </div>
+                )}
             </div>
             <Modal
                 open={Modalopen}

@@ -2,20 +2,20 @@ import React, { useEffect, useState } from 'react';
 import { IoIosArrowBack } from 'react-icons/io';
 import ReusableSelector from '../../ui/ReusableSelector';
 import ReusableInput from '../../ui/ReuseInput';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import Loading from '../../ui/loading/LoadingOrder';
 import { toast } from 'react-toastify';
 import NewButton from '../../ui/NewButton';
 import { FaPlus } from 'react-icons/fa';
 
-export const ChangeLocation = ({ active, setactive }) => {
+export const ChangeLocation = ( ) => {
   const location = useLocation();
   const BASE_URL = import.meta.env.VITE_API_BASE_URL;
   const [shippingAddress, setShippingAddress] = useState(null);
   const [loading, setLoading] = useState(false);
   const orderId = location.state?.orderId;
-
+  const navigate = useNavigate();
   const [address, setAddress] = useState({
     type: 'Home',
     zone: '',
@@ -107,8 +107,8 @@ export const ChangeLocation = ({ active, setactive }) => {
         },
       });
       toast.success('Address updated successfully.');
-      setactive('Tracking Subscription');
       setLoading(false);
+      navigate("/Admin/Tracking_Subscription", { state: {} });
     } catch (err) {
       console.error('Error updating address:', err);
       toast.error('Failed to update address.');
@@ -143,12 +143,12 @@ export const ChangeLocation = ({ active, setactive }) => {
   return (
     <>
       {loading && <Loading />}
-      <div className="w-full mx-auto h-[calc(100vh-77px)] overflow-auto p-4 bg-white rounded-lg shadow-md">
+      <div className="w-full mx-auto h-full  md:min-h-[calc(100vh-77px)] overflow-auto p-4 bg-white rounded-lg shadow-md">
         <div className="flex items-center justify-between mb-2">
           <h2 className="text-lg md:text-xl font-semibold flex items-center gap-1 text-[#7A83A3]">
             <IoIosArrowBack
               className="cursor-pointer"
-              onClick={() => setactive('Tracking Subscription')}
+              onClick={() => { navigate("/Admin/Tracking_Subscription", { state: {} }) }}
             />
             Change Location
           </h2>

@@ -7,7 +7,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 import NewButton from "../../ui/NewButton";
 import { toast } from "react-toastify";
 
-export const AddNewPlan = ({ setactive }) => {
+export const AddNewPlan = () => {
     const [planName, setPlanName] = useState("");
     const [loading, setloading] = useState(false);
     const [planeId , SetplaneId] = useState(null);
@@ -38,8 +38,7 @@ export const AddNewPlan = ({ setactive }) => {
             });
             setPlanName("");
             toast.success("Plan Created Successfully");
-            setactive('Plans');
-            navigate('/Admin',{state:{}})
+            navigate('/Admin/Plans',{state:{}})
         } catch (err) {
             console.log(err);
             toast.error("Error creating the plan");
@@ -66,8 +65,7 @@ export const AddNewPlan = ({ setactive }) => {
             });
             setPlanName("");
             toast.success("Plan Updated Successfully");
-            setactive('Plans');
-            navigate('/Admin',{state:{}})
+            navigate('/Admin/Plans',{state:{}})
         } catch (err) {
             console.log(err);
             toast.error("Error updating the plan");
@@ -107,7 +105,7 @@ export const AddNewPlan = ({ setactive }) => {
                 <div className="flex items-center gap-2 mb-3">
                     <IoIosArrowBack
                         className="cursor-pointer text-gray-400 text-xl"
-                        onClick={() => { setactive("Plans"), navigate('/Admin',{state:{}})}}
+                        onClick={() => { navigate('/Admin/Plans',{state:{}}) }}
                     />
                     <h2 className="text-lg md:text-xl font-semibold text-[#7A83A3]">
                         {isEditMode ? "Edit Plan" : "Add A New Plan"}
@@ -134,7 +132,7 @@ export const AddNewPlan = ({ setactive }) => {
                             {isEditMode ? "Update Plan" : "Create Plan"}
                         </NewButton>
                         <NewButton
-                            onClick={() => {setactive("Plans"),navigate('/Admin',{state:{}})}}
+                            onClick={() => { navigate('/Admin/Plans',{state:{}}) }}
                             className="bg-gray-200 hover:bg-gray-300 text-[#476171] px-6 py-2 rounded w-full md:w-auto"
                         >
                             Cancel

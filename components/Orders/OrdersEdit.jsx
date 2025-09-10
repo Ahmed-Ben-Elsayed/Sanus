@@ -1,11 +1,9 @@
 import React, { useEffect, useState } from "react";
 import { IoIosArrowBack } from "react-icons/io";
 import { MdOutlineFileDownload } from "react-icons/md";
-import ReusableSelector from "../../ui/ReusableSelector";
 import axios from "axios";
 import { toast } from "react-toastify";
-import { useLocation } from "react-router-dom";
-import Loading from "../../ui/loading/LoadingOrder";
+import { useLocation, useNavigate } from "react-router-dom";
 import * as XLSX from "xlsx";
 import { saveAs } from "file-saver";
 import LoadingOrder from "../../ui/loading/LoadingOrder";
@@ -17,7 +15,7 @@ export const OrdersEdit = ({ active, setactive }) => {
   const BASE_URL = import.meta.env.VITE_API_BASE_URL;
   const location = useLocation();
   const OrderId = location.state?.orderId;
-
+  const navigate = useNavigate()
   const getById = async (id) => {
     setLoading(true);
     try {
@@ -176,7 +174,7 @@ const currentWeek = Math.floor(selectedDateIndex / 7);
         <h2 className="text-lg ms-4 md:text-xl font-semibold flex items-center gap-1 text-[#7A83A3]">
           <IoIosArrowBack
             className="cursor-pointer"
-            onClick={() => setactive("Restaurant Orders")}
+            onClick={() => { navigate('/Admin/Restaurant_Orders',{state:{}}) }}
           />
           More Details
         </h2>
@@ -187,18 +185,6 @@ const currentWeek = Math.floor(selectedDateIndex / 7);
 
       <hr className="bg-[#D1D1D1] border-none h-[1px] my-3 w-[100%] mx-auto" />
 
-      {/* Date selector */}
-      <div className="ms-9 mt-5">
-        {/* <ReusableSelector 
-          label={"Date"} 
-          options={dateOptions}
-          value={selectedDateIndex}
-          onChange={(e) => setSelectedDateIndex(Number(e.target.value))}
-          custclassName="bg-white text-[#476171!important]" 
-          custclassNameArrow="text-[#476171!important]" 
-          custclassNameItems="w-[100%!important] start-[0px!important]" 
-        /> */}
-      </div>
       
       {/* Meal table */}
       <div className="w-[94%] mt-5 mx-auto overflow-x-auto px-0">
@@ -324,48 +310,7 @@ const currentWeek = Math.floor(selectedDateIndex / 7);
           </tbody>
         </table>
       </div>
-         {/* Nutrition Summary - Only show if we have data */}
-      {/* {weeks[currentWeek]?.length > 0 && (
-  <div className="mx-4 mb-6">
-      
-      <h2 className="my-5 ms-7 font-bold text-[#344767]">        Customer Information
-      Nutrition Summary (Week {currentWeek + 1})
-      </h2>
-
-    
-    <div className="w-[96%] mx-auto overflow-x-auto">
-      <table className="w-full border-[#B0B0B0] min-w-[600px] text-sm border text-center">
-        <thead className="border border-[#B0B0B0]">
-          <tr className="">
-            <th className="px-4 py-2">Day</th>
-            <th className="px-4 py-2">Calories</th>
-            <th className="px-4 py-2">Protein (g)</th>
-            <th className="px-4 py-2">Carbs (g)</th>
-            <th className="px-4 py-2">Fat (g)</th>
-          </tr>
-        </thead>
-        <tbody>
-          {weeks[currentWeek].map((plan, index) => (
-            <tr key={index}>
-              <td className="px-4 py-2 font-medium">
-                {new Date(plan.date).toLocaleDateString("en-US", {
-                  weekday: "short",
-                  day: "numeric",
-                  month: "short",
-                })}
-              </td>
-              <td className="px-4 py-2">{plan.totalNutrition?.calories || 0}</td>
-              <td className="px-4 py-2">{plan.totalNutrition?.protein || 0}</td>
-              <td className="px-4 py-2">{plan.totalNutrition?.carbs || 0}</td>
-              <td className="px-4 py-2">{plan.totalNutrition?.fat || 0}</td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
-    </div>
-  </div>
-)} */}
-
+       
     </div>
   );
 };
