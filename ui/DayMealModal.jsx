@@ -54,7 +54,7 @@ const CustomSelect = ({ options, value, onChange, placeholder, className }) => {
         />
       </button>
       {isOpen && (
-        <div className="absolute z-10 mt-1 h-[175px] w-full bg-white shadow-lg rounded-md border border-gray-200 max-h-72 overflow-auto">
+        <div className="absolute z-10 mt-1 h-[300px] w-full bg-white shadow-lg rounded-md border border-gray-200 max-h-72 overflow-auto">
           <div className="p-2 border-b">
             <input
               type="text"
@@ -443,7 +443,8 @@ const getAllMeals = async () => {
               </button>
               <button
                 onClick={handleSave}
-                className="bg-[#476171] cursor-pointer text-white px-5 py-2.5 rounded-lg hover:bg-[#3a5261] transition-colors font-medium"
+                className={` ${!templateId ? "bg-[#476171] cursor-pointer text-white px-5 py-2.5 rounded-lg hover:bg-[#3a5261] transition-colors font-medium" : "bg-gray-300 cursor-not-allowed text-gray-500 px-5 py-2.5 rounded-lg"} `}
+                disabled={!templateId}
               >
                 Save Changes
               </button>
@@ -464,7 +465,7 @@ const getAllMeals = async () => {
                   initial={{ scale: 0.9, opacity: 0 }}
                   animate={{ scale: 1, opacity: 1 }}
                   exit={{ scale: 0.9, opacity: 0 }}
-                  className="bg-white w-full max-w-md rounded-xl shadow-xl p-6"
+                  className="bg-white w-full max-w-md  rounded-xl shadow-xl p-6"
                   onClick={(e) => e.stopPropagation()}
                 >
                   <h3 className="text-lg font-semibold mb-4">Replace Meal</h3>

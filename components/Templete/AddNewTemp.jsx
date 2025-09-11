@@ -259,6 +259,7 @@ const AddNewTemp = () => {
                 <ReusableInput
                     label="Start Date (Day)"
                     value={Temp.startDate}
+                    disabled={!!TempleteId}
                     type="date"
                     onChange={(e) => {
                         if (!isSaturday(e.target.value)) {
@@ -272,6 +273,7 @@ const AddNewTemp = () => {
                 <ReusableInput
                     type="number"
                     custclassName="!pe-1"
+                    disabled={!!TempleteId}
                     label="Number of Breakfast"
                     value={Temp.breakfastOptionsCount}
                     placeholder="Breakfast count"
@@ -282,6 +284,7 @@ const AddNewTemp = () => {
                 <ReusableInput
                     type="number"
                     custclassName="!pe-1"
+                    disabled={!!TempleteId}
                     label="Number of Meals "
                     value={Temp.lunchDinnerOptionsCount}
                     placeholder="Meals count"
@@ -295,6 +298,8 @@ const AddNewTemp = () => {
                     label="Number of Snack AM"
                     value={Temp.snacksAMOptionsCount}
                     placeholder="Snack AM count"
+                    disabled={!!TempleteId}
+
                     onChange={(e) => handleInputChange("snacksAMOptionsCount", e.target.value)}
                     min="1"
                 />
@@ -305,6 +310,7 @@ const AddNewTemp = () => {
                     label="Number of Snack PM"
                     value={Temp.snacksPMOptionsCount}
                     placeholder="Snack PM count"
+                    disabled={!!TempleteId}
                     onChange={(e) => handleInputChange("snacksPMOptionsCount", e.target.value)}
                     min="1"
                 />
