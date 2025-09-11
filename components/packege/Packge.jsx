@@ -211,6 +211,7 @@ export const Packge = () => {
                                     <th className="p-3">Templete Name</th>
                                     <th className="p-3">Date</th>
                                     <th className="p-3">Box</th>
+                                    <th className="p-3">Carbs</th>
                                     <th className="p-3">include Breakfast</th>
                                     <th className="p-3">include Lunch</th>
                                     <th className="p-3">include Dinner</th>
@@ -229,7 +230,8 @@ export const Packge = () => {
                                             <td className="p-3">{pkg?.plan?.name}</td>
                                             <td className="p-3">{pkg?.template?.name}</td>
                                             <td className="p-3">{new Date(pkg?.createdAt).toLocaleDateString()}</td>
-                                            <td className="p-3">{pkg?.numberOfDays}</td>
+                                            <td className="p-3 text-center">{pkg?.numberOfDays}</td>
+                                            <td className="p-3 text-center">{pkg?.carbCount || "-"}</td>
 
                                             {/* ✅ Breakfast */}
                                             <td className="p-3 text-center">

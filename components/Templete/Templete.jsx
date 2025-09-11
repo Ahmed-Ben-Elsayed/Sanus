@@ -187,10 +187,10 @@ const Templete = () => {
                 <tr className="text-left bg-gray-100 text-[#7B809A]">
                   <th className="p-2 lg:p-3">Templete Name</th>
                   <th className="p-2 lg:p-3 hidden sm:table-cell">Start Date</th>
-                  <th className="p-2 lg:p-3 hidden md:table-cell">Num Of Meal</th>
-                  <th className="p-2 lg:p-3">Breakfast</th>
-                  <th className="p-2 lg:p-3 hidden lg:table-cell">Snack AM</th>
-                  <th className="p-2 lg:p-3 hidden lg:table-cell">Snack PM</th>
+                  <th className="p-2 lg:p-3 text-center hidden md:table-cell">Num Of Meal</th>
+                  <th className="p-2 lg:p-3 text-center">Breakfast</th>
+                  <th className="p-2 lg:p-3 hidden text-center lg:table-cell">Snack AM</th>
+                  <th className="p-2 lg:p-3 hidden text-center lg:table-cell">Snack PM</th>
                   <th className="p-2 lg:p-3">Actions</th>
                 </tr>
               </thead>
@@ -201,10 +201,10 @@ const Templete = () => {
                     <tr key={index} className="border-b border-b-gray-300 text-[#344767]">
                       <td className="p-2 lg:p-3 font-medium">{tpl?.name}</td>
                       <td className="p-2 lg:p-3 hidden sm:table-cell">{new Date(tpl?.startDate).toLocaleDateString()}</td>
-                      <td className="p-2 lg:p-3 hidden md:table-cell">{"" || '5'}</td>
-                      <td className="p-2 lg:p-3">{tpl?.breakfastOptionsCount}</td>
-                      <td className="p-2 lg:p-3 hidden lg:table-cell">{tpl?.snacksAMOptionsCount}</td>
-                      <td className="p-2 lg:p-3 hidden lg:table-cell">{tpl?.snacksPMOptionsCount}</td>
+                      <td className="p-2 lg:p-3 text-center  hidden md:table-cell">{"" || '5'}</td>
+                      <td className="p-2 lg:p-3 text-center">{tpl?.breakfastOptionsCount}</td>
+                      <td className="p-2 lg:p-3 text-center hidden lg:table-cell">{tpl?.snacksAMOptionsCount}</td>
+                      <td className="p-2 lg:p-3 text-center hidden lg:table-cell">{tpl?.snacksPMOptionsCount}</td>
                       <td className="p-2 lg:p-3">
                         <div className="flex items-center justify-start gap-1">
                           <button

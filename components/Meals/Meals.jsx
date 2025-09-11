@@ -210,8 +210,8 @@ const Meals = ({ active, setactive }) => {
                       <tr className="text-left bg-gray-100 text-[#7B809A]">
                         <th className="p-2 sm:p-3">Image</th>
                         <th className="p-2 sm:p-3">Meal Name</th>
-                        <th className="p-2 sm:p-3 hidden sm:table-cell">Meal Type</th>
-                        <th className="p-2 sm:p-3 hidden md:table-cell">Taste Type</th>
+                        <th className="p-2 text-center sm:p-3 hidden sm:table-cell">Meal Type</th>
+                        <th className="p-2 sm:p-3 text-center hidden md:table-cell">Taste Type</th>
                         <th className="p-2 sm:p-3"></th>
                       </tr>
                     </thead>
@@ -226,8 +226,8 @@ const Meals = ({ active, setactive }) => {
                             />
                           </td>
                           <td className="p-2 sm:p-3">{plan?.name || "-"}</td>
-                          <td className="p-2 sm:p-3 hidden sm:table-cell">{plan?.type || "-"}</td>
-                          <td className="p-2 sm:p-3 hidden md:table-cell">{plan?.temperatureType || "-"}</td>
+                          <td className="p-2 sm:p-3 text-center hidden sm:table-cell">{plan?.type || "-"}</td>
+                          <td className="p-2 sm:p-3 text-center hidden md:table-cell">{plan?.temperatureType || "-"}</td>
                           <td className="p-2 sm:p-3 flex gap-2 justify-end">
                             <button
                               onClick={() => navigate("/Admin/Meals/Edit", { state: { mealId: plan?._id } })}

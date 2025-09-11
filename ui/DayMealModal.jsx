@@ -28,7 +28,7 @@ const dayMap = {
   fri: "friday",
 };
 
-const CustomSelect = ({ options, value, onChange, placeholder, className , templateId }) => {
+const CustomSelect = ({ options, value, onChange, placeholder, className , disabled=false }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [search, setSearch] = useState("");
   const selectedOption = options.find((opt) => opt.value === value);
@@ -48,12 +48,12 @@ const CustomSelect = ({ options, value, onChange, placeholder, className , templ
           {selectedOption ? selectedOption.label : placeholder}
         </span>
         <IoChevronDown
-          className={`text-[#476171] cursor-pointer transition-transform ${isOpen ? "rotate-180" : ""
+          className={`text-[#476171] transition-transform ${isOpen && !disabled ? "rotate-180  cursor-pointer" : " cursor-not-allowed"
             }`}
         />
       </button>
-      {(isOpen && !templateId) && (
-        <div className={` ${ templateId  ?  "cursor-none" : " " } absolute z-10 mt-1 h-[300px] w-full bg-white shadow-lg rounded-md border border-gray-200 max-h-72 overflow-auto`}>
+      {(isOpen && (!disabled)) && (
+        <div className={`absolute z-10 mt-1 ${disabled ? "cursor-not-allowed" : ""} h-[300px] w-full bg-white shadow-lg rounded-md border border-gray-200 max-h-72 overflow-auto`}>
           <div className="p-2 border-b">
             <input
               type="text"
@@ -368,6 +368,7 @@ const DayMealModal = ({
                             value: meal._id,
                             label: meal.name,
                           }))}
+                          disabled={templateId}
                           value={selectedCategory[key] || ""}
                           onChange={(value) => handleAddMeal(key, value)}
                           placeholder={`Select ${label}...`}
@@ -470,7 +471,6 @@ const DayMealModal = ({
                   <h3 className="text-lg font-semibold mb-4">Replace Meal</h3>
 
                   <CustomSelect
-                  templateId={templateId}
                     options={meals.map((meal) => ({
                       value: meal._id,
                       label: meal.name,
