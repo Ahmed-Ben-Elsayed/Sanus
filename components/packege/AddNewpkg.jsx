@@ -25,7 +25,7 @@ export const AddNewpkg = () => {
     image: null,
     includeSnacksAM: false,
     includeSnacksPM: false,
-    carbs: '',
+    carbCount: '',
   });
 
   const [plane, setPlane] = useState([]);
@@ -66,7 +66,7 @@ export const AddNewpkg = () => {
       image: data.image,
       includeSnacksAM: data.includeSnacksAM ?? false,
       includeSnacksPM: data.includeSnacksPM ?? false,
-      carbs: data.carbs || '',
+      carbCount: data.carbCount || '',
     });
   };
 
@@ -207,12 +207,12 @@ export const AddNewpkg = () => {
               onChange={handleChange}
             />
             <ReusableInput
-              name="carbs"
+              name="carbCount"
               label="Carbs"
               placeholder="e.g. 150g"
-              value={form.carbs}
+              value={form.carbCount}
               onChange={handleChange}
-              
+
             />
             <ReusableSelector
               label="Plane Name"
