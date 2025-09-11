@@ -367,7 +367,7 @@ const AddMeals = () => {
             value={selectedIngredients}
             onChange={setSelectedIngredients}
             options={allIngredients.map((i) => ({
-              label: ` ${i?.name}-${i?.nameAr}`,
+              label: ` ${i?.name}`,
               value: i?._id,
             }))}
           />
@@ -381,7 +381,7 @@ const AddMeals = () => {
             value={selectedAllergens}
             onChange={setSelectedAllergens}
             options={allAllergens.map((a) => ({
-              label: ` ${a?.name}-${a?.nameAr}`,
+              label: ` ${a?.name}`,
               value: a?._id,
             }))}
           />
