@@ -48,9 +48,8 @@ const CustomSelect = ({ options, value, onChange, placeholder, className }) => {
           {selectedOption ? selectedOption.label : placeholder}
         </span>
         <IoChevronDown
-          className={`text-[#476171] cursor-pointer transition-transform ${
-            isOpen ? "rotate-180" : ""
-          }`}
+          className={`text-[#476171] cursor-pointer transition-transform ${isOpen ? "rotate-180" : ""
+            }`}
         />
       </button>
       {isOpen && (
@@ -68,15 +67,14 @@ const CustomSelect = ({ options, value, onChange, placeholder, className }) => {
             filteredOptions.map((option) => (
               <div
                 key={option.value}
-                className={`px-4 py-2 cursor-pointer hover:bg-[#f0f4f7] transition-colors ${
-                  value === option.value
+                className={`px-4 py-2 cursor-pointer hover:bg-[#f0f4f7] transition-colors ${value === option.value
                     ? "bg-[#f0f4f7] text-[#476171] font-medium"
                     : "text-gray-700"
-                }`}
+                  }`}
                 onClick={() => {
                   onChange(option.value);
                   setIsOpen(false);
-                  setSearch(""); 
+                  setSearch("");
                 }}
               >
                 {option.label}
@@ -145,55 +143,55 @@ const DayMealModal = ({
   }, [defaultMeals, day, week, isOpen]);
 
   // === Handlers ===
-const getAllMeals = async () => {
-  try {
-    setLoading(true);
-    const token = localStorage.getItem("token") || "";
+  const getAllMeals = async () => {
+    try {
+      setLoading(true);
+      const token = localStorage.getItem("token") || "";
 
-    let page = 1;
-    const limit = 1000000 ; 
-    let totalPages = 1;
-    const collected = [];
+      let page = 1;
+      const limit = 1000000;
+      let totalPages = 1;
+      const collected = [];
 
-    do {
-      const { data } = await axios.get(`${BaseUrl}/meals`, {
-        headers: { Authorization: `Bearer ${token}` },
-        params: { page, limit },
-      });
+      do {
+        const { data } = await axios.get(`${BaseUrl}/meals`, {
+          headers: { Authorization: `Bearer ${token}` },
+          params: { page, limit },
+        });
 
-      const apiMeals = data?.data?.meals ?? data?.meals ?? [];
-      collected.push(...apiMeals);
+        const apiMeals = data?.data?.meals ?? data?.meals ?? [];
+        collected.push(...apiMeals);
 
-      const apiPagination = data?.data?.pagination ?? data?.pagination ?? {};
-      const currentPage = Number(apiPagination.currentPage) || page;
-      const apiTotalPages = Number(apiPagination.totalPages);
+        const apiPagination = data?.data?.pagination ?? data?.pagination ?? {};
+        const currentPage = Number(apiPagination.currentPage) || page;
+        const apiTotalPages = Number(apiPagination.totalPages);
 
-      if (apiTotalPages) {
-        totalPages = apiTotalPages;
-      } else {
-        if (apiMeals.length < limit) {
-          totalPages = currentPage;
+        if (apiTotalPages) {
+          totalPages = apiTotalPages;
+        } else {
+          if (apiMeals.length < limit) {
+            totalPages = currentPage;
+          }
         }
-      }
 
-      page = currentPage + 1;
-    } while (page <= totalPages);
+        page = currentPage + 1;
+      } while (page <= totalPages);
 
-    const uniqueMeals = Object.values(
-      collected.reduce((acc, m) => {
-        if (m && m._id) acc[m._id] = m;
-        return acc;
-      }, {})
-    );
+      const uniqueMeals = Object.values(
+        collected.reduce((acc, m) => {
+          if (m && m._id) acc[m._id] = m;
+          return acc;
+        }, {})
+      );
 
-    setMeals(uniqueMeals);
-  } catch (err) {
-    console.error(err);
-    toast.error("Failed to fetch meals");
-  } finally {
-    setLoading(false);
-  }
-};
+      setMeals(uniqueMeals);
+    } catch (err) {
+      console.error(err);
+      toast.error("Failed to fetch meals");
+    } finally {
+      setLoading(false);
+    }
+  };
 
 
   const handleReplaceMeal = async (category, oldMealId, newMealId) => {
@@ -220,12 +218,12 @@ const getAllMeals = async () => {
         [category]: prev[category].map((m) =>
           m.meal === oldMealId
             ? {
-                ...m,
-                meal: newMealId,
-                name:
-                  meals.find((opt) => opt._id === newMealId)?.name ||
-                  "Updated Meal",
-              }
+              ...m,
+              meal: newMealId,
+              name:
+                meals.find((opt) => opt._id === newMealId)?.name ||
+                "Updated Meal",
+            }
             : m
         ),
       }));
@@ -415,13 +413,14 @@ const getAllMeals = async () => {
                                     <IoSwapVertical className="text-lg cursor-pointer" />
                                   </button>
                                 )}
-
-                                <button
-                                  onClick={() => handleRemoveMeal(key, m.meal)}
-                                  className="p-1.5 text-gray-500 hover:text-red-600 hover:bg-red-50 rounded-md transition-colors"
-                                >
-                                  <IoClose className="text-lg cursor-pointer" />
-                                </button>
+                                {!templateId &&
+                                  <button
+                                    onClick={() => handleRemoveMeal(key, m.meal)}
+                                    className="p-1.5 text-gray-500 hover:text-red-600 hover:bg-red-50 rounded-md transition-colors"
+                                  >
+                                    <IoClose className="text-lg cursor-pointer" />
+                                  </button>
+                                }
                               </div>
                             </motion.div>
                           ))
