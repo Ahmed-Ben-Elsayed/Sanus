@@ -201,7 +201,7 @@ const Templete = () => {
                     <tr key={index} className="border-b border-b-gray-300 text-[#344767]">
                       <td className="p-2 lg:p-3 font-medium">{tpl?.name}</td>
                       <td className="p-2 lg:p-3 hidden sm:table-cell">{new Date(tpl?.startDate).toLocaleDateString()}</td>
-                      <td className="p-2 lg:p-3 text-center  hidden md:table-cell">{"" || '5'}</td>
+                      <td className="p-2 lg:p-3 text-center  hidden md:table-cell">{ tpl?.lunchDinnerOptionsCount || '5'}</td>
                       <td className="p-2 lg:p-3 text-center">{tpl?.breakfastOptionsCount}</td>
                       <td className="p-2 lg:p-3 text-center hidden lg:table-cell">{tpl?.snacksAMOptionsCount}</td>
                       <td className="p-2 lg:p-3 text-center hidden lg:table-cell">{tpl?.snacksPMOptionsCount}</td>
