@@ -24,20 +24,19 @@ export const AddNewpkg = () => {
     description: '',
     image: null,
     includeSnacksAM: false,
-    includeSnacksPM: false
+    includeSnacksPM: false,
+    carbs: '',
   });
 
   const [plane, setPlane] = useState([]);
   const [Templete, setTemplete] = useState([]);
 
-  // ✅ عداد للطلبات
   const [pendingRequests, setPendingRequests] = useState(0);
   const loading = pendingRequests > 0;
 
   const BaseUrl = import.meta.env.VITE_API_BASE_URL;
   const navigate = useNavigate();
 
-  // دالة مساعده لتعقب الطلبات
   const trackRequest = async (fn) => {
     setPendingRequests((p) => p + 1);
     try {
@@ -67,6 +66,7 @@ export const AddNewpkg = () => {
       image: data.image,
       includeSnacksAM: data.includeSnacksAM ?? false,
       includeSnacksPM: data.includeSnacksPM ?? false,
+      carbs: data.carbs || '',
     });
   };
 
@@ -178,13 +178,14 @@ export const AddNewpkg = () => {
         <hr className="border-gray-300 my-3" />
 
         <form className="flex flex-col gap-4" onSubmit={handleSubmit}>
-          <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-6  gap-4">
             <ReusableInput
               name="name"
               label="Package Name"
               placeholder="Enter Name"
               value={form.name}
               onChange={handleChange}
+              
             />
             <ReusableInput
               name="numberOfDays"
@@ -204,6 +205,14 @@ export const AddNewpkg = () => {
               placeholder="e.g. 1500$"
               value={form.price}
               onChange={handleChange}
+            />
+            <ReusableInput
+              name="carbs"
+              label="Carbs"
+              placeholder="e.g. 150g"
+              value={form.carbs}
+              onChange={handleChange}
+              
             />
             <ReusableSelector
               label="Plane Name"
