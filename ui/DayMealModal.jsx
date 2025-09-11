@@ -53,7 +53,7 @@ const CustomSelect = ({ options, value, onChange, placeholder, className , templ
         />
       </button>
       {(isOpen && !templateId) && (
-        <div className="absolute z-10 mt-1 h-[300px] w-full bg-white shadow-lg rounded-md border border-gray-200 max-h-72 overflow-auto">
+        <div className={` ${ templateId  ?  "cursor-none" : " " } absolute z-10 mt-1 h-[300px] w-full bg-white shadow-lg rounded-md border border-gray-200 max-h-72 overflow-auto`}>
           <div className="p-2 border-b">
             <input
               type="text"
