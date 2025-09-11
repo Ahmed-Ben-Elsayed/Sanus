@@ -28,7 +28,7 @@ const dayMap = {
   fri: "friday",
 };
 
-const CustomSelect = ({ options, value, onChange, placeholder, className }) => {
+const CustomSelect = ({ options, value, onChange, placeholder, className , templateId }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [search, setSearch] = useState("");
   const selectedOption = options.find((opt) => opt.value === value);
@@ -52,7 +52,7 @@ const CustomSelect = ({ options, value, onChange, placeholder, className }) => {
             }`}
         />
       </button>
-      {isOpen && (
+      {(isOpen && !templateId) && (
         <div className="absolute z-10 mt-1 h-[300px] w-full bg-white shadow-lg rounded-md border border-gray-200 max-h-72 overflow-auto">
           <div className="p-2 border-b">
             <input
@@ -470,6 +470,7 @@ const DayMealModal = ({
                   <h3 className="text-lg font-semibold mb-4">Replace Meal</h3>
 
                   <CustomSelect
+                  templateId={templateId}
                     options={meals.map((meal) => ({
                       value: meal._id,
                       label: meal.name,
