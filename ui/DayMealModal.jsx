@@ -8,6 +8,7 @@ import {
 } from "react-icons/io5";
 import { toast } from "react-toastify";
 import axios from "axios";
+import { data } from "react-router-dom";
 
 // === Constants ===
 const mealsCategories = [
@@ -185,6 +186,7 @@ const DayMealModal = ({
       );
 
       setMeals(uniqueMeals);
+      
     } catch (err) {
       console.error(err);
       toast.error("Failed to fetch meals");
@@ -196,7 +198,7 @@ const DayMealModal = ({
 
   const handleReplaceMeal = async (category, oldMealId, newMealId) => {
     if (!newMealId || oldMealId === newMealId) return;
-
+    
     try {
       setLoading(true);
       const token = localStorage.getItem("token") || "";
@@ -236,6 +238,7 @@ const DayMealModal = ({
       setLoading(false);
     }
   };
+  console.log(meals);
 
   const handleAddMeal = (category, mealId) => {
     if (!mealId) return;
@@ -364,7 +367,8 @@ const DayMealModal = ({
                       {/* Add Meal Section */}
                       <div className="p-3 border-b">
                         <CustomSelect
-                          options={meals.map((meal) => ({
+                          options={
+                            meals.filter((meal)=> meal?.type?.toLowerCase() === key?.toLowerCase() || meal?.type.startsWith('snak') === key.includes("Snack")).map((meal) => ({
                             value: meal._id,
                             label: meal.name,
                           }))}
@@ -444,7 +448,7 @@ const DayMealModal = ({
               <button
                 onClick={handleSave}
                 className={` ${!templateId ? "bg-[#476171] cursor-pointer text-white px-5 py-2.5 rounded-lg hover:bg-[#3a5261] transition-colors font-medium" : "bg-gray-300 cursor-not-allowed text-gray-500 px-5 py-2.5 rounded-lg"} `}
-                disabled={!templateId}
+                disabled={templateId}
               >
                 Save Changes
               </button>
