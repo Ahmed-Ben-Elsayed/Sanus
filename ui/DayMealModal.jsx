@@ -29,7 +29,7 @@ const dayMap = {
   fri: "friday",
 };
 
-const CustomSelect = ({ options, value, onChange, placeholder, className , disabled=false }) => {
+const CustomSelect = ({ options, value, onChange, placeholder, className, disabled = false }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [search, setSearch] = useState("");
   const selectedOption = options.find((opt) => opt.value === value);
@@ -69,8 +69,8 @@ const CustomSelect = ({ options, value, onChange, placeholder, className , disab
               <div
                 key={option.value}
                 className={`px-4 py-2 cursor-pointer hover:bg-[#f0f4f7] transition-colors ${value === option.value
-                    ? "bg-[#f0f4f7] text-[#476171] font-medium"
-                    : "text-gray-700"
+                  ? "bg-[#f0f4f7] text-[#476171] font-medium"
+                  : "text-gray-700"
                   }`}
                 onClick={() => {
                   onChange(option.value);
@@ -186,7 +186,7 @@ const DayMealModal = ({
       );
 
       setMeals(uniqueMeals);
-      
+
     } catch (err) {
       console.error(err);
       toast.error("Failed to fetch meals");
@@ -198,7 +198,7 @@ const DayMealModal = ({
 
   const handleReplaceMeal = async (category, oldMealId, newMealId) => {
     if (!newMealId || oldMealId === newMealId) return;
-    
+
     try {
       setLoading(true);
       const token = localStorage.getItem("token") || "";
@@ -367,11 +367,19 @@ const DayMealModal = ({
                       {/* Add Meal Section */}
                       <div className="p-3 border-b">
                         <CustomSelect
-                          options={
-                            meals.filter((meal)=> meal?.type?.toLowerCase() === key?.toLowerCase() || meal?.type.startsWith('snak') === key.includes("Snack")).map((meal) => ({
-                            value: meal._id,
-                            label: meal.name,
-                          }))}
+                          options={meals
+                            .filter((meal) => {
+                              const mealType = meal?.type?.toLowerCase() || "";
+                              if (key === "snacksAM" || key === "snacksPM") {
+                                return mealType.startsWith("snack");
+                              }
+                              return mealType === key.toLowerCase();
+                            })
+                            .map((meal) => ({
+                              value: meal._id,
+                              label: meal.name,
+                            }))}
+
                           disabled={templateId}
                           value={selectedCategory[key] || ""}
                           onChange={(value) => handleAddMeal(key, value)}
