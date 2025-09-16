@@ -1,9 +1,8 @@
 import React, { useEffect, useState } from "react";
-import { Navigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
-import { jwtDecode } from "jwt-decode";
+import { jwtDecode } from "jwt-decode"; 
 
-// Function to check token validity
 const isTokenValid = (token) => {
   try {
     const decoded = jwtDecode(token);
@@ -25,7 +24,8 @@ const isTokenValid = (token) => {
 
 const ProtectedRoute = ({ children }) => {
   const [checked, setChecked] = useState(false);
-  const [isAuthenticated, setIsAuthenticated] = useState(true);
+  const [isAuthenticated, setIsAuthenticated] = useState(false); 
+  const navigate = useNavigate();
 
   useEffect(() => {
     const checkAuth = () => {
@@ -38,6 +38,7 @@ const ProtectedRoute = ({ children }) => {
           position: "top-center",
           autoClose: 2000,
         });
+        navigate("/", { replace: true }); 
       } else {
         setIsAuthenticated(true);
       }
@@ -47,17 +48,12 @@ const ProtectedRoute = ({ children }) => {
     checkAuth();
 
     const interval = setInterval(checkAuth, 60 * 1000);
-
     return () => clearInterval(interval);
-  }, []);
+  }, [navigate]);
 
-  if (!checked) return null; 
+  if (!checked) return null;
 
-  if (!isAuthenticated) {
-    return <Navigate to="/" replace />;
-  }
-
-  return children;
+  return isAuthenticated ? children : null;
 };
 
 export default ProtectedRoute;

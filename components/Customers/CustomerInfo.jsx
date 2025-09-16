@@ -91,8 +91,8 @@ export const CustomerInfo = () => {
           {/* === Profile Picture === */}
           <div className="absolute -top-16 left-1/2 transform -translate-x-1/2 text-center">
             <img
-              src={customer?.profileImage || "/fileLogo.png"}
-              alt="Profile"
+              src={customer?.profileImage?.replace("http://137.184.244.200:5050", "/img-proxy")}
+              alt={customer.name}
               className="w-32 h-32 rounded-full object-cover border-2 border-gray-300 bg-white"
               onError={(e) => {
                 e.target.src = "/fileLogo.png";
@@ -110,7 +110,6 @@ export const CustomerInfo = () => {
                 { label: "Email", value: customer?.email },
                 { label: "Age", value: customer?.age },
                 { label: "Gender", value: customer?.gender },
-                { label: "Role", value: customer?.role },
                 { label: "Goal", value: customer?.goal },
                 { label: "Height", value: customer?.height ? `${customer.height} cm` : "" },
                 { label: "Weight", value: customer?.weight ? `${customer.weight} kg` : "" },
@@ -176,14 +175,8 @@ export const CustomerInfo = () => {
             <InfoSection
               title="Address & Subscription"
               fields={[
-                { 
-                  label: "Subscription Plan", 
-                  value: customer.subscription?.plan 
-                },
-                {
-                  label: "Subscription Status",
-                  value: customer.subscription?.isActive ? "Active" : "Inactive"
-                },
+               
+               
                 { 
                   label: "Default Address", 
                   value: getDefaultAddress() ? formatAddress(getDefaultAddress()) : "No address" 
