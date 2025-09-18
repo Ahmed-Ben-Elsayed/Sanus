@@ -211,7 +211,7 @@ export const Packge = () => {
                                     <th className="p-3">Templete Name</th>
                                     <th className="p-3">Date</th>
                                     <th className="p-3">Box</th>
-                                    <th className="p-3">Carbs</th>
+                                    <th className="p-3">Calories</th>
                                     <th className="p-3">include Breakfast</th>
                                     <th className="p-3">include Lunch</th>
                                     <th className="p-3">include Dinner</th>

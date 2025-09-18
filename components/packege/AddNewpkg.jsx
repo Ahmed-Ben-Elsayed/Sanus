@@ -208,7 +208,7 @@ export const AddNewpkg = () => {
             />
             <ReusableInput
               name="carbCount"
-              label="Carbs"
+              label="Calories"
               placeholder="e.g. 150g"
               value={form.carbCount}
               onChange={handleChange}
