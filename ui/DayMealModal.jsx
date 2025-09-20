@@ -370,11 +370,18 @@ const DayMealModal = ({
                           options={meals
                             .filter((meal) => {
                               const mealType = meal?.type?.toLowerCase() || "";
+
                               if (key === "snacksAM" || key === "snacksPM") {
                                 return mealType.startsWith("snack");
                               }
+
+                              if (key === "lunch" || key === "dinner") {
+                                return mealType === "lunch" || mealType === "dinner";
+                              }
+
                               return mealType === key.toLowerCase();
                             })
+
                             .map((meal) => ({
                               value: meal._id,
                               label: meal.name,
