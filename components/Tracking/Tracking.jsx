@@ -327,9 +327,9 @@ export const Tracking = ({}) => {
       matchesOrderNumber &&
       matchesPhone &&
       matchesPackage &&
-      matchesFrom &&
-      status &&
-      matchesTo && paymentStatus && hasFutureMeals
+      matchesFrom 
+      // status &&
+      // matchesTo && paymentStatus && hasFutureMeals
     );
   });
 

@@ -38,7 +38,7 @@ export const ChangeLocation = ( ) => {
       });
       const fetchedAddress = response?.data?.data?.order?.shippingAddress;
       setShippingAddress(fetchedAddress);
-      console.log(response.data.data.order.shippingAddress);
+      console.log(response.data.data.order);
       
     } catch (err) {
       console.error('Failed to fetch order:', err);
@@ -165,7 +165,7 @@ export const ChangeLocation = ( ) => {
         <hr className="h-[1px] my-5 w-full border-none bg-[#E8E8E8]" />
 
         <form onSubmit={handleSubmit} className="space-y-6">
-          <ReusableSelector
+          {/* <ReusableSelector
             name="type"
             value={address.type}
             onChange={handleChange}
@@ -177,7 +177,7 @@ export const ChangeLocation = ( ) => {
             ]}
             custclassName="bg-white text-[#476171!important] min-w-[150%!important]"
             custclassNameArrow="text-[#476171!important]"
-          />
+          /> */}
 
           <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
             <ReusableInput name="zone" onChange={handleChange} value={address.zone} label="Zone" className="min-w-full" />

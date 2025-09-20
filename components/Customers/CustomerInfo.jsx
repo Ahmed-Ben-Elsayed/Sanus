@@ -29,6 +29,7 @@ export const CustomerInfo = () => {
   const [customer, setCustomer] = useState({});
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
+
   const getdata = async (id) => {
     try {
       setLoading(true);
@@ -57,7 +58,7 @@ export const CustomerInfo = () => {
 
   // Format allergies and dislikes for display
   const formatAllergies = (allergies) => {
-    return allergies?.map(a => a.nameAr + " / " + a.name).join(", ") || "None";
+    return allergies?.map((a) => a.nameAr + " / " + a.name).join(", ") || "None";
   };
 
   // Format addresses for display
@@ -67,12 +68,12 @@ export const CustomerInfo = () => {
 
   // Get default address
   const getDefaultAddress = () => {
-    return customer.addresses?.find(addr => addr.isDefault) || customer.addresses?.[0];
+    return customer.addresses?.find((addr) => addr.isDefault) || customer.addresses?.[0];
   };
 
   // Get work address
   const getWorkAddress = () => {
-    return customer.addresses?.find(addr => addr.label === "Work");
+    return customer.addresses?.find((addr) => addr.label === "Work");
   };
 
   return (
@@ -82,7 +83,9 @@ export const CustomerInfo = () => {
         <h2 className="text-lg md:text-xl font-semibold flex items-center gap-1 text-[#7A83A3]">
           <IoIosArrowBack
             className="cursor-pointer"
-            onClick={() => {  navigate("/Admin/Account_Customers", { state: {} })}}
+            onClick={() => {
+              navigate("/Admin/Account_Customers", { state: {} });
+            }}
           />
           Customer Info
         </h2>
@@ -123,47 +126,47 @@ export const CustomerInfo = () => {
             <InfoSection
               title="Nutrition & Preferences"
               fields={[
-                { 
-                  label: "Daily Calories", 
-                  value: customer.nutritionNeeds?.calories 
-                    ? `${customer.nutritionNeeds.calories} kcal` 
-                    : "" 
+                {
+                  label: "Daily Calories",
+                  value: customer.nutritionNeeds?.calories
+                    ? `${customer.nutritionNeeds.calories} kcal`
+                    : "",
                 },
-                { 
-                  label: "Protein", 
-                  value: customer.nutritionNeeds?.protein 
-                    ? `${customer.nutritionNeeds.protein.grams}g (${customer.nutritionNeeds.protein.percentage}%)` 
-                    : "" 
+                {
+                  label: "Protein",
+                  value: customer.nutritionNeeds?.protein
+                    ? `${customer.nutritionNeeds.protein.grams}g (${customer.nutritionNeeds.protein.percentage}%)`
+                    : "",
                 },
-                { 
-                  label: "Carbs", 
-                  value: customer.nutritionNeeds?.carbs 
-                    ? `${customer.nutritionNeeds.carbs.grams}g (${customer.nutritionNeeds.carbs.percentage}%)` 
-                    : "" 
+                {
+                  label: "Carbs",
+                  value: customer.nutritionNeeds?.carbs
+                    ? `${customer.nutritionNeeds.carbs.grams}g (${customer.nutritionNeeds.carbs.percentage}%)`
+                    : "",
                 },
-                { 
-                  label: "Fat", 
-                  value: customer.nutritionNeeds?.fat 
-                    ? `${customer.nutritionNeeds.fat.grams}g (${customer.nutritionNeeds.fat.percentage}%)` 
-                    : "" 
+                {
+                  label: "Fat",
+                  value: customer.nutritionNeeds?.fat
+                    ? `${customer.nutritionNeeds.fat.grams}g (${customer.nutritionNeeds.fat.percentage}%)`
+                    : "",
                 },
-                { 
-                  label: "Water", 
-                  value: customer.nutritionNeeds?.water 
-                    ? `${customer.nutritionNeeds.water} ml` 
-                    : "" 
+                {
+                  label: "Water",
+                  value: customer.nutritionNeeds?.water
+                    ? `${customer.nutritionNeeds.water} ml`
+                    : "",
                 },
-                { 
-                  label: "Activity Level", 
-                  value: customer?.activityLevel 
+                {
+                  label: "Activity Level",
+                  value: customer?.activityLevel,
                 },
-                { 
-                  label: "Allergies", 
-                  value: formatAllergies(customer?.allergies) 
+                {
+                  label: "Allergies",
+                  value: formatAllergies(customer?.allergies),
                 },
-                { 
-                  label: "Dislikes", 
-                  value: formatAllergies(customer?.dislikes) 
+                {
+                  label: "Dislikes",
+                  value: formatAllergies(customer?.dislikes),
                 },
               ]}
             />
@@ -175,21 +178,37 @@ export const CustomerInfo = () => {
             <InfoSection
               title="Address & Subscription"
               fields={[
-               
-               
-                { 
-                  label: "Default Address", 
-                  value: getDefaultAddress() ? formatAddress(getDefaultAddress()) : "No address" 
+                {
+                  label: "Default Address",
+                  value: getDefaultAddress() ? formatAddress(getDefaultAddress()) : "No address",
                 },
-                { 
-                  label: "Work Address", 
-                  value: getWorkAddress() ? formatAddress(getWorkAddress()) : "No work address" 
+                {
+                  label: "Work Address",
+                  value: getWorkAddress() ? formatAddress(getWorkAddress()) : "No work address",
                 },
-                { 
-                  label: "Member Since", 
-                  value: customer.createdAt ? new Date(customer.createdAt).toLocaleDateString() : "" 
+                {
+                  label: "Member Since",
+                  value: customer.createdAt
+                    ? new Date(customer.createdAt).toLocaleDateString()
+                    : "",
                 },
               ]}
+            />
+
+            {/* Divider (Desktop only) */}
+            <span className="hidden md:block w-[1.5px] bg-[#D7D7D7]"></span>
+
+            {/* All Addresses */}
+            <InfoSection
+              title="All Addresses"
+              fields={
+                customer.addresses?.length > 0
+                  ? customer.addresses.map((addr, idx) => ({
+                      label: addr.label || `Address ${idx + 1}`,
+                      value: formatAddress(addr),
+                    }))
+                  : [{ label: "Addresses", value: "No addresses available" }]
+              }
             />
           </div>
         </div>
