@@ -26,7 +26,7 @@ export const Sidebar = ({ dark }) => {
 
   const pages = [
     { name: "On Boarding", url: "/Admin/On_Boarding", icon: "/noactive-sidebar-icons/Onboarding.png", activeIcon: "/active-icons-sidebar/Onboarding.png" },
-    { name: "Account Customers", url: "/Admin/Account_Customers", icon: "/noactive-sidebar-icons/Customers.png", activeIcon: "/active-icons-sidebar/Customers.png" },
+    { name: "Customers Account", url: "/Admin/Account_Customers", icon: "/noactive-sidebar-icons/Customers.png", activeIcon: "/active-icons-sidebar/Customers.png" },
     { name: "Tracking Subscription", url: "/Admin/Tracking_Subscription", icon: "/noactive-sidebar-icons/Orders.png", activeIcon: "/active-icons-sidebar/Orders.png" },
     { name: "Restaurant Orders", url: "/Admin/Restaurant_Orders", icon: "/noactive-sidebar-icons/restaurant.png", activeIcon: "/active-icons-sidebar/restaurant.png" },
     { name: "Timeslot", url: "/Admin/Timeslot", icon: "/noactive-sidebar-icons/time.png", activeIcon: "/active-icons-sidebar/time.png" },
