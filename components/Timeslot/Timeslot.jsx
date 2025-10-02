@@ -99,7 +99,7 @@ export const Timeslot = () => {
                 </thead>
                 <tbody>
                   {selectedSlots.map((slot, index) => {
-                    if (!slot.is_active) return null;
+                    // if (!slot.is_active) return null;
 
                     const [from, to] = slot.time_slot.split("-");
 
