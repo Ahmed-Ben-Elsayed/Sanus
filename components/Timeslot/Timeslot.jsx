@@ -17,7 +17,7 @@ export const Timeslot = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const navigate = useNavigate()
   const itemsPerPage = 12;
-
+  const [isactive, setIsActive] = useState()
   const getAllTimes = async () => {
     try {
       setLoading(true);
@@ -50,16 +50,18 @@ export const Timeslot = () => {
     if (currentPage < totalPages) setCurrentPage(currentPage + 1);
   };
 
-  const deactive = async (id) => {
+  const deactive = async (id , isActive) => {
     try {
       setLoading(true);
-      await axios.patch(`${BASE_URL}/time-slots/${id}/deactivate`, {}, {
+      await axios.patch(`${BASE_URL}/time-slots/${id}/deactivate`, {
+        is_active: isActive
+      }, {
         headers: {
           Authorization: `Bearer ${localStorage.getItem("token")}`,
         },
       });
       await getAllTimes();
-      toast.success("Status is Deactive")
+      toast.success(`Status is changed successfully `);
     } catch (err) {
       console.log(err);
     } finally {
@@ -116,10 +118,15 @@ export const Timeslot = () => {
                                 ? () => {
                                   setSelectedId(slot._id);
                                   setModal(true);
+                                  setIsActive(false)
                                 }
-                                : undefined
+                                : () => {
+                                  setSelectedId(slot._id);
+                                  setModal(true);
+                                  setIsActive(true)
+                                }
                             }
-                            className={`${slot?.is_active ? "bg-[#BAEB9E] cursor-pointer" : "bg-[#DBDBDB]"
+                            className={`${slot?.is_active ? "bg-[#BAEB9E] cursor-pointer" : "cursor-pointer bg-[#DBDBDB]"
                               } max-w-[40%] py-1 px-2 rounded-md`}
                           >
                             {slot?.is_active ? "Active" : "Deactive"}
@@ -195,12 +202,12 @@ export const Timeslot = () => {
         open={modal}
         showActions={true}
         onConfirm={() => {
-          deactive(selectedId);
+          deactive(selectedId , isactive);
           setModal(false);
         }}
         onClose={() => setModal(false)}
       >
-        Are you sure you want to deactivate this time slot?
+        Are you sure you want to {!isactive ? "deactivate" : "activate"} this time slot?
       </Modal>
     </>
   );
