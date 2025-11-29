@@ -513,7 +513,7 @@ export const Tracking = ({}) => {
                             {order?.items?.[0]?.package?.name}
                           </td>
                           <td className="px-2 sm:px-4 py-3 text-[#344767] text-xs sm:text-sm">
-                            {new Date(order.createdAt).toLocaleDateString("en-GB")}
+                            {new Date(order.MealPlan.dailyPlans[0].date).toLocaleDateString("en-GB")}
                           </td>
                           <td className="px-2 sm:px-4 py-3 text-[#344767] text-xs sm:text-sm">
                             {order?.totalAmount}
