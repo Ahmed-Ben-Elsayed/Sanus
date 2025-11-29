@@ -78,7 +78,7 @@ export const Orders = ({ active, setactive }) => {
 
     try {
       const canvas = await html2canvas(node, {
-        scale: 4, // دقة أعلى
+        scale: 4,
         useCORS: true,
         backgroundColor: "#fff",
       });
@@ -91,7 +91,16 @@ export const Orders = ({ active, setactive }) => {
         format: [canvas.width, canvas.height],
       });
 
-      pdf.addImage(imgData, "PNG", 0, 0, canvas.width, canvas.height, "", "FAST");
+      pdf.addImage(
+        imgData,
+        "PNG",
+        0,
+        0,
+        canvas.width,
+        canvas.height,
+        "",
+        "FAST"
+      );
       pdf.save(`Order_${selectedOrder?._id || "Card"}.pdf`);
     } catch (err) {
       console.error("PDF Error:", err);
@@ -159,6 +168,7 @@ export const Orders = ({ active, setactive }) => {
       const res = await axios.get(`${BASE_URL}/orders`, {
         headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
       });
+      console.log(res.data.data.orders);
 
       const fetchedOrders = res?.data?.data?.orders || [];
       setOrders(fetchedOrders);
@@ -213,9 +223,9 @@ export const Orders = ({ active, setactive }) => {
     const dataForExport = orders.map((cust, index) => ({
       "Order Number": startIndex + index + 1,
       "Customer Name": cust.user?.name || "N/A",
-      "Phone": cust?.shippingAddress?.phone || "N/A",
-      "Package": cust.items?.[0]?.package?.name || "N/A",
-      "From": new Date(cust.createdAt).toLocaleString("en-GB", {
+      Phone: cust?.shippingAddress?.phone || "N/A",
+      Package: cust.items?.[0]?.package?.name || "N/A",
+      From: new Date(cust.createdAt).toLocaleString("en-GB", {
         year: "numeric",
         month: "2-digit",
         day: "2-digit",
@@ -224,15 +234,16 @@ export const Orders = ({ active, setactive }) => {
         hour12: true,
       }),
       "Payment Status": cust.paymentStatus || "N/A",
-      "Status": cust.status || "N/A",
+      Status: cust.status || "N/A",
     }));
 
     const worksheet = XLSX.utils.json_to_sheet(dataForExport);
     const columnWidths = Object.keys(dataForExport[0]).map((key) => ({
-      wch: Math.max(
-        key.length,
-        ...dataForExport.map((row) => String(row[key] || "").length)
-      ) + 2,
+      wch:
+        Math.max(
+          key.length,
+          ...dataForExport.map((row) => String(row[key] || "").length)
+        ) + 2,
     }));
     worksheet["!cols"] = columnWidths;
 
@@ -289,27 +300,27 @@ export const Orders = ({ active, setactive }) => {
     }
   };
 
- const getTodaysMealName = (order, mealType) => {
-  if (!order?.MealPlan?.dailyPlans) return null;
+  const getTodaysMealName = (order, mealType) => {
+    if (!order?.MealPlan?.dailyPlans) return null;
 
-  const today = new Date().toISOString().split("T")[0];
-  const todaysPlan = order.MealPlan.dailyPlans.find(
-    (plan) => plan?.date?.split("T")[0] === today
-  );
+    const today = new Date().toISOString().split("T")[0];
+    const todaysPlan = order.MealPlan.dailyPlans.find(
+      (plan) => plan?.date?.split("T")[0] === today
+    );
 
-  const mealEntry = todaysPlan?.meals?.[mealType]?.[0]?.meal;
-  if (!mealEntry) return null;
+    const mealEntry = todaysPlan?.meals?.[mealType]?.[0]?.meal;
+    if (!mealEntry) return null;
 
-  if (typeof mealEntry === "string") {
-    return mealEntry.trim();
-  }
+    if (typeof mealEntry === "string") {
+      return mealEntry.trim();
+    }
 
-  if (typeof mealEntry === "object") {
-    return mealEntry.name  || JSON.stringify(mealEntry);
-  }
+    if (typeof mealEntry === "object") {
+      return mealEntry.name || JSON.stringify(mealEntry);
+    }
 
-  return String(mealEntry);
-};
+    return String(mealEntry);
+  };
 
   const handleMealClick = (description) => {
     setSelectedDescription(description || "No meal details available");
@@ -327,6 +338,41 @@ export const Orders = ({ active, setactive }) => {
 
   const handlemeal = (order) => {
     setSelectedmeal(order);
+  };
+
+  const getTodaysMealDate = (order) => {
+    const dailyPlans = order?.MealPlan?.dailyPlans || [];
+    if (!dailyPlans.length) return null;
+
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+
+    const todaysPlan = dailyPlans.find((p) => {
+      if (!p?.date) return false;
+      const planDate = new Date(p.date);
+      planDate.setHours(0, 0, 0, 0);
+      return planDate.getTime() === today.getTime();
+    });
+
+    if (todaysPlan?.date) {
+      return new Date(todaysPlan.date).toLocaleString("en-GB", {
+        day: "2-digit",
+        month: "2-digit",
+        year: "numeric",
+        hour12: true,
+      });
+    }
+
+    if (order?.createdAt) {
+      return new Date(order.createdAt).toLocaleString("en-GB", {
+        day: "2-digit",
+        month: "2-digit",
+        year: "numeric",
+        hour12: true,
+      });
+    }
+
+    return "N/A";
   };
 
   useEffect(() => {
@@ -350,7 +396,7 @@ export const Orders = ({ active, setactive }) => {
     const today = new Date();
     today.setHours(0, 0, 0, 0);
 
-    const hasTodayMeal = dailyPlans.some(plan => {
+    const hasTodayMeal = dailyPlans.some((plan) => {
       const planDate = new Date(plan.date);
       planDate.setHours(0, 0, 0, 0);
       return planDate.getTime() === today.getTime();
@@ -490,17 +536,39 @@ export const Orders = ({ active, setactive }) => {
                 <table className="min-w-full w-full text-xs sm:text-sm text-left">
                   <thead className="text-[#7B809A] bg-gray-50 sticky top-0">
                     <tr>
-                      <th className="px-2 py-2 sm:py-3 whitespace-nowrap">Order #</th>
-                      <th className="px-2 py-2 sm:py-3 whitespace-nowrap">Customer</th>
-                      <th className="px-2 py-2 sm:py-3 whitespace-nowrap">Phone</th>
-                      <th className="px-2 py-2 sm:py-3 whitespace-nowrap">Package</th>
-                      <th className="px-2 py-2 sm:py-3 whitespace-nowrap">Date</th>
-                      <th className="px-2 py-2 sm:py-3 whitespace-nowrap">Breakfast</th>
-                      <th className="px-2 py-2 sm:py-3 whitespace-nowrap">Lunch</th>
-                      <th className="px-2 py-2 sm:py-3 whitespace-nowrap">Dinner</th>
-                      <th className="px-2 py-2 sm:py-3 whitespace-nowrap">Snack AM</th>
-                      <th className="px-2 py-2 sm:py-3 whitespace-nowrap">Snack PM</th>
-                      <th className="px-2 py-2 sm:py-3 whitespace-nowrap">Action</th>
+                      <th className="px-2 py-2 sm:py-3 whitespace-nowrap">
+                        Order #
+                      </th>
+                      <th className="px-2 py-2 sm:py-3 whitespace-nowrap">
+                        Customer
+                      </th>
+                      <th className="px-2 py-2 sm:py-3 whitespace-nowrap">
+                        Phone
+                      </th>
+                      <th className="px-2 py-2 sm:py-3 whitespace-nowrap">
+                        Package
+                      </th>
+                      <th className="px-2 py-2 sm:py-3 whitespace-nowrap">
+                        Date
+                      </th>
+                      <th className="px-2 py-2 sm:py-3 whitespace-nowrap">
+                        Breakfast
+                      </th>
+                      <th className="px-2 py-2 sm:py-3 whitespace-nowrap">
+                        Lunch
+                      </th>
+                      <th className="px-2 py-2 sm:py-3 whitespace-nowrap">
+                        Dinner
+                      </th>
+                      <th className="px-2 py-2 sm:py-3 whitespace-nowrap">
+                        Snack AM
+                      </th>
+                      <th className="px-2 py-2 sm:py-3 whitespace-nowrap">
+                        Snack PM
+                      </th>
+                      <th className="px-2 py-2 sm:py-3 whitespace-nowrap">
+                        Action
+                      </th>
                     </tr>
                   </thead>
                   <tbody className="text-[#476171] divide-y divide-gray-200">
@@ -522,22 +590,33 @@ export const Orders = ({ active, setactive }) => {
                             {order?.items?.[0]?.package?.name || "N/A"}
                           </td>
                           <td className="px-2 py-2 sm:py-3 font-semibold whitespace-nowrap">
-                            {new Date(order.createdAt).toLocaleString("en-GB", {
-                              day: "2-digit",
-                              month: "2-digit",
-                              year: "numeric",
-                              hour12: true,
-                            })}
+                            {getTodaysMealDate(order)}
                           </td>
 
                           {/* Meal cells */}
-                          {['breakfast', 'lunch', 'dinner', 'snacksAM', 'snacksPM'].map((mealType) => (
+                          {[
+                            "breakfast",
+                            "lunch",
+                            "dinner",
+                            "snacksAM",
+                            "snacksPM",
+                          ].map((mealType) => (
                             <td
                               key={mealType}
                               className="px-2 py-2 sm:py-3 font-semibold max-w-[120px] sm:max-w-[250px] truncate text-[#536C7A] cursor-pointer hover:underline whitespace-nowrap"
                             >
-                              <span onClick={() => { handleMealClick(getTodaysMealName(order, mealType)), handlemeal(order), gettypemeal(mealType) }}>
-                                {getTodaysMealName(order, mealType) ? "View Name" : "No Name"}
+                              <span
+                                onClick={() => {
+                                  handleMealClick(
+                                    getTodaysMealName(order, mealType)
+                                  ),
+                                    handlemeal(order),
+                                    gettypemeal(mealType);
+                                }}
+                              >
+                                {getTodaysMealName(order, mealType)
+                                  ? "View Name"
+                                  : "No Name"}
                               </span>
                             </td>
                           ))}
@@ -549,13 +628,19 @@ export const Orders = ({ active, setactive }) => {
                               placeholder="Action"
                               onChange={(e) => {
                                 if (e.target.value === "info") {
-                                  navigate("/Admin/Restaurant_Orders/moreinfo", {
-                                    state: { orderId: order?._id },
-                                  });
+                                  navigate(
+                                    "/Admin/Restaurant_Orders/moreinfo",
+                                    {
+                                      state: { orderId: order?._id },
+                                    }
+                                  );
                                 } else if (e.target.value === "note") {
-                                  navigate(`/Admin/Restaurant_Orders/add_note`, {
-                                    state: { orderId: order?._id }
-                                  });
+                                  navigate(
+                                    `/Admin/Restaurant_Orders/add_note`,
+                                    {
+                                      state: { orderId: order?._id },
+                                    }
+                                  );
                                 } else if (e.target.value === "sticker") {
                                   handleOrder(order);
                                 }
@@ -603,10 +688,11 @@ export const Orders = ({ active, setactive }) => {
                       <button
                         onClick={() => goToPage(pagination.currentPage - 1)}
                         disabled={pagination.currentPage === 1}
-                        className={`flex items-center gap-1 cursor-pointer px-2 sm:px-3 py-1 rounded-md text-xs sm:text-sm ${pagination.currentPage === 1
+                        className={`flex items-center gap-1 cursor-pointer px-2 sm:px-3 py-1 rounded-md text-xs sm:text-sm ${
+                          pagination.currentPage === 1
                             ? "text-gray-400 cursor-not-allowed"
                             : "text-[#476171] hover:bg-gray-100"
-                          }`}
+                        }`}
                       >
                         <IoIosArrowBack className="text-[#476171]" />
                         Previous
@@ -634,10 +720,11 @@ export const Orders = ({ active, setactive }) => {
                             <button
                               key={pageNum}
                               onClick={() => goToPage(pageNum)}
-                              className={`px-2 sm:px-3 py-1 rounded-md text-xs sm:text-sm ${pagination.currentPage === pageNum
+                              className={`px-2 sm:px-3 py-1 rounded-md text-xs sm:text-sm ${
+                                pagination.currentPage === pageNum
                                   ? "bg-[#476171] cursor-pointer text-white"
                                   : "hover:bg-gray-100 cursor-pointer"
-                                }`}
+                              }`}
                             >
                               {pageNum}
                             </button>
@@ -650,10 +737,11 @@ export const Orders = ({ active, setactive }) => {
                         disabled={
                           pagination.currentPage === pagination.totalPages
                         }
-                        className={`flex items-center gap-1 px-2 sm:px-3 py-1 rounded-md text-xs sm:text-sm ${pagination.currentPage === pagination.totalPages
+                        className={`flex items-center gap-1 px-2 sm:px-3 py-1 rounded-md text-xs sm:text-sm ${
+                          pagination.currentPage === pagination.totalPages
                             ? "text-gray-400 cursor-not-allowed"
                             : "text-[#476171] hover:bg-gray-100 cursor-pointer"
-                          }`}
+                        }`}
                       >
                         Next
                         <IoIosArrowForward className="text-[#476171]" />
@@ -684,10 +772,16 @@ export const Orders = ({ active, setactive }) => {
         <h1 className="text-[#476171] text-lg font-semibold mb-4">
           {selectedDescription}
         </h1>
-        <NewButton onClick={(e) => {
-          setShowModal(false)
-          setShowModalsticker(true)
-        }} children={"Get Sticker"} > Get Sticker </NewButton>
+        <NewButton
+          onClick={(e) => {
+            setShowModal(false);
+            setShowModalsticker(true);
+          }}
+          children={"Get Sticker"}
+        >
+          {" "}
+          Get Sticker{" "}
+        </NewButton>
       </Modal>
 
       <Modal open={showModalsticker} onClose={() => setShowModalsticker(false)}>
@@ -695,12 +789,18 @@ export const Orders = ({ active, setactive }) => {
           <h2 className="text-lg font-semibold mb-3">Order Details</h2>
           {selectedmeal ? (
             <>
-              <div ref={cardRef} className="relative border-3 min-w-[250px] max-w-[330px] mx-auto border-black flex flex-col gap-2 rounded-md p-5 text-sm overflow-hidden">
-                <div style={{
-                  fontFamily: "Arial, sans-serif",
-                  fontSmooth: "always",
-                  WebkitFontSmoothing: "antialiased",
-                }} className="absolute inset-0 flex items-center justify-center opacity-30 pointer-events-none select-none">
+              <div
+                ref={cardRef}
+                className="relative border-3 min-w-[250px] max-w-[330px] mx-auto border-black flex flex-col gap-2 rounded-md p-5 text-sm overflow-hidden"
+              >
+                <div
+                  style={{
+                    fontFamily: "Arial, sans-serif",
+                    fontSmooth: "always",
+                    WebkitFontSmoothing: "antialiased",
+                  }}
+                  className="absolute inset-0 flex items-center justify-center opacity-30 pointer-events-none select-none"
+                >
                   <img
                     src="/logo.png"
                     alt="Watermark"
@@ -708,13 +808,33 @@ export const Orders = ({ active, setactive }) => {
                   />
                 </div>
 
-                <p><strong>Name :</strong> {selectedmeal?.user?.name || "N/A"}</p>
-                <p><strong>Meal :</strong> {selectedDescription || "N/A"}</p>
-                <p><strong>Type :</strong> {typeMeal || "N/A"}</p>
-                <p><strong>Phone :</strong> {selectedmeal?.shippingAddress?.phone || "N/A"}</p>
-                <p><strong>Address :</strong> {selectedmeal?.shippingAddress?.address || "N/A"}</p>
-                <p><strong>Meal Plan :</strong> {selectedmeal?.items?.[0]?.package?.name} ({selectedmeal?.items?.[0]?.quantity} week)</p>
-                <p><strong>Meal Package :</strong> {selectedOrder?.items?.[0]?.package?.name} ({selectedOrder?.items?.[0]?.quantity} week)</p>
+                <p>
+                  <strong>Name :</strong> {selectedmeal?.user?.name || "N/A"}
+                </p>
+                <p>
+                  <strong>Meal :</strong> {selectedDescription || "N/A"}
+                </p>
+                <p>
+                  <strong>Type :</strong> {typeMeal || "N/A"}
+                </p>
+                <p>
+                  <strong>Phone :</strong>{" "}
+                  {selectedmeal?.shippingAddress?.phone || "N/A"}
+                </p>
+                <p>
+                  <strong>Address :</strong>{" "}
+                  {selectedmeal?.shippingAddress?.address || "N/A"}
+                </p>
+                <p>
+                  <strong>Meal Plan :</strong>{" "}
+                  {selectedmeal?.items?.[0]?.package?.name} (
+                  {selectedmeal?.items?.[0]?.quantity} week)
+                </p>
+                <p>
+                  <strong>Meal Package :</strong>{" "}
+                  {selectedOrder?.items?.[0]?.package?.name} (
+                  {selectedOrder?.items?.[0]?.quantity} week)
+                </p>
               </div>
               <NewButton
                 onClick={downloadPDF}
@@ -731,18 +851,26 @@ export const Orders = ({ active, setactive }) => {
 
       <Modal
         open={showModalorder}
-        onClose={() => { setShowModalorder(false), setShowModalsticker(false) }}
+        onClose={() => {
+          setShowModalorder(false), setShowModalsticker(false);
+        }}
       >
         <div className="p-4 text-[#000000] text-sm max-w-full overflow-auto">
           <h2 className="text-lg font-semibold mb-3">Order Details</h2>
           {selectedOrder ? (
             <>
-              <div ref={cardRef} className="relative border-3 min-w-[250px] max-w-[330px] mx-auto border-black flex flex-col gap-2 rounded-md p-5 text-sm overflow-hidden">
-                <div style={{
-                  fontFamily: "Arial, sans-serif",
-                  fontSmooth: "always",
-                  WebkitFontSmoothing: "antialiased",
-                }} className="absolute inset-0 flex items-center justify-center opacity-30 pointer-events-none select-none">
+              <div
+                ref={cardRef}
+                className="relative border-3 min-w-[250px] max-w-[330px] mx-auto border-black flex flex-col gap-2 rounded-md p-5 text-sm overflow-hidden"
+              >
+                <div
+                  style={{
+                    fontFamily: "Arial, sans-serif",
+                    fontSmooth: "always",
+                    WebkitFontSmoothing: "antialiased",
+                  }}
+                  className="absolute inset-0 flex items-center justify-center opacity-30 pointer-events-none select-none"
+                >
                   <img
                     src="/logo.png"
                     alt="Watermark"
@@ -750,11 +878,27 @@ export const Orders = ({ active, setactive }) => {
                   />
                 </div>
 
-                <p><strong>Name :</strong> {selectedOrder?.user?.name || "N/A"}</p>
-                <p><strong>Phone :</strong> {selectedOrder?.shippingAddress?.phone || "N/A"}</p>
-                <p><strong>Address :</strong> {selectedOrder?.shippingAddress?.address || "N/A"}</p>
-                <p><strong>Meal Plan :</strong> {selectedOrder?.items?.[0]?.package?.name} ({selectedOrder?.items?.[0]?.quantity} week)</p>
-                <p><strong>Meal Package :</strong> {selectedOrder?.items?.[0]?.package?.name} ({selectedOrder?.items?.[0]?.quantity} week)</p>
+                <p>
+                  <strong>Name :</strong> {selectedOrder?.user?.name || "N/A"}
+                </p>
+                <p>
+                  <strong>Phone :</strong>{" "}
+                  {selectedOrder?.shippingAddress?.phone || "N/A"}
+                </p>
+                <p>
+                  <strong>Address :</strong>{" "}
+                  {selectedOrder?.shippingAddress?.address || "N/A"}
+                </p>
+                <p>
+                  <strong>Meal Plan :</strong>{" "}
+                  {selectedOrder?.items?.[0]?.package?.name} (
+                  {selectedOrder?.items?.[0]?.quantity} week)
+                </p>
+                <p>
+                  <strong>Meal Package :</strong>{" "}
+                  {selectedOrder?.items?.[0]?.package?.name} (
+                  {selectedOrder?.items?.[0]?.quantity} week)
+                </p>
               </div>
               <NewButton
                 onClick={downloadPDF}
