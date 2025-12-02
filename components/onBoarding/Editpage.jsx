@@ -3,12 +3,11 @@ import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { toast } from "react-toastify";
 import Loading from "../../ui/loading/LoadingOrder";
-import { FaArrowLeft } from "react-icons/fa";
 import { IoIosArrowBack } from "react-icons/io";
 import Loaderstart from "../../ui/loading/Loaderstart";
 import NewButton from "../../ui/NewButton";
 
-const EditPage =  () => {
+const EditPage = () => {
   const token = localStorage.getItem("token");
   const BASE_URL = import.meta.env.VITE_API_BASE_URL;
   const { id } = useParams();
@@ -18,11 +17,23 @@ const EditPage =  () => {
   const [formData, setFormData] = useState({
     pageid: "",
     pageTitle: "",
+    pageTitleAr: "",
     stepNumber: "",
     title: "",
+    titleAr: "",
     sentence: "",
+    sentenceAr: "",
     stepImage: null,
   });
+
+  const getFileNameFromUrl = (url) => {
+    try {
+      const parts = url.split("/");
+      return parts[parts.length - 1];
+    } catch (e) {
+      return "";
+    }
+  };
 
   const getById = async (id) => {
     try {
@@ -38,21 +49,26 @@ const EditPage =  () => {
       setFormData({
         pageid: stepData.id || stepData._id,
         pageTitle: stepData.pageTitle || "",
+        pageTitleAr: stepData.pageTitleAr || "",
         stepNumber: stepData.stepNumber || "",
         title: stepData.title || "",
+        titleAr: stepData.titleAr || "",
         sentence: stepData.sentence || "",
+        sentenceAr: stepData.sentenceAr || "",
         stepImage: stepData.image || null,
       });
+
       setImagePreview(stepData.image || null);
     } catch (error) {
-      // toast.error("Failed to fetch page data.");
+      console.error("Fetch error:", error);
+      toast.error("Failed to fetch page data.");
     } finally {
       setLoading(false);
     }
   };
 
   useEffect(() => {
-    getById(id);
+    if (id) getById(id);
   }, [id]);
 
   const handleChange = (e) => {
@@ -78,109 +94,143 @@ const EditPage =  () => {
 
       const form = new FormData();
       form.append("pageTitle", formData.pageTitle);
+      form.append("pageTitleAr", formData.pageTitleAr);
       form.append("stepNumber", formData.stepNumber);
       form.append("title", formData.title);
+      form.append("titleAr", formData.titleAr);
       form.append("sentence", formData.sentence);
-
+      form.append("sentenceAr", formData.sentenceAr);
       if (formData.stepImage instanceof File) {
         form.append("stepImage", formData.stepImage);
       }
 
-      await axios.patch(
-        `${BASE_URL}/onboarding/${formData.pageid}`,
-        form,
-        {
-          headers: {
-            Accept: "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
+      await axios.patch(`${BASE_URL}/onboarding/${formData.pageid}`, form, {
+        headers: {
+          Accept: "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      });
 
       toast.success("Page updated successfully");
       navigate("/Admin/On_Boarding");
     } catch (error) {
       console.log(error);
-
       toast.error(error?.response?.data?.message || "Failed to update page.");
-
     } finally {
       setLoading(false);
     }
   };
-  console.log("Form Data:", formData);
-  console.log("Image Preview:", imagePreview);
 
   return (
     <div className="w-full min-h-[100%] mx-auto p-6 bg-white rounded-lg shadow">
       {!loading && formData.pageid ? (
         <>
           <h2 className="text-xl font-semibold flex items-center gap-1 text-[#7A83A3] mb-6">
-            <IoIosArrowBack className="cursor-pointer" onClick={() => { navigate(`/Admin/On_Boarding`); setCurrentSection("On Boarding"); }} />
-            Edit Page {formData.pageTitle}
+            <IoIosArrowBack
+              className="cursor-pointer"
+              onClick={() => navigate(`/Admin/On_Boarding`)}
+            />
+            Edit Page — {formData.pageTitle || formData.pageTitleAr}
           </h2>
-          <form onSubmit={handleSubmit} className="space-y-5">
-            {/* Page Title */}
+
+          <form onSubmit={handleSubmit} className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {/* Page Title EN */}
             <div>
-              <label className="block text-sm font-medium text-[#6b7280] mb-1">
-                Page Title
-              </label>
+              <label className="block text-sm font-medium text-[#6b7280] mb-1">Page Title</label>
               <input
                 type="text"
                 name="pageTitle"
                 value={formData.pageTitle}
                 onChange={handleChange}
                 className="w-full border border-[#91AEC0] rounded-md px-3 py-2 focus:outline-none focus:ring-[#344767]"
+                placeholder="Page Title (EN)"
+              />
+            </div>
+
+            {/* Page Title AR */}
+            <div>
+              <label className="block text-sm font-medium text-[#6b7280] mb-1">Page Title Ar</label>
+              <input
+                type="text"
+                name="pageTitleAr"
+                dir="rtl"
+                value={formData.pageTitleAr}
+                onChange={handleChange}
+                className="w-full border border-[#91AEC0] rounded-md px-3 py-2 focus:outline-none focus:ring-[#344767] text-right"
+                placeholder="Page Title (AR)"
               />
             </div>
 
             {/* Step Number */}
             <div>
-              <label className="block text-sm font-medium text-[#6b7280] mb-1">
-                Step Number
-              </label>
+              <label className="block text-sm font-medium text-[#6b7280] mb-1">Step Number</label>
               <input
                 type="text"
                 name="stepNumber"
                 value={formData.stepNumber}
                 onChange={handleChange}
                 className="w-full border border-[#91AEC0] rounded-md px-3 py-2 focus:outline-none focus:ring-[#344767]"
+                placeholder="1"
               />
             </div>
 
-            {/* Title */}
+            {/* Title EN */}
             <div>
-              <label className="block text-sm font-medium text-[#6b7280] mb-1">
-                Title
-              </label>
+              <label className="block text-sm font-medium text-[#6b7280] mb-1">Title</label>
               <input
                 type="text"
                 name="title"
                 value={formData.title}
                 onChange={handleChange}
                 className="w-full border border-[#91AEC0] rounded-md px-3 py-2 focus:outline-none focus:ring-[#344767]"
+                placeholder="Title (EN)"
               />
             </div>
 
-            {/* Sentence */}
+            {/* Title AR */}
             <div>
-              <label className="block text-sm font-medium text-[#6b7280] mb-1">
-                Sentence
-              </label>
+              <label className="block text-sm font-medium text-[#6b7280] mb-1">Title Ar</label>
+              <input
+                type="text"
+                name="titleAr"
+                dir="rtl"
+                value={formData.titleAr}
+                onChange={handleChange}
+                className="w-full border border-[#91AEC0] rounded-md px-3 py-2 focus:outline-none focus:ring-[#344767] text-right"
+                placeholder="Title (AR)"
+              />
+            </div>
+
+            {/* Sentence EN */}
+            <div>
+              <label className="block text-sm font-medium text-[#6b7280] mb-1">Sentence</label>
               <input
                 type="text"
                 name="sentence"
                 value={formData.sentence}
                 onChange={handleChange}
                 className="w-full border border-[#91AEC0] rounded-md px-3 py-2 focus:outline-none focus:ring-[#344767]"
+                placeholder="Sentence (EN)"
               />
             </div>
 
-            {/* Photo Upload */}
+            {/* Sentence AR */}
             <div>
-              <label className="block text-sm font-medium text-[#6b7280] mb-1">
-                Photo
-              </label>
+              <label className="block text-sm font-medium text-[#6b7280] mb-1">Sentence Ar</label>
+              <input
+                type="text"
+                name="sentenceAr"
+                dir="rtl"
+                value={formData.sentenceAr}
+                onChange={handleChange}
+                className="w-full border border-[#91AEC0] rounded-md px-3 py-2 focus:outline-none focus:ring-[#344767] text-right"
+                placeholder="Sentence (AR)"
+              />
+            </div>
+
+            {/* Photo Upload - span full width */}
+            <div className="md:col-span-2">
+              <label className="block text-sm font-medium text-[#6b7280] mb-1">Photo</label>
               <div className="relative w-full">
                 <input
                   type="file"
@@ -195,16 +245,20 @@ const EditPage =  () => {
                 >
                   Browse
                 </label>
+
                 <input
                   type="text"
                   readOnly
                   value={
                     formData.stepImage instanceof File
                       ? formData.stepImage.name
+                      : formData.stepImage
+                      ? getFileNameFromUrl(formData.stepImage)
                       : ""
                   }
-                  className="w-full  border cursor-auto border-[#91AEC0] rounded-md px-3 py-2 focus:outline-none"
+                  className="w-full border cursor-auto border-[#91AEC0] rounded-md px-3 py-2 focus:outline-none"
                 />
+
                 {/* Preview */}
                 {imagePreview && (
                   <img
@@ -214,22 +268,22 @@ const EditPage =  () => {
                         : imagePreview.replace("http://137.184.244.200:5050", "/img-proxy")
                     }
                     alt="Step Preview"
-                    className="mt-3 absolute object-contain top-[-6.5px] end-22 w-13 h-8 rounded-lg"
+                    className="mt-3 absolute object-contain top-[-9.5px] end-23 w-10 h-8 rounded-lg"
                   />
                 )}
-
               </div>
-
             </div>
 
-            {/* Submit Button */}
-            <NewButton
-              type="submit"
-              className="w-[120px] h-9 text-sm bg-[#344767]  hover:bg-[#2A3C47]  transition"
-              disabled={loading}
-            >
-              {loading ? "Saving..." : "Save"}
-            </NewButton>
+            {/* Submit Button - span full width and aligned to right */}
+            <div className="md:col-span-2 flex justify-end">
+              <NewButton
+                type="submit"
+                className="w-[120px] h-9 text-sm bg-[#344767]  hover:bg-[#2A3C47]  transition"
+                disabled={loading}
+              >
+                {loading ? "Saving..." : "Save"}
+              </NewButton>
+            </div>
           </form>
         </>
       ) : (
