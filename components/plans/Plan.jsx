@@ -163,7 +163,7 @@ export const Plan = () => {
 
                                     filteredPlans.map((plan, index) => (
                                         <tr key={index} className="border-b border-b-gray-300 text-[#344767]">
-                                            <td className="p-3">{plan?.name}</td>
+                                            <td className="p-3">{plan?.name +" / "+ plan.nameAr}</td>
                                             <td className="p-3">{plan?.createdAt ? new Date(plan?.createdAt).toLocaleDateString() : ""}</td>
                                             <td className="p-3 flex gap-2 justify-end">
                                                 <img
