@@ -1,0 +1,17 @@
+{
+  "version": 2,
+  "rewrites": [
+    {
+      "source": "/img-proxy/(.*)",
+      "destination": "http://137.184.244.200:5050/$1"
+    },
+    {
+      "source": "/api/(.*)",
+      "destination": "http://137.184.244.200:5050/api/$1"
+    },
+    {
+      "source": "/(.*)",
+      "destination": "/"
+    }
+  ]
+}
