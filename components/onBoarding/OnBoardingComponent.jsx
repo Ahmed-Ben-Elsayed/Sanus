@@ -23,7 +23,8 @@ export const OnBoardingComponent = () => {
       const steps = response?.data?.data?.steps || [];
       const formattedPages = steps.map((step) => ({
         id: step.id || step._id,
-        title: step.pageTitle,
+        pageTitle: step.pageTitle,
+        pageTitleAr: step.pageTitleAr,
         date: new Date(step.createdAt).toLocaleDateString("en-GB"),
         stepNumber: step.stepNumber,
       }));
@@ -32,6 +33,8 @@ export const OnBoardingComponent = () => {
         "numberOfPages",
         JSON.stringify(formattedPages.length)
       );
+      console.log(response.data);
+      
     } catch (err) {
       console.error("Error fetching data:", err);
     } finally {
@@ -112,7 +115,7 @@ export const OnBoardingComponent = () => {
                     key={page.id}
                     className="border-b border-[#e8e3e3] text-[#344767] text-sm"
                   >
-                    <td className="py-4 px-2 font-semibold">{page.title}</td>
+                    <td className="py-4 px-2 font-semibold">{page.pageTitle +" / "+ (page.pageTitleAr || "")}</td>
                     <td className="py-4 px-2">{page.date}</td>
                     <td className="py-4 px-2 me-[0px] flex justify-end items-center gap-0">
                       <NewButton
@@ -148,7 +151,7 @@ export const OnBoardingComponent = () => {
             {pages.map((page) => (
               <div key={page.id} className="border rounded-lg p-4 shadow-sm">
                 <div className="text-sm text-[#344767] font-semibold">
-                  {page.title}
+                  {page.pageTitle +" / "+ (page.pageTitleAr || "")}
                 </div>
                 <div className="text-xs text-gray-500 mt-1">{page.date}</div>
                 <div className="flex justify-start items-center">
