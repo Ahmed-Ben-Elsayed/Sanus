@@ -12,12 +12,15 @@ const AddMeals = () => {
   const location = useLocation();
   const mealId = location.state?.mealId;
   const navigate = useNavigate();
+  const [lang, setLang] = useState("en");
 
   const [loadingCount, setLoadingCount] = useState(0);
 
   const [meal, setMeal] = useState({
     name: "",
+    nameAr: "",
     description: "",
+    descriptionAr: "",
     type: "",
     calories: "",
     temperatureType: "",
@@ -70,7 +73,9 @@ const AddMeals = () => {
   const getIngredients = async () => {
     try {
       startLoading();
-      const res = await axios.get(`${BaseURL}/allergensIngredients/ingredients`);
+      const res = await axios.get(
+        `${BaseURL}/allergensIngredients/ingredients`
+      );
       setAllIngredients(res?.data?.data?.ingredients || []);
     } catch (err) {
       console.log(err);
@@ -89,6 +94,8 @@ const AddMeals = () => {
       const m = res.data.data.meal;
       setMeal({
         name: m.name || "",
+        nameAr: m.nameAr || "",
+        descriptionAr: m.descriptionAr || "",
         description: m.description || "",
         type: m.type || "",
         calories: m.calories?.toString() || "",
@@ -141,9 +148,11 @@ const AddMeals = () => {
   // Validation (unchanged)
   const validateForm = () => {
     if (!meal.name.trim()) return "Meal name is required";
+    if (!meal.nameAr.trim()) return "Meal name in Arabic is required";
     if (!meal.calories.trim() || isNaN(meal.calories))
       return "Calories must be a number";
     if (!meal.description.trim()) return "Description is required";
+    if (!meal.descriptionAr.trim()) return "Description in Arabic is required";
     if (!meal.type.trim()) return "Meal type is required";
     if (!meal.temperatureType.trim()) return "Temperature type is required";
     if (!mealId && !meal.imageUrl) return "Image is required";
@@ -162,7 +171,9 @@ const AddMeals = () => {
       startLoading();
       const data = new FormData();
       data.append("name", meal.name);
+      data.append("nameAr", meal.nameAr);
       data.append("description", meal.description);
+      data.append("descriptionAr", meal.descriptionAr);
       data.append("type", meal.type);
       data.append("calories", meal.calories);
       data.append("temperatureType", meal.temperatureType);
@@ -229,6 +240,15 @@ const AddMeals = () => {
             placeholder="Enter meal name"
             name="name"
             value={meal?.name}
+            onChange={handleChange}
+          />
+        </div>
+        <div className="md:col-span-2 lg:col-span-1">
+          <ReusableInput
+            label="Meal Name (Arabic)"
+            placeholder="Enter meal name in Arabic"
+            name="nameAr"
+            value={meal?.nameAr}
             onChange={handleChange}
           />
         </div>
@@ -403,15 +423,27 @@ const AddMeals = () => {
 
         {/* Description */}
         <div className="col-span-1 md:col-span-2 lg:col-span-3">
-          <label className="text-sm text-[#476171] font-bold my-2">
-            Description
-          </label>
+          <div className="flex justify-between items-center">
+            <label className="text-sm text-[#476171] font-bold my-2">
+              Description
+            </label>
+
+            <button
+              type="button"
+              onClick={() => setLang(lang === "en" ? "ar" : "en")}
+              className="text-xs bg-gray-200 px-3 py-1 rounded"
+            >
+              {lang === "en" ? "AR" : "EN"}
+            </button>
+          </div>
           <textarea
-            name="description"
+            name={lang === "en" ? "description" : "descriptionAr"}
             rows={3}
             className="border border-gray-300 rounded px-3 py-2 w-full"
-            placeholder="Write description..."
-            value={meal?.description}
+            placeholder={
+              lang === "en" ? "Write description..." : "اكتب الوصف..."
+            }
+            value={lang === "en" ? meal?.description : meal?.descriptionAr}
             onChange={handleChange}
           />
         </div>
@@ -448,14 +480,16 @@ const AddMeals = () => {
                   src={
                     meal.imageUrl instanceof File
                       ? URL.createObjectURL(meal.imageUrl)
-                      : meal.imageUrl.replace("http://137.184.244.200:5050", "/img-proxy")
+                      : meal.imageUrl.replace(
+                          "http://137.184.244.200:5050",
+                          "/img-proxy"
+                        )
                   }
                   alt="Preview"
                   className="w-20 h-14 object-cover rounded"
                 />
               </div>
             )}
-
           </div>
         </div>
       </div>
