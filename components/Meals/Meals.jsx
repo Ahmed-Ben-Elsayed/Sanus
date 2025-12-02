@@ -225,7 +225,7 @@ const Meals = ({ active, setactive }) => {
                               src={plan?.imageUrl.replace("http://137.184.244.200:5050", "/img-proxy")}
                             />
                           </td>
-                          <td className="p-2 sm:p-3">{plan?.name || "-"}</td>
+                          <td className="p-2 sm:p-3">{plan?.name  + " / " + (plan?.nameAr || "")}</td>
                           <td className="p-2 sm:p-3 text-center hidden sm:table-cell">{plan?.type || "-"}</td>
                           <td className="p-2 sm:p-3 text-center hidden md:table-cell">{plan?.temperatureType || "-"}</td>
                           <td className="p-2 sm:p-3 flex gap-2 justify-end">
