@@ -9,6 +9,7 @@ import { toast } from "react-toastify";
 
 export const AddNewPlan = () => {
     const [planName, setPlanName] = useState("");
+    const [planNameAr, setPlanNameAr] = useState("");
     const [loading, setloading] = useState(false);
     const [planeId , SetplaneId] = useState(null);
     const navigate = useNavigate();
@@ -21,8 +22,8 @@ export const AddNewPlan = () => {
     },[planid])
     const isEditMode = Boolean(planeId);
     const handleSave = async () => {
-        if (!planName.trim()) {
-            toast.error("Plan name is required");
+        if (!planName.trim() || !planNameAr.trim()) {
+            toast.error("Plan name Ar And En is  required");
             return;
         }
 
@@ -30,6 +31,7 @@ export const AddNewPlan = () => {
             setloading(true);
             await axios.post(`${BaseURL}/plans`, {
                 name: planName,
+                nameAr: planNameAr,
                 description: "plan"
             }, {
                 headers: {
@@ -37,6 +39,7 @@ export const AddNewPlan = () => {
                 }
             });
             setPlanName("");
+            setPlanNameAr("");
             toast.success("Plan Created Successfully");
             navigate('/Admin/Plans',{state:{}})
         } catch (err) {
@@ -48,8 +51,8 @@ export const AddNewPlan = () => {
     };
 
     const handleUpdate = async () => {
-        if (!planName.trim()) {
-            toast.error("Plan name is required");
+        if (!planName.trim() || !planNameAr.trim()) {
+            toast.error("Plan name Ar And En is required");
             return;
         }
 
@@ -57,6 +60,7 @@ export const AddNewPlan = () => {
             setloading(true);
             await axios.patch(`${BaseURL}/plans/${planeId}`, {
                 name: planName,
+                nameAr: planNameAr,
                 description: "plan"
             }, {
                 headers: {
@@ -64,6 +68,7 @@ export const AddNewPlan = () => {
                 }
             });
             setPlanName("");
+            setPlanNameAr("");
             toast.success("Plan Updated Successfully");
             navigate('/Admin/Plans',{state:{}})
         } catch (err) {
@@ -83,6 +88,7 @@ export const AddNewPlan = () => {
                 }
             });
             setPlanName(res?.data?.data?.plan?.name || "");
+            setPlanNameAr(res?.data?.data?.plan?.nameAr || "");
         } catch (err) {
             console.log(err);
             toast.error("Error fetching the plan");
@@ -115,14 +121,22 @@ export const AddNewPlan = () => {
                 <hr className="border-gray-300 my-3" />
 
                 {/* Input Section */}
-                <div className="md:w-[30%] w-[90%] mx-auto md:mx-0">
+                <div className="md:w-[50%] w-[90%] mx-auto md:mx-0">
+                    <div className="flex gap-2">
                     <ReusableInput
                         label="Plan Name"
                         value={planName}
                         onChange={(e) => setPlanName(e.target.value)}
                         placeholder="Enter plan name"
                     />
+                    <ReusableInput
+                        label="Plan Name Ar"
+                        value={planNameAr}
+                        onChange={(e) => setPlanNameAr(e.target.value)}
+                        placeholder="Enter plan name in Arabic"
+                    />
 
+                        </div>
                     {/* Buttons */}
                     <div className="mt-auto pt-4 flex flex-col md:flex-row gap-2 justify-start">
                         <NewButton
