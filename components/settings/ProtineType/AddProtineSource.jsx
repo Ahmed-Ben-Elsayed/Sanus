@@ -9,6 +9,7 @@ import NewButton from "../../../ui/NewButton";
 
 const ProteinSource = () => {
   const [proteinName, setProteinName] = useState("");
+  const [proteinNameAr, setProteinNameAr] = useState("");
   const [loading, setLoading] = useState(false);
   const [proteinId, setProteinId] = useState(null);
 
@@ -35,7 +36,7 @@ const ProteinSource = () => {
       setLoading(true);
       await axios.post(
         `${BaseURL}/protein-sources`,
-        { name: proteinName, description: "Food", category: "other", isVegan: false },
+        { name: proteinName, nameAr: proteinNameAr, description: "Food", descriptionAr:"طعام" , category: "other", isVegan: false },
         {
           headers: {
             Authorization: `Bearer ${localStorage.getItem("token")}`,
@@ -43,6 +44,7 @@ const ProteinSource = () => {
         }
       );
       setProteinName("");
+      setProteinNameAr("");
       toast.success("Protein Source Created Successfully");
       navigate("/Admin/Settings/ProteinSources", { state: {} });
     } catch (err) {
@@ -66,7 +68,7 @@ const ProteinSource = () => {
       setLoading(true);
       await axios.patch(
         `${BaseURL}/protein-sources/${proteinId}`,
-        { name: proteinName },
+        { name: proteinName , nameAr: proteinNameAr },
         {
           headers: {
             Authorization: `Bearer ${localStorage.getItem("token")}`,
@@ -74,6 +76,7 @@ const ProteinSource = () => {
         }
       );
       setProteinName("");
+      setProteinNameAr("");
       toast.success("Protein Source Updated Successfully");
       navigate("/Admin/Settings/ProteinSources", { state: {} });
     } catch (err) {
@@ -100,6 +103,7 @@ const ProteinSource = () => {
       );
       console.log(res?.data?.data?.proteinSource);
       setProteinName(res?.data?.data?.proteinSource?.name || "");
+      setProteinNameAr(res?.data?.data?.proteinSource?.nameAr || "");
     } catch (err) {
       console.log(err);
       toast.error(
@@ -146,7 +150,14 @@ const ProteinSource = () => {
                 placeholder="Enter protein source name"
               />
             </div>
-
+            <div className="w-full md:w-1/2">
+              <ReusableInput
+                label="Protein Source Name (Arabic)"
+                value={proteinNameAr}
+                onChange={(e) => setProteinNameAr(e.target.value)}
+                placeholder="Enter protein source name in Arabic"
+              />
+            </div>
           </div>
 
           {/* Buttons */}
