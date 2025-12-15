@@ -39,7 +39,8 @@ export const TrackingDetails = () => {
       });
 
       setOrder(res.data.data.order);
-
+      console.log(res.data);
+      
       if (res.data.data.order?.MealPlan?.dailyPlans) {
         const daysData = res.data.data.order.MealPlan.dailyPlans.map((day) => ({
           date: day.date,
@@ -82,7 +83,7 @@ export const TrackingDetails = () => {
   // === Export to Excel ===
   const exportToExcel = () => {
     const sheetData = [
-      ["Date", "Day", "Meal Type", "Meal Name" , "Protein", "Carbs", "Fats", "Start Time", "End Time"],
+      ["Date", "Day", "Meal Type", "Meal Name"  , "Meal Ar Name" , "Protein", "Carbs", "Fats", "Start Time", "End Time"],
     ];
 
     weeks[currentWeek].forEach((day) => {
@@ -97,15 +98,16 @@ export const TrackingDetails = () => {
         if (meals.length > 0) {
           meals.forEach((m) => {
             sheetData.push([
-              new Date(day.date).toLocaleDateString("en-GB"), // Date
-              formatDateToDay(day.date), // Day name
-              mealType.charAt(0).toUpperCase() + mealType.slice(1), // Meal Type
-              m?.meal?.name || "Custom Meal", // Meal Name
-              m?.meal?.nutritionalValues?.protein || "-", // Protein
-              m?.meal?.nutritionalValues?.carbs || "-", // Carbs
-              m?.meal?.nutritionalValues?.fat || "-", // Fats
-              m?.timeWindow?.start || "-", // Start Time
-              m?.timeWindow?.end || "-", // End Time
+              new Date(day.date).toLocaleDateString("en-GB"),
+              formatDateToDay(day.date),
+              mealType.charAt(0).toUpperCase() + mealType.slice(1),
+              m?.meal?.name || "Custom Meal",
+              m?.meal?.nameAr || "Custom Meal",
+              m?.meal?.nutritionalValues?.protein || "-", 
+              m?.meal?.nutritionalValues?.carbs || "-", 
+              m?.meal?.nutritionalValues?.fat || "-", 
+              m?.timeWindow?.start || "-", 
+              m?.timeWindow?.end || "-", 
             ]);
           });
         } else {
@@ -280,7 +282,7 @@ export const TrackingDetails = () => {
                                 className="w-14 h-14 object-cover rounded-full mb-1 shadow"
                               />
                               <span className="text-xs md:text-sm font-medium text-[#344767] text-center">
-                                {firstMeal.meal?.name || "Custom Meal"}
+                                {firstMeal.meal?.name+" / "+(firstMeal.meal?.nameAr||"") || "Custom Meal"}
                               </span>
                             </div>
                           ) : (

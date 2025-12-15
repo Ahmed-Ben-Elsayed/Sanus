@@ -387,7 +387,7 @@ const AddMeals = () => {
             value={selectedIngredients}
             onChange={setSelectedIngredients}
             options={allIngredients.map((i) => ({
-              label: ` ${i?.name}`,
+              label: ` ${i?.name} / ${i?.nameAr || ""}`,
               value: i?._id,
             }))}
           />
@@ -401,7 +401,7 @@ const AddMeals = () => {
             value={selectedAllergens}
             onChange={setSelectedAllergens}
             options={allAllergens.map((a) => ({
-              label: ` ${a?.name}`,
+              label: ` ${a?.name} / ${a?.nameAr || ""}`,
               value: a?._id,
             }))}
           />
@@ -415,7 +415,7 @@ const AddMeals = () => {
             value={selectedproteinSources}
             onChange={setselectedProteinSources}
             options={proteinSources.map((i) => ({
-              label: i?.name,
+              label: i?.name+ " / " +(i?.nameAr||""),
               value: i?._id,
             }))}
           />

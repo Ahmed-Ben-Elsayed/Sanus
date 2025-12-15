@@ -384,7 +384,7 @@ const DayMealModal = ({
 
                             .map((meal) => ({
                               value: meal._id,
-                              label: meal.name,
+                              label: meal.name + " / " + (meal.nameAr || ""),
                             }))}
 
                           disabled={templateId}
@@ -415,7 +415,7 @@ const DayMealModal = ({
                                   {icon}
                                 </span>
                                 <span className="truncate text-sm font-medium text-gray-700 flex-1">
-                                  {m.name}
+                                  {m.name + (m.nameAr ? ` / ${m.nameAr}` : "")}
                                   {m.isDefault && (
                                     <span className="text-green-600 ml-1 text-xs">
                                       (Default)

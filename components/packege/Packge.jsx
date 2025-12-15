@@ -174,7 +174,7 @@ export const Packge = () => {
 
           <button
             onClick={() => navigate('/Admin/Packages/Add')}
-            className="bg-[#476171] cursor-pointer text-white hover:bg-[#476171] flex items-center justify-center gap-2 py-[7px] px-5 rounded-lg w-full h-max"
+            className="bg-[#476171] cursor-pointer text-white hover:bg-[#476171] flex items-center justify-center gap-2 py-[7px] px-5 rounded-lg w-[200px] h-max"
           >
             Add New <MdAdd className="text-xl" />
           </button>

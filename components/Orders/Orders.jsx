@@ -225,6 +225,7 @@ export const Orders = ({ active, setactive }) => {
       "Customer Name": cust.user?.name || "N/A",
       Phone: cust?.shippingAddress?.phone || "N/A",
       Package: cust.items?.[0]?.package?.name || "N/A",
+      PackageAr: cust.items?.[0]?.package?.nameAr || "N/A",
       From: new Date(cust.createdAt).toLocaleString("en-GB", {
         year: "numeric",
         month: "2-digit",
@@ -316,7 +317,7 @@ export const Orders = ({ active, setactive }) => {
     }
 
     if (typeof mealEntry === "object") {
-      return mealEntry.name || JSON.stringify(mealEntry);
+      return (mealEntry.name + " - " + (mealEntry?.nameAr || "")) || JSON.stringify(mealEntry);
     }
 
     return String(mealEntry);
@@ -421,7 +422,7 @@ export const Orders = ({ active, setactive }) => {
       matchesPhone &&
       matchesPackage &&
       matchesFrom &&
-      matchesTo &&
+      matchesTo&& 
       paymentStatus &&
       status &&
       hasTodayMeal

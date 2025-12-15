@@ -211,16 +211,18 @@ const currentWeek = Math.floor(selectedDateIndex / 7);
                     {meal.type}
                     <p className="text-[#5f636a] mt-2">{meal.portion}</p>
                   </td>
-                  <td className="border border-[#B0B0B0] p-2">
+                  <td className="border w-50 border-[#B0B0B0] p-2">
                     <img
                       src={ meal?.imageUrl || "/food-7248455_1280.png"}
                       alt="Meal"
                       className="w-13 md:w-20 mx-auto mb-1"
                     />
-                    <span className="text-xs md:text-sm">{meal.meal.name}</span>
+                    <span className="text-xs md:text-sm">{meal.meal?.name}</span>
+                    <span className="text-xs md:text-sm  block">{meal.meal?.nameAr||""}</span>
                   </td>
                   <td className="border text-[#344767] border-[#B0B0B0] p-2 font-medium">
                     {meal.meal?.description}
+                    <p className="text-[#5f636a] mt-2">{meal.meal?.descriptionAr||""}</p>
                   </td>
                   <td className="border text-[#344767] border-[#B0B0B0] p-2 font-medium">
                     {meal.meal?.nutritionalValues?.Portion }
