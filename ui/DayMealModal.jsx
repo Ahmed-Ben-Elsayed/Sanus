@@ -128,6 +128,7 @@ const DayMealModal = ({
               return {
                 meal: mealItem.meal._id,
                 name: mealItem.meal.name,
+                nameAr: mealItem.meal.nameAr || "",
                 isDefault: mealItem.isDefault || false,
               };
             }
