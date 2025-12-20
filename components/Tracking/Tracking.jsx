@@ -1,6 +1,11 @@
 import React, { useEffect, useState } from "react";
 import ReusableInput from "../../ui/ReuseInput";
-import { MdArrowBack, MdArrowForward, MdOutlineDateRange, MdOutlineFileDownload } from "react-icons/md";
+import {
+  MdArrowBack,
+  MdArrowForward,
+  MdOutlineDateRange,
+  MdOutlineFileDownload,
+} from "react-icons/md";
 import ReusableSelector from "../../ui/ReusableSelector";
 import * as XLSX from "xlsx";
 import axios from "axios";
@@ -114,7 +119,7 @@ export const Tracking = ({}) => {
         ...response?.data?.data?.plans.map((pkg) => ({
           label: pkg.label,
           value: pkg.value,
-        }))
+        })),
       ];
 
       setplanse(formatted);
@@ -147,13 +152,13 @@ export const Tracking = ({}) => {
     }
 
     const dataForExport = orders.map((cust, index) => ({
-      "Marchent": "28",
+      Marchent: "28",
       "Order Number": `${startIndex + index + 1}`,
       "Delivery Date": new Date().toLocaleDateString(),
       "Delivery Mode": "Standard",
       "Delivery Type": "Delivery",
       "Package Name": cust.items?.[0]?.package?.name || "N/A",
-      "Date": new Date(cust.createdAt).toLocaleString("en-GB", {
+      Date: new Date(cust.createdAt).toLocaleString("en-GB", {
         year: "numeric",
         month: "2-digit",
         day: "2-digit",
@@ -162,18 +167,19 @@ export const Tracking = ({}) => {
       }),
       "Customer Name": cust.user?.name || "",
       " Customer Phone": cust?.shippingAddress?.phone || "",
-      "Timeslot": cust.time_slot.value || "N/A",
-      "SMS": "True",
-      "Address": cust?.shippingAddress?.address || "",
+      Timeslot: cust.time_slot.value || "N/A",
+      SMS: "True",
+      Address: cust?.shippingAddress?.address || "",
     }));
 
     const worksheet = XLSX.utils.json_to_sheet(dataForExport);
 
     const columnWidths = Object.keys(dataForExport[0]).map((key) => ({
-      wch: Math.max(
-        key.length,
-        ...dataForExport.map((row) => String(row[key] || "").length)
-      ) + 2,
+      wch:
+        Math.max(
+          key.length,
+          ...dataForExport.map((row) => String(row[key] || "").length)
+        ) + 2,
     }));
     worksheet["!cols"] = columnWidths;
 
@@ -194,25 +200,26 @@ export const Tracking = ({}) => {
       "Customer Name": cust.user?.name || "",
       " Customer Phone": cust?.shippingAddress?.phone || "",
       "Package Name": cust.items?.[0]?.package?.name || "N/A",
-      "Date": new Date(cust.createdAt).toLocaleString("en-GB", {
+      Date: new Date(cust.createdAt).toLocaleString("en-GB", {
         year: "numeric",
         month: "2-digit",
         day: "2-digit",
         hour: "2-digit",
         minute: "2-digit",
       }),
-      "Cost": cust.totalAmount || "N/A",
-      "Timeslot": cust.time_slot.value || "N/A",
-      "Status": cust?.status || "N/A",
+      Cost: cust.totalAmount || "N/A",
+      Timeslot: cust.time_slot.value || "N/A",
+      Status: cust?.status || "N/A",
     }));
 
     const worksheet = XLSX.utils.json_to_sheet(dataForExport);
 
     const columnWidths = Object.keys(dataForExport[0]).map((key) => ({
-      wch: Math.max(
-        key.length,
-        ...dataForExport.map((row) => String(row[key] || "").length)
-      ) + 2,
+      wch:
+        Math.max(
+          key.length,
+          ...dataForExport.map((row) => String(row[key] || "").length)
+        ) + 2,
     }));
     worksheet["!cols"] = columnWidths;
 
@@ -303,7 +310,7 @@ export const Tracking = ({}) => {
     const packageId = order.items?.[0]?.package?._id || "";
 
     const matchesOrderNumber = orderNumber
-      ? String(i).includes(orderNumber)
+      ? String(i + 1).includes(orderNumber)
       : true;
 
     const matchesPhone = phone
@@ -312,14 +319,12 @@ export const Tracking = ({}) => {
 
     const matchesPackage = pkg ? packageId === pkg || pkg === "All" : true;
     const paymentStatus = order?.paymentStatus === "paid";
-    const status = order?.status === "active";
+    // const status = order?.status === "active";
     const matchesFrom = from
-      ? new Date(order.createdAt) >= new Date(from)
+      ? new Date(order.MealPlan?.dailyPlans[0]?.date) >= new Date(from)
       : true;
-    const matchesTo = to
-      ? new Date(order.createdAt) <= new Date(to)
-      : true;
-    const hasFutureMeals = order.MealPlan?.dailyPlans?.some(plan => {
+    const matchesTo = to ? new Date(order.createdAt) <= new Date(to) : true;
+    const hasFutureMeals = order.MealPlan?.dailyPlans?.some((plan) => {
       return new Date(plan.date) >= new Date().setHours(0, 0, 0, 0);
     });
 
@@ -328,8 +333,9 @@ export const Tracking = ({}) => {
       matchesPhone &&
       matchesPackage &&
       matchesFrom &&
-      status &&
-      matchesTo && paymentStatus && hasFutureMeals
+      matchesTo &&
+      paymentStatus &&
+      hasFutureMeals
     );
   });
 
@@ -488,7 +494,9 @@ export const Tracking = ({}) => {
                             <div className="flex text-xs sm:text-sm items-center gap-2">
                               <button
                                 onClick={() =>
-                                  setExpandedOrderIndex(expandedOrderIndex === i ? null : i)
+                                  setExpandedOrderIndex(
+                                    expandedOrderIndex === i ? null : i
+                                  )
                                 }
                                 className="focus:outline-none"
                               >
@@ -513,7 +521,11 @@ export const Tracking = ({}) => {
                             {order?.items?.[0]?.package?.name}
                           </td>
                           <td className="px-2 sm:px-4 py-3 text-[#344767] text-xs sm:text-sm">
-                            {new Date(order.MealPlan.dailyPlans[0].date).toLocaleDateString("en-GB")}
+                            {order?.MealPlan?.dailyPlans?.[0]?.date
+                              ? new Date(
+                                  order.MealPlan.dailyPlans[0].date
+                                ).toLocaleDateString("en-GB")
+                              : "N/A"}
                           </td>
                           <td className="px-2 sm:px-4 py-3 text-[#344767] text-xs sm:text-sm">
                             {order?.totalAmount}
@@ -531,9 +543,14 @@ export const Tracking = ({}) => {
                                 if (e.target.value !== "scheduled_freeze")
                                   handleStatusChange(e.target.value, order._id);
                                 if (e.target.value === "scheduled_freeze") {
-                                  navigate("/Admin/Tracking_Subscription/scheduled_freeze", {
-                                    state: { orderId: order?._id || order?.id },
-                                  });
+                                  navigate(
+                                    "/Admin/Tracking_Subscription/scheduled_freeze",
+                                    {
+                                      state: {
+                                        orderId: order?._id || order?.id,
+                                      },
+                                    }
+                                  );
                                 }
                               }}
                               options={[
@@ -555,35 +572,78 @@ export const Tracking = ({}) => {
                               placeholder="Actions"
                               onChange={(e) => {
                                 if (e.target.value === "info") {
-                                  navigate("/Admin/Tracking_Subscription/moreinfo", {
-                                    state: { orderId: order?._id || order?.id },
-                                  });
+                                  navigate(
+                                    "/Admin/Tracking_Subscription/moreinfo",
+                                    {
+                                      state: {
+                                        orderId: order?._id || order?.id,
+                                      },
+                                    }
+                                  );
                                 } else if (e.target.value === "note") {
-                                } else if (e.target.value === "scheduled_freeze") {
-                                  navigate("/Admin/Tracking_Subscription/scheduled_freeze", {
-                                    state: { orderId: order?._id || order?.id },
-                                  });
+                                } else if (
+                                  e.target.value === "scheduled_freeze"
+                                ) {
+                                  navigate(
+                                    "/Admin/Tracking_Subscription/scheduled_freeze",
+                                    {
+                                      state: {
+                                        orderId: order?._id || order?.id,
+                                      },
+                                    }
+                                  );
                                 } else if (e.target.value === "Add") {
                                   navigate("/Admin/Tracking_Subscription/Add");
                                 } else if (e.target.value === "time slot") {
-                                  navigate("/Admin/Tracking_Subscription/time_slot", {
-                                    state: { orderId: order?._id || order?.id },
-                                  });
+                                  navigate(
+                                    "/Admin/Tracking_Subscription/time_slot",
+                                    {
+                                      state: {
+                                        orderId: order?._id || order?.id,
+                                      },
+                                    }
+                                  );
                                 } else if (e.target.value === "Chang") {
-                                  navigate("/Admin/Tracking_Subscription/Change_Box", {
-                                    state: { orderId: order?._id || order?.id },
-                                  });
+                                  navigate(
+                                    "/Admin/Tracking_Subscription/Change_Box",
+                                    {
+                                      state: {
+                                        orderId: order?._id || order?.id,
+                                      },
+                                    }
+                                  );
                                 } else if (e.target.value === "ChangL") {
-                                  navigate("/Admin/Tracking_Subscription/Change_Location", {
-                                    state: { orderId: order?._id || order?.id },
-                                  });
+                                  navigate(
+                                    "/Admin/Tracking_Subscription/Change_Location",
+                                    {
+                                      state: {
+                                        orderId: order?._id || order?.id,
+                                      },
+                                    }
+                                  );
                                 }
                               }}
                               options={[
-                                { value: "info", label: "More Details", icon: "/Icons.png" },
-                                { value: "time slot", label: "Change Time Slot", icon: "/Timer.png" },
-                                { value: "Chang", label: "Change Box", icon: "/Box.png" },
-                                { value: "ChangL", label: "Change Location", icon: "/Location.png" },
+                                {
+                                  value: "info",
+                                  label: "More Details",
+                                  icon: "/Icons.png",
+                                },
+                                {
+                                  value: "time slot",
+                                  label: "Change Time Slot",
+                                  icon: "/Timer.png",
+                                },
+                                {
+                                  value: "Chang",
+                                  label: "Change Box",
+                                  icon: "/Box.png",
+                                },
+                                {
+                                  value: "ChangL",
+                                  label: "Change Location",
+                                  icon: "/Location.png",
+                                },
                               ]}
                               custclassName="rounded-md text-xs w-[90%] min-h-[2px!important] h-[30px!important] flex items-center"
                             />
@@ -591,12 +651,18 @@ export const Tracking = ({}) => {
                         </tr>
                         {expandedOrderIndex === i && (
                           <tr>
-                            <td colSpan="9" className="px-2 sm:px-4 py-3 bg-gray-50">
+                            <td
+                              colSpan="9"
+                              className="px-2 sm:px-4 py-3 bg-gray-50"
+                            >
                               <div className="grid grid-cols-1 text-xs sm:text-sm">
                                 <div>
                                   <p className="text-gray-600 gap-2 justify-center flex flex-col">
                                     {order?.history?.map((msg, index) => (
-                                      <div className="w-full flex items-center gap-1" key={index}>
+                                      <div
+                                        className="w-full flex items-center gap-1"
+                                        key={index}
+                                      >
                                         <MdArrowForward /> {msg?.message}
                                       </div>
                                     ))}
@@ -610,13 +676,14 @@ export const Tracking = ({}) => {
                     ))
                   )}
                 </tbody>
-
               </table>
             </div>
           ) : (
             <div className="flex flex-col items-center justify-center h-[60vh] py-12">
               <TbDatabaseExclamation className="text-5xl text-gray-400 mb-4" />
-              <p className="text-xl text-gray-600">No Tracking Subscription Found</p>
+              <p className="text-xl text-gray-600">
+                No Tracking Subscription Found
+              </p>
               <p className="text-gray-500 mt-2">Try adjusting your filters</p>
             </div>
           )}
@@ -640,10 +707,11 @@ export const Tracking = ({}) => {
               <button
                 onClick={() => goToPage(pagination.currentPage - 1)}
                 disabled={pagination.currentPage === 1}
-                className={`px-2 sm:px-3 py-1 rounded-md text-xs sm:text-sm ${pagination.currentPage === 1
+                className={`px-2 sm:px-3 py-1 rounded-md text-xs sm:text-sm ${
+                  pagination.currentPage === 1
                     ? "text-gray-400 cursor-not-allowed"
                     : "text-gray-700 hover:bg-gray-100"
-                  }`}
+                }`}
               >
                 <IoIosArrowBack className="inline mr-1" />
                 Previous
@@ -671,10 +739,11 @@ export const Tracking = ({}) => {
                     <button
                       key={pageNum}
                       onClick={() => goToPage(pageNum)}
-                      className={`px-2 sm:px-3 py-1 rounded-md text-xs sm:text-sm ${pagination.currentPage === pageNum
+                      className={`px-2 sm:px-3 py-1 rounded-md text-xs sm:text-sm ${
+                        pagination.currentPage === pageNum
                           ? "bg-gray-700 text-white"
                           : "text-gray-700 hover:bg-gray-100"
-                        }`}
+                      }`}
                     >
                       {pageNum}
                     </button>
@@ -685,10 +754,11 @@ export const Tracking = ({}) => {
               <button
                 onClick={() => goToPage(pagination.currentPage + 1)}
                 disabled={pagination.currentPage === pagination.totalPages}
-                className={`px-2 sm:px-3 py-1 rounded-md text-xs sm:text-sm ${pagination.currentPage === pagination.totalPages
+                className={`px-2 sm:px-3 py-1 rounded-md text-xs sm:text-sm ${
+                  pagination.currentPage === pagination.totalPages
                     ? "text-gray-400 cursor-not-allowed"
                     : "text-gray-700 hover:bg-gray-100"
-                  }`}
+                }`}
               >
                 Next
                 <IoIosArrowForward className="inline ml-1" />
