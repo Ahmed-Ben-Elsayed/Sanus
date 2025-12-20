@@ -115,7 +115,7 @@ export const OnBoardingComponent = () => {
                     key={page.id}
                     className="border-b border-[#e8e3e3] text-[#344767] text-sm"
                   >
-                    <td className="py-4 px-2 font-semibold">{page.pageTitle +" / "+ (page.pageTitleAr || "")}</td>
+                    <td className="py-4 px-2 font-semibold">{page.pageTitle}</td>
                     <td className="py-4 px-2">{page.date}</td>
                     <td className="py-4 px-2 me-[0px] flex justify-end items-center gap-0">
                       <NewButton
@@ -151,7 +151,7 @@ export const OnBoardingComponent = () => {
             {pages.map((page) => (
               <div key={page.id} className="border rounded-lg p-4 shadow-sm">
                 <div className="text-sm text-[#344767] font-semibold">
-                  {page.pageTitle +" / "+ (page.pageTitleAr || "")}
+                  {page.pageTitle}
                 </div>
                 <div className="text-xs text-gray-500 mt-1">{page.date}</div>
                 <div className="flex justify-start items-center">
