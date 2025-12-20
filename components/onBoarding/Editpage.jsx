@@ -17,7 +17,7 @@ const EditPage = () => {
   const [formData, setFormData] = useState({
     pageid: "",
     pageTitle: "",
-    pageTitleAr: "",
+    pageTitleAr: "صفحة",
     stepNumber: "",
     title: "",
     titleAr: "",
@@ -136,30 +136,18 @@ const EditPage = () => {
           <form onSubmit={handleSubmit} className="grid grid-cols-1 md:grid-cols-2 gap-4">
             {/* Page Title EN */}
             <div>
-              <label className="block text-sm font-medium text-[#6b7280] mb-1">Page Title</label>
+              <label className="block text-sm font-medium text-[#6b7280] mb-1">Page Title (Dashboard)</label>
               <input
                 type="text"
                 name="pageTitle"
                 value={formData.pageTitle}
                 onChange={handleChange}
                 className="w-full border border-[#91AEC0] rounded-md px-3 py-2 focus:outline-none focus:ring-[#344767]"
-                placeholder="Page Title (EN)"
+                placeholder="Page Title "
               />
             </div>
 
-            {/* Page Title AR */}
-            <div>
-              <label className="block text-sm font-medium text-[#6b7280] mb-1">Page Title Ar</label>
-              <input
-                type="text"
-                name="pageTitleAr"
-                dir="rtl"
-                value={formData.pageTitleAr}
-                onChange={handleChange}
-                className="w-full border border-[#91AEC0] rounded-md px-3 py-2 focus:outline-none focus:ring-[#344767] text-right"
-                placeholder="Page Title (AR)"
-              />
-            </div>
+        
 
             {/* Step Number */}
             <div>
@@ -176,7 +164,7 @@ const EditPage = () => {
 
             {/* Title EN */}
             <div>
-              <label className="block text-sm font-medium text-[#6b7280] mb-1">Title</label>
+              <label className="block text-sm font-medium text-[#6b7280] mb-1">Title ( Application )</label>
               <input
                 type="text"
                 name="title"
@@ -189,7 +177,7 @@ const EditPage = () => {
 
             {/* Title AR */}
             <div>
-              <label className="block text-sm font-medium text-[#6b7280] mb-1">Title Ar</label>
+              <label className="block text-sm font-medium text-[#6b7280] mb-1">Title Ar ( Application )</label>
               <input
                 type="text"
                 name="titleAr"
